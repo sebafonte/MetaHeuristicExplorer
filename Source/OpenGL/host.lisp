@@ -5,7 +5,8 @@
 
 (in-package "USER")
 
+
 (setf (logical-pathname-translations "OPENGL")
-      `(("**;*" ,(merge-pathnames "**/*" (pathname-location "d:\\explorer\\Source\\OpenGL\\")))))
+      `(("**;*" ,(merge-pathnames "**/*" (pathname-location (current-pathname))))))
 
 
