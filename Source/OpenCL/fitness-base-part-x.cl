@@ -1,0 +1,1 @@
+ float d=0.0f; for (int i=0; i< ~A; i++) { float x = a[i]; d+= ~A(b[i] - (~A)); } c[G] = d;

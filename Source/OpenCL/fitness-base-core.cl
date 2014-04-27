@@ -1,0 +1,1 @@
+float pdiv (float a, float b) { return a == 0.0 ? a / b : 0.0f; } float sqr (float a) { return a * a; } __kernel void ~A(__global const float* a, __global const float* b, __global float* c) { int G = get_global_id(0); ~{~A ~} }

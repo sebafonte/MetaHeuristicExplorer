@@ -1,0 +1,213 @@
+
+(defclass property-editor ()
+  ((property :initarg :property :initform nil :accessor property)))
+
+
+(defmethod (setf property) ((pe property-editor) value)
+  "Sets the value into the instance variable property."
+  (setf (slot-value pe 'property) value))
+
+(defmethod update-value ((pe property-editor) (object base-model))
+  "Updates the property associated with pe into object."
+  (set-value-for-property object (property pe) (value pe)))
+
+(defmethod update-value :after ((pe property-editor) (object editable-probability-object-list-wrapper))
+  "Updates the property associated with pe into object."
+  (update object))
+
+
+;; GUI editor classes
+(defclass number-editor (capi:text-input-pane property-editor) ())
+(defclass one-line-lisp-editor (capi:text-input-pane property-editor) ())
+(defclass lisp-editor (capi:text-input-pane property-editor) ())
+(defclass text-editor (capi:text-input-pane property-editor) ())
+(defclass symbol-editor (capi:text-input-pane property-editor) ())
+(defclass list-editor (capi:option-pane property-editor) ())
+(defclass boolean-editor (capi:check-button property-editor) ())
+(defclass list-check-selector-editor (capi:check-button property-editor) ())
+
+
+(capi:define-interface interface-check-list-editor ()
+  ()
+  (:panes
+   (check-button-1 capi:check-button))
+  (:layouts
+   (column-layout-1 capi:column-layout '(check-button-1)))
+  (:default-initargs
+   :layout 'column-layout-1
+   :title ""))
+
+(defclass button-editor (capi:push-button property-editor) 
+  ((subject :initarg :subject :initform nil :accessor subject)))
+
+(defclass file-prompter-editor (button-editor) 
+  ((file-path :initarg :file-path :initform nil :accessor file-path)))
+
+(defclass parameter-editor (capi:slider property-editor) 
+  ((subject :initarg :subject :initform nil :accessor subject)
+   (property :initarg :property :initform nil :accessor property)))
+    
+
+(defmethod possible-editor-types ()
+  "Answers all posible accessor type for properties."
+  '(number-editor
+    one-line-lisp-editor
+    lisp-editor
+    text-editor
+    symbol-editor
+    list-editor
+    boolean-editor
+    parameter-editor
+    editable-parameter-editor
+    compound-object-from-list-editor
+    configurable-copy-list-editor
+    file-prompter-editor
+    list-check-editor))
+
+
+;;; Editor creation functions
+;;;
+;;; #TODO: - Eliminar el tipado
+;;;		   - Add update logic to editors
+;;; 
+
+(defmethod create-editor-for-editor-class ((editor-class t) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance 'lisp-editor 
+                 :title (label p) 
+                 :text (list-to-string (get-value-for-property o p)) 
+                 :enabled (not (read-only p))))
+
+(defmethod create-editor-for-editor-class ((editor-type (eql 'number-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-type 
+                 :title (label p) 
+                 :text (list-to-string (get-value-for-property o p)) 
+                 :enabled (not (read-only p))))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'one-line-lisp-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-class 
+                 :title (label p) 
+                 :text (format nil "~A" (list-to-string (get-value-for-property o p)))
+                 :enabled (not (read-only p))))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'lisp-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (create-editor-for-editor-class 'one-line-lisp-editor p o))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'symbol-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (create-editor-for-editor-class 'one-line-lisp-editor p o))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'list-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-class 
+                 :title (label p) 
+                 :items (possible-values p) 
+                 :selected-item (get-value-for-property o p) 
+                 :enabled (not (read-only p))
+                 :font (gp:make-font-description :size 7)))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'boolean-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-class 
+                 :text (label p) 
+                 :selected (get-value-for-property o p) 
+                 :enabled (not (read-only p))))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'button-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-class 
+                 :title (label p) 
+                 :text "" 
+                 :callback (lambda (interface data) 
+                             (declare (ignore data))
+                             (if (get-value-for-property o p) 
+                                 (open-in-new-editor (get-value-for-property o p) interface)))
+                 :callback-type :interface-data
+                 :subject o))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'parameter-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (let ((initial-value (to-slider-value (get-value-for-property o p) p)))
+    (make-instance 'parameter-editor 
+                   :title (format nil "~A (~A,~A)" (label p) (min-value p) (max-value p))
+                   :start 0 
+                   :end 100 
+                   :slug-start initial-value
+                   :slug-end (1+ initial-value)
+                   :enabled (not (read-only p))
+                   :property p
+                   :subject o)))
+
+(defmethod create-editor-for-editor-class ((editor-class (eql 'check-list-editor)) (p property) (o base-model))
+  (make-instance 'list-check-editor
+                 :possible-values (possible-values p)
+                 :selections (get-value-for-property o p)
+                 :property p
+                 :subject o))
+
+(defmethod slider-value-for (value (p property))
+  "Convert value of <p> to a slider normalized value."
+  (+ (min-value p)
+     (* (/ value 100) 
+        (- (max-value p) (min-value p)))))
+
+(defmethod to-slider-value (value (p property))  
+  "Convert value of <p> to a slider normalized value."
+  (round (* 100 (/ (- value (min-value p))
+                   (- (max-value p) (min-value p))))))
+  
+(defmethod create-editor-for-editor-class ((editor-class (eql 'file-prompter-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (let ((editor (make-instance editor-class :title (label p) :text "" :subject o :callback-type :interface-data)))
+    (setf (capi:button-press-callback editor) 
+          (lambda (interface data) 
+            (declare (ignore data))
+            (setf (file-path editor)
+                  (capi:prompt-for-file "Load file"
+                                        :filter "*.*"
+                                        :operation :open
+                                        :filters `("All files" "*.*")))))
+    editor))
+
+(defmethod value ((editor number-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (read-from-string (capi:text-input-pane-text editor)))
+
+(defmethod value ((editor one-line-lisp-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (read-from-string (capi:text-input-pane-text editor)))
+
+(defmethod value ((editor lisp-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (read-from-string (capi:text-input-pane-text editor)))
+
+(defmethod value ((editor symbol-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (read-from-string (capi:text-input-pane-text editor)))
+  
+(defmethod value ((editor list-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (capi:choice-selected-item editor))
+
+(defmethod value ((editor boolean-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (capi:button-enabled editor))
+
+(defmethod value ((editor button-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (get-value-for-property (subject editor) (property editor)))
+
+(defmethod value ((editor parameter-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (slider-value-for (capi:range-slug-start editor) (property editor)))
+
+(defmethod value ((editor file-prompter-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (file-path editor))
+
+(defmethod value ((editor list-check-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (interface-selections editor))

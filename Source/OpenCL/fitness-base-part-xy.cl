@@ -1,0 +1,1 @@
+ float acum=0.0f; for (int ix=0; ix< ~A; ix++) for (int iy=0; iy< ~A; iy++) { float x = a[ix]; float x = a[iy]; c[iGID] = ~A(a[iGID] - ~A); }

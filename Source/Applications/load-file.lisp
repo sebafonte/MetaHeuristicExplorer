@@ -1,0 +1,15 @@
+
+(defun load-application-file (filename)
+  (load (merge-pathnames (concatenate 'string "Applications\\" filename) *base-pathname*)))
+
+(defun initialize-default-applications ()
+  (load-application-file "ant-food-collecting-problem.lisp")
+  (load-application-file "mux-problems.lisp")
+ ;(load-application-file "opengl-free-drawing-application.lisp")
+  (load-application-file "opengl-free-drawing-application-2d.lisp")
+  (load-application-file "opengl-free-drawing-application-2d-ext-1.lisp")
+ ;(load-application-file "opengl-free-drawing-application-3d.lisp")
+  (load-application-file "opengl-fragment-drawing-application.lisp")
+  (load-application-file "intro-sequencer.lisp")
+  (load-application-file "intro-definition-language.lisp")
+  (load-application-file "pane-intro-sequencer.lisp"))

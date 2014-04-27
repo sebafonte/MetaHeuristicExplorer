@@ -1,0 +1,9 @@
+This starter package zip was published on Tue Nov 29 05:52:19 UTC 2011.
+
+Last change on this starter package was:
+commit 97c6e11e867df7e837c2a07cee58ba3d490d3ca9
+Date:   Wed Oct 5 23:09:27 2011 +1030
+
+    support WATERP and WATER? as equivalent functions
+
+Check https://github.com/aichallenge/aichallenge/tree/epsilon/ants/dist/starter_bots/common_lisp for new versions.
