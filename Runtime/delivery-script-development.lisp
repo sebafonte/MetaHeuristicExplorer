@@ -5,9 +5,9 @@
 (load-all-patches)
 
 ;;; Load the application:
-(load "d:/explorer/Source/system-deliver.lisp")
+(load (merge-pathnames "..\\Source\\system-deliver.lisp" (pathname-location (current-pathname))))
 
-(deliver 'deliver-initialize-system "d:/explorer/Runtime/GE025-development.exe" 0
+(deliver 'deliver-initialize-system (merge-pathnames "GE025-development.exe" (pathname-location (current-pathname))) 0
          :keep-pretty-printer t
          :icon-file "d:/explorer/Runtime/explorer.ico"
          :interface :capi

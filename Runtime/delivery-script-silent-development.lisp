@@ -5,16 +5,16 @@
 (load-all-patches)
 
 ;;; Load the application:
-(load "d:/explorer/Source/system-deliver-silent.lisp")
+(load (merge-pathnames "..\\Source\\system-deliver-silent.lisp" (pathname-location (current-pathname))))
 
-(deliver 'deliver-initialize-system "d:/explorer/Runtime/GE025-silent-development.exe" 0
+(deliver 'deliver-initialize-system (merge-pathnames "GE025-silent-development.exe" (pathname-location (current-pathname))) 0
          :keep-pretty-printer t
          :keep-fasl-dump nil
          :keep-package-manipulation nil
          :keep-top-level nil
          :format nil
          :gf-collapse-tty-output nil
-         :icon-file "d:/explorer/Runtime/explorer.ico"
+         :icon-file (merge-pathnames "explorer.ico" (pathname-location (current-pathname)))
          :interface :capi
 		 :product-name "Genetic explorer"
 		 ;:versioninfo '(())

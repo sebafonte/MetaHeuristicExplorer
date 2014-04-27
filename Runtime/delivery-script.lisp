@@ -5,9 +5,9 @@
 (load-all-patches)
 
 ;;; Load the application:
-(load "d:/explorer/Source/system-deliver.lisp")
+(load (merge-pathnames "..\\Source\\system-deliver.lisp" (pathname-location (current-pathname))))
 
-(deliver 'deliver-initialize-system "d:/explorer/Runtime/GE025-release.exe" 0
+(deliver 'deliver-initialize-system (merge-pathnames "GE025-release.exe" (pathname-location (current-pathname))) 0
          :keep-pretty-printer t
          :keep-fasl-dump nil
          :keep-package-manipulation nil
@@ -15,9 +15,9 @@
          :keep-debug-mode nil
          :format nil
          :gf-collapse-tty-output nil
-         :icon-file "d:/explorer/Runtime/explorer.ico"
+         :icon-file (merge-pathnames "explorer.ico" (pathname-location (current-pathname)))
          :interface :capi
-         :startup-bitmap-file "d:/explorer/Runtime/splash001.bmp"
+         :startup-bitmap-file (merge-pathnames "splash001.bmp" (pathname-location (current-pathname)))
          :product-name "Genetic explorer"
          ;:versioninfo '(())
          )
