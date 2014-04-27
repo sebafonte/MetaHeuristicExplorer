@@ -55,7 +55,7 @@
       (run-test selection)
       (update-pane-test-list-conserve-selection interface))))
 
-;; #TODO: Habría que poner un ensure (hacerlo) para que se grafique siempre la interface
+;; #TODO: Add some kind of "ensure" method to always keep interface updated
 (defmethod debug-selected-test ((interface interface-pane-test-runner) &optional (data t))
   (let ((selection (capi:choice-selected-item (pane-tests interface))))
     (when selection

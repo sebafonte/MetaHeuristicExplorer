@@ -2,38 +2,38 @@
 
 ;; #TEST: Check a mutation #1
 (dotimes (i 100)
-  (let* ((operacion (system-get 'mutate))
+  (let* ((operation (system-get 'mutate))
          (algorithm (default-algorithm (make-instance 'test-genetic-operators)))
-         (exp (operate operacion algorithm (list '(+ 1 2 3 4 10 11 12 13 14 15 16 17 18 19 20 21 22 23)))))
+         (exp (operate operation algorithm (list '(+ 1 2 3 4 10 11 12 13 14 15 16 17 18 19 20 21 22 23)))))
       (format t "~A~%~A~%" exp (tree-size exp))))
 
-;; #TEST: Check a mutation punto #1
+;; #TEST: Check a mutation point #1
 (dotimes (i 100)
-  (let* ((operacion (system-get 'mutate-point))
+  (let* ((operation (system-get 'mutate-point))
          (algorithm (default-algorithm (make-instance 'test-genetic-operators)))
-         (exp (operate operacion algorithm (list '(+ 1 2 3 4 10 11 12 13 14 15 16 17 18 19 20 21 22 23)))))
+         (exp (operate operation algorithm (list '(+ 1 2 3 4 10 11 12 13 14 15 16 17 18 19 20 21 22 23)))))
       (format t "~A~%~A~%" exp (tree-size exp))))
 
 ;; #TEST: Check a crossover #2
 (dotimes (i 100) 
-  (let ((operacion (system-get 'crossover))
+  (let ((operation (system-get 'crossover))
         (algorithm (default-algorithm (make-instance 'test-genetic-operators))))
     (multiple-value-bind (x y) 
-        (operate operacion algorithm (list '(+ x (* x x) (* x x x) (* x x x x))
+        (operate operation algorithm (list '(+ x (* x x) (* x x x) (* x x x x))
                                            '(+ y (* y y) (* y y y) (* y y y y))))
       (print x) (print y) nil)))
 
 ;; #TEST: Check a crossover #2
 (dotimes (i 100) 
-  (let ((operacion (system-get 'crossover))
+  (let ((operation (system-get 'crossover))
         (algorithm (default-algorithm (make-instance 'test-genetic-operators))))
     (multiple-value-bind (x y) 
-        (operate operacion algorithm (list '(+ x (* x x) (* x x x) (* x x x x))
+        (operate operation algorithm (list '(+ x (* x x) (* x x x) (* x x x x))
                                            '(sqrt (+ (* x x) (* y y) (* z z)))))
       (print x) (print y) nil)))
 
 
-;; PARA VER QUE EXPRESIONES CREA - lisp-math-function-grammar-x-y
+;; See expressions - lisp-math-function-grammar-x-y
 (let* ((operator (system-get 'crossover-cfg))
        (grammar (system-get 'lisp-math-function-grammar-x-y))
        (algorithm (make-instance 'generational-algorithm))
@@ -49,7 +49,7 @@
       (setf (gethash new-value table) (size new-value))))
   table)
 
-;; PARA VER QUE EXPRESIONES CREA Y CON QUE FRECUENCIA
+;; See expressions and frequency
 (let* ((operator (system-get 'crossover-cfg))
        (grammar (system-get 'lisp-math-function-grammar-x-y))
        (algorithm (make-instance 'generational-algorithm))
@@ -67,7 +67,7 @@
             (if (null times) 1 (1+ times)))))
   table)
 
-;; PARA VER EL TAMAÑO DE LAS EXPRESIONES QUE CREA Y CON QUE FRECUENCIA
+;; See expressions size and frequency
 (let* ((operator (system-get 'crossover-cfg))
        (grammar (system-get 'lisp-math-function-grammar-x-y))
        (algorithm (make-instance 'generational-algorithm))
@@ -86,7 +86,7 @@
   table)
 
 
-;; PARA VER QUE EXPRESIONES CREA - polinomyal-grammar-x-y
+;; See expressions - polinomyal-grammar-x-y
 (let* ((operator (system-get 'crossover-cfg))
        (grammar (system-get 'polinomyal-grammar-x-y))
        (algorithm (make-instance 'generational-algorithm))

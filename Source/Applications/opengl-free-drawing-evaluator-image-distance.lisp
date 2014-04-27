@@ -24,9 +24,9 @@
     (setf (fitness object) distance)
     distance))
 
-;;; Pasar gl-vector al evaluator
+;;; #TODO: Move gl-vector to fitness evaluator
 (defun render-object-in-buffer (evaluator object)
-  ;; #TODO: Ver bien que interface utilizar
+  ;; #TODO: Determine which interface to use here
   (let ((interface (interface (interface-for-opengl-evaluator)))
         (pixels (opengl:make-gl-vector :unsigned-8 65536 #| :contents :length |#)))
     (redisplay-canvas (graphic-part interface))

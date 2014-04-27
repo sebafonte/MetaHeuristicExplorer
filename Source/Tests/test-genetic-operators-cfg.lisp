@@ -172,10 +172,10 @@
     (labels ((test-expresion (exp)
                (let ((new-exp (operate operator language (list exp))))
                  (check (<= (tree-size new-exp) (tree-size exp))))))
-      ;; Probamos que funcione para algunas operaciones genéricas
+      ;; Test execution
       (dolist (exp '(x (* x y) (* (sin (cos (cos x))) 3)))
         (test-expresion exp))
-      ;; Creamos 100 expresiones (con size 1 hasta 10) y le hacemos 10 eliminaciones a cada una
+      ;; Create 100 expressions (with size from 1 to 10) and execute 10 deletions
       (dotimes (i 100)
         (let ((exp (create-expresion language 100 (mod i 10) t nil)))
           (dotimes (j 10)
@@ -193,14 +193,14 @@
       ;; Test it works for some genetic operation
       (dolist (exp '(x (* x y) (* (sin (cos (cos x))) 3)))
         (test-expresion exp))
-      ;; Creamos 100 expresiones (con size 1 hasta 10) y le hacemos 10 eliminaciones a cada una
+      ;; Create 100 expressions (with size from 1 to 10) and execute 10 deletions
       (dotimes (i 100)
         (let ((exp (create-expresion language 100 (mod i 10) t nil)))
           (dotimes (j 10)
             (test-expresion exp)))))))
 
 (defmethod test-branch-delete-cfg-lisp-math-forced-delete ((o test-genetic-operators-cfg))
-  "Test 'branch-delete operation with examples."
+  "Test 'branch-delete operator with examples."
   (let* ((algorithm (default-algorithm o))
          (operator (system-get 'branch-delete-cfg))
          (language (language algorithm)))
@@ -230,7 +230,7 @@
                   (max-size algorithm))))))
 
 (defmethod test-branch-delete-cfg-polynomial ((o test-genetic-operators-cfg))
-  "Test 'branch-delete operation with examples."
+  "Test 'branch-delete operator with examples."
   (let* ((algorithm (default-algorithm-2 o))
          (operator (system-get 'branch-delete-cfg))
          (language (language algorithm)))
@@ -250,7 +250,7 @@
           (test-expresion exp))))))
 
 (defmethod test-mutate-production-cfg-polynomial ((o test-genetic-operators-cfg))
-  "Test 'mutate-production-cfg operation with examples."
+  "Test 'mutate-production-cfg operator with examples."
   (let* ((algorithm (default-algorithm-2 o))
          (operator (system-get 'mutate-production-cfg))
          (language (language algorithm)))

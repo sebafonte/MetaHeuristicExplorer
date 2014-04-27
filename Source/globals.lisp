@@ -1,5 +1,5 @@
 
-;; #TODO: Pasar a métodos de un entorno o sistema
+;; #TODO: Refactor
 (defparameter *search-subtasks* '(nil))
 (defparameter *search-subtasks-remote* '())
 (defparameter *search-tasks* '(nil))

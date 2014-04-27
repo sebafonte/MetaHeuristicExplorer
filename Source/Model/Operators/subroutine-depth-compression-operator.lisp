@@ -74,7 +74,7 @@
        (> (tree-depth list) 1))
       1 0))
 
-;; #TODO: Mover al core
+;; #TODO: Move to core functions
 (defun get-random-subtree-indexes-with-arguments
        (expresion function language n &optional (intermediate-nodes nil) (args nil))
   (let ((values-list (weight-nodes-with-arguments-with-depth
