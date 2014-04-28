@@ -1,8 +1,8 @@
 
 ;;
-;; INCLUIR ELITE MANAGER
-;; VER TEMA ITERATOR BIEN
-;; VER PARAMETROS PERDIDOS / HUBICAR
+;; INCLUDE ELITE MANAGER
+;; CHECK ITERATOR OBJECTS AND REFACTOR IF NECESSARY
+;; ADD OTHER OBJECTS TO EXTEND LANGUAGE
 ;;
 
 (defclass search-algorithm-grammar (context-free-grammar)
@@ -52,7 +52,6 @@
     (:node-weight-function :node-weight-function)
     (:node-weight-function-a :node-weight-function-a)
     (:node-weight-function-b :node-weight-function-b)
-    ;; Simbolos genericos
     (:default-node-weight :node-weight-method-name)
     (:tournament-selection-method :selection-method-name)
     (:random-selection-method :selection-method-name)))

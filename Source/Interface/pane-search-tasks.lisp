@@ -77,7 +77,7 @@
              :header-args (list :print-function 'string-capitalize
                                 :selection-callback
                                 #'(lambda (interface new-sort-key)
-                                    (set-multi-column-list-panel-test-items
+                                    (set-multi-column-items
                                      (make-instance 'search-task)
                                      (subtasks interface)
                                      new-sort-key
@@ -145,8 +145,8 @@
    :destroy-callback 'destroy))
 
 
-(defmethod set-multi-column-list-panel-test-items-procesos ((i interface-pane-search-tasks) list label)
-  (set-multi-column-list-panel-test-items (interface-model-instance i) list label))
+(defmethod set-multi-column-items-tasks ((i interface-pane-search-tasks) list label)
+  (set-multi-column-items (interface-model-instance i) list label))
 
 (defmethod interface-model-instance ((i interface-pane-search-tasks))
   *default-instance-search-task*)

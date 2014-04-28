@@ -106,7 +106,7 @@
         (if (or (not best-individual)
                 (better-than best best-individual))
             (setf best-individual best))))
-    ;; #TODO: VER QUE ONDA ACA, ver porque con menos no setea el fitness
+    ;; #TODO: Debug
     (setf (context object) task)
     (setf (fitness object) (fitness best-individual))
     (setf (fitness (gen object)) (fitness best-individual))))

@@ -164,7 +164,7 @@
         ;; Re normalize values in hash table
         (dolist (i individuals)
           (setf (gethash i registry) (/ (gethash i registry) sum)))
-        ;; Recuento y seleccion de individuo (roulette wheel)
+        ;; Count and select individual (roulette wheel)
         (setf sum 0.0)
         (appendf result
                  (list (do ((i 0 (1+ i)))

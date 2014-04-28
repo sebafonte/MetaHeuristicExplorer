@@ -120,8 +120,9 @@
   (define-binary-function-enclosure vec-perlin-x-y perlin-noise-x-y image-vector-3d)
   (define-binary-function-enclosure vec-inoise-x-y interpolated-noise image-vector-3d))
 
-;; Initialize special vector functions for some image related DSL
-(define-enclosure-functions-image-vector)
+(defun initialize-image-vector-functions ()
+  "Initialize special vector functions for some image related DSL."
+  (define-enclosure-functions-image-vector))
 
 
 

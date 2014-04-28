@@ -273,7 +273,7 @@
 (defclass light-object (scene-object)
   ())
 
-;; #TODO: Ver como agregar / ordenar, collectar antes, etc.
+;; #TODO: Consider to add to a container, be ordered, etc.
 (defmethod draw-object ((o light-object))
   nil)
 

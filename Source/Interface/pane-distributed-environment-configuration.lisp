@@ -52,7 +52,7 @@
                                          :selection-callback
                                          #'(lambda (interface new-sort-key)
                                              (declare (ignore interface))
-                                             (set-multi-column-list-panel-test-items
+                                             (set-multi-column-items
                                               (make-instance 'connection-descriptor)
                                               connections
                                               new-sort-key
@@ -140,7 +140,7 @@
   (setf (property-column-list i) (default-connection-property-names i))
   ;; Set default columns
   (with-slots (connections) i
-    (set-multi-column-list-panel-test-items 
+    (set-multi-column-items 
      (make-instance 'connection-descriptor)
      connections 
     "IP Address"))
@@ -161,7 +161,6 @@
                 :adjust (if (equal 'number (data-type property)) :right :left)
                 :visible-min-width (list 'character (default-length-for-title interface (label property)))))))
 
-;; #TODO: Ver, creo que no se usa         
 (defmethod default-length-for-title ((interface interface-pane-distributed-environment-configuration) title)
   "Answer the default lenght for the title of interface."
   (let* ((default-lengths '(("IP address" . 15)

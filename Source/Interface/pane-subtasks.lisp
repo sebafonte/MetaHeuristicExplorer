@@ -45,7 +45,7 @@
    (lambda (item) (capi:redisplay-collection-item subtasks item))))
 
 (defmethod refresh-pane-columns ((p pane-subtasks) subtasks interface)
-  (set-multi-column-list-panel-test-items-procesos interface subtasks "Name")
+  (set-multi-column-items-tasks interface subtasks "Name")
   (setf (capi::multi-column-list-panel-column-function subtasks)
         (lambda (task) (get-task-info task interface)))
   (capi::update-representation subtasks)
@@ -410,7 +410,7 @@
   (setf (property-column-list i) (default-column-names i))
   ;; Set default columns
   (with-slots (subtasks) i
-    (set-multi-column-list-panel-test-items-procesos i subtasks "Name"))
+    (set-multi-column-items-tasks i subtasks "Name"))
   ;; Set column value functions
   (setf (capi::multi-column-list-panel-column-function (subtasks i))
         (lambda (subtask)
@@ -457,7 +457,7 @@
              :header-args (list :print-function 'string-capitalize
                                 :selection-callback
                                 #'(lambda (interface new-sort-key)
-                                    (set-multi-column-list-panel-test-items
+                                    (set-multi-column-items
                                      (make-instance 'search-task)
                                      (subtasks interface)
                                      new-sort-key
@@ -523,8 +523,8 @@
     :data-type 'list :editor 'check-list-editor
     :possible-values '(name state best-fitness best-size progress-indicator))))
 
-(defmethod set-multi-column-list-panel-test-items-procesos ((i interface-pane-subtasks) list label)
-  (set-multi-column-list-panel-test-items (interface-model-instance i) list label))
+(defmethod set-multi-column-items-tasks ((i interface-pane-subtasks) list label)
+  (set-multi-column-items (interface-model-instance i) list label))
 
 (defmethod destroy ((o interface-pane-subtasks))
   "Perform actions when destroying <o>."

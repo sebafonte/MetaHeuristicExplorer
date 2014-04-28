@@ -34,7 +34,6 @@
             "node-selection.lisp"
             "pattern-simplification.lisp"
             "copy.lisp"
-            "Model\\image-vector.lisp"
             ;; OpenGL
             "OpenGL\\host.lisp"
             "OpenGL\\load-opengl.lisp"
@@ -49,6 +48,7 @@
             "Model\\Properties\\property.lisp"
             ;; Model
             "Model\\base-model.lisp"
+            "Model\\image-vector.lisp"
             "Model\\Properties\\editable-object-wrappers.lisp"
             "Model\\Properties\\property-editor.lisp"
             "Model\\entity.lisp"
@@ -197,7 +197,6 @@
             "Model\\Tasks and search distribution\\task-builder.lisp"
             "Model\\Tasks and search distribution\\task-creator.lisp"
             "Model\\Tasks and search distribution\\n-runs-task-builder.lisp"
-            "Model\\Tasks and search distribution\\unique-iterator.lisp"
             "Model\\Tasks and search distribution\\task-planifier.lisp"
             "Model\\Tasks and search distribution\\running-image-planifier.lisp"
             "Model\\Tasks and search distribution\\local-planifier.lisp"

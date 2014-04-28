@@ -6,7 +6,7 @@
   "Initialize <o>."
   (setf (gen o) (make-instance 'genotype :expresion expresion)))
 
-(defmethod initialize-properties-for ((o entity-tsp) (target proceso-busqueda))
+(defmethod initialize-properties-for ((o entity-tsp) (target search-task))
   "Initialize properties for <o> in target."
   (add-properties-from-values
    target

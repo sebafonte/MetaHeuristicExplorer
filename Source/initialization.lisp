@@ -34,7 +34,9 @@
   (initialize-auxiliar-objects)
   (initialize-texture-manager)
   (initialize-graphics-updater)
-  (initialize-stack))
+  (initialize-stack)
+  (initialize-image-vector-functions))
+
 
 (defun application-relative-pathname (directory-specification-list file-name)
   (let* ((executable-name (car sys:*line-arguments-list*))

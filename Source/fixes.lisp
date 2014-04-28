@@ -1,5 +1,5 @@
 
-;; Patch para que no se seleccione la imagen si no esta visible el pane
+;; Patch to avoid selection on invisible panes 
 (defmethod set-image-model ((i interface-pane-editor-entity-base) object image-editor)
   "Set <i> image model."
   (declare (ignore object) (ignore image-editor))

@@ -16,6 +16,6 @@
             (fitness object-object) (fitness object-copy))))
   nil)
 
-;; #TODO: Hacer y que esta sea la de variables independientes
+;; #TODO: 
 (defun optimize-constants-steepest-descent-2 (method object)
   (error "Not implemented yet."))

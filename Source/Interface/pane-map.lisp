@@ -32,7 +32,7 @@
   '())
 
 (defmethod generate-map ((p pane-map) generation-function)
-  "Genera el modelo de p (un mapa que es un grafo) a partir de el argumento <generation-function>."
+  "Generate <p> model."
   nil)
 
 (defmethod add-object ((p pane-map) object)

@@ -265,7 +265,7 @@
   (if (population p)
       (individuals (population p))))
 
-(defmethod set-multi-column-list-panel-test-items-individuos ((i interface-pane-buffer) list label)
+(defmethod set-multi-column-items-buffer ((i interface-pane-buffer) list label)
   (set-multi-column-list-panel-pane-buffer (make-instance 'entity) list label))
 
 (defmethod default-column-names ((i interface-pane-buffer))

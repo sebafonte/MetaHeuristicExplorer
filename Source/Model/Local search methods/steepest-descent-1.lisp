@@ -88,7 +88,7 @@
     (replace-node-value (car var) (+ (caar var) (* (aref gradient index-var) alpha)) o))
   (evaluate algorithm o))
 
-;; #TODO: Arreglar para no usar una variable especial
+;; #TODO: Avoid using special var please
 (defun add-constant-tree-info (node parent)
   "Add <node> constant lists to 'node-list-info special variable."
   (declare (special node-list-info))
@@ -101,7 +101,7 @@
 
 (defmethod get-constants-information ((o entity))
   "Answer a list with parent nodes of constants on <o> program.
-   NOTA: Ver formato."
+   #NOTE: check format"
   (let ((tree (program o))
         (node-list-info))
     (declare (special node-list-info))

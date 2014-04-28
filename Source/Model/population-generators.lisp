@@ -432,7 +432,7 @@
 
 (defmethod default-objects ((object search-task-sample-generator))
   (list
-   ;; Tarea simple
+   ;; Simple task
    '(BEST-OF-TASK
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
@@ -440,7 +440,7 @@
       (MAKE-LG-OBJ 40 0 10)
       (MAKE-GN-RND-OBJ 1)
       (MAKE-FE-OBJ 1)))
-   ;; Tarea compuesta paralelo
+   ;; Composite task (paralell)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
@@ -454,7 +454,7 @@
       (MAKE-LG-OBJ 40 0 10)
       (MAKE-GN-RND-OBJ 1)
       (MAKE-FE-OBJ 1)))
-   ;; Tarea compuesta (resultados combinados, 2 niveles)
+   ;; Composite task (combined results, 2 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
@@ -467,7 +467,7 @@
                           (MAKE-GN-RND-OBJ 1)
                           (MAKE-FE-OBJ 1)))
       (MAKE-FE-OBJ 1)))
-   ;; Tarea compuesta (resultados combinados, 3 niveles)
+   ;; Composite task (combined results, 3 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)

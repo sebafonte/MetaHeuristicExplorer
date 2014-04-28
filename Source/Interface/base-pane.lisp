@@ -115,7 +115,7 @@
                                 (pane my-interface) menus-description my-interface data))
                    :callback-type :interface-data)))
 
-(defun set-multi-column-list-panel-test-items (instance sortable-lp sort-key &optional reversep)
+(defun set-multi-column-items (instance sortable-lp sort-key &optional reversep)
   (let ((property (property-labeled instance sort-key)))
     (setf (capi:collection-items sortable-lp)
           (sort (capi:collection-items sortable-lp)

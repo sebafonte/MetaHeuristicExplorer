@@ -2,15 +2,15 @@
   ())
 
   
-(defmethod initialize-properties-for ((o example-object) (target proceso-busqueda))
+(defmethod initialize-properties-for ((o example-object) (target search-task))
   "Initialize properties for <o> in <target>."
   nil)
 
-(defmethod tipos-de-evaluacion-de-aptitud ((o example-object))
-  "Answer possible fitness functions for <o>."
-  '(evaluar))
+(defmethod possible-fitness-functions ((o example-object))
+  "Answer <o> possible fitness-functions."
+  '(evaluate-distance ))
 
-(defmethod initialize-fitness ((subtask proceso-busqueda) (o example-object))
+(defmethod initialize-fitness ((subtask search-task) (o example-object))
   "Initialize <o> fitness on <subtask>."
   nil)
 
