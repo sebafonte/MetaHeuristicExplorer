@@ -28,8 +28,5 @@
     (initialize-interface pane)
     (open-pane pane :mdi-interface (interface *main-pane*))))
 
-(defmethod post-initialize-interface ((p base-pane))
-  "Post initialize actions for <p>."
-  nil)
 
 

@@ -3,8 +3,7 @@
   ((name :initarg :name :initform "" :accessor name)
    (title :initarg :title :initform "" :accessor title)
    (interface :initarg :interface :initform nil :accessor interface)
-   (interface-arguments :initarg :interface-arguments :initform nil :accessor interface-arguments)
-   (positioner :initarg :positioner :initform (configuration-get pane-positioner-main) :accessor positioner)))
+   (interface-arguments :initarg :interface-arguments :initform nil :accessor interface-arguments)))
 
 
 (defclass base-interface (capi:interface)
@@ -31,17 +30,13 @@
 (defmethod open-pane ((p base-pane) &key mdi-interface)
   "Display <p> on <mdi-interface>."
   (display-interface p mdi-interface)
-  (post-initialize-interface p)
-  (customize-interface p mdi-interface))
+  (post-initialize-interface p))
 
 (defmethod display-interface ((p base-pane) mdi-interface)
   "Display <p> interface on <mdi-interface>."
   (if mdi-interface 
       (capi:display (interface p) :screen mdi-interface)
     (capi:display (interface p))))
-
-(defmethod customize-interface ((p base-pane) mdi-interface)
-  (set-position (positioner p) (interface p)))
 
 (defmethod create-interface ((p base-pane))
   "Create <p> interface."
@@ -115,7 +110,7 @@
                                 (pane my-interface) menus-description my-interface data))
                    :callback-type :interface-data)))
 
-(defun set-multi-column-items (instance sortable-lp sort-key &optional reversep)
+(defun set-multi-column-list-panel-test-items (instance sortable-lp sort-key &optional reversep)
   (let ((property (property-labeled instance sort-key)))
     (setf (capi:collection-items sortable-lp)
           (sort (capi:collection-items sortable-lp)
