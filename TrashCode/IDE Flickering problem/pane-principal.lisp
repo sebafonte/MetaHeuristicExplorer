@@ -75,15 +75,13 @@
   (:menu-bar menu-principal)
   (:layouts (main-layout capi:column-layout '(simple-toolbar :divider capi:container) 
                          :ratios '(1 nil 4)))
-  (:default-initargs :best-width 1280 :best-height 800 :title "v0.25"))
+  (:default-initargs :best-width 1280 :best-height 800 :title "Test"))
 
 (defun reset-environment-callback (data interface)
   "Perform actions to reset system."
   ;; Delete all tasks
-  (setf *search-tasks* nil)
+  (setf *tasks* nil)
   ;; Reset task planifier
-  (reset-task-environment-settings)
-  ;; #TODO: Ver: Again?!
   (reset-task-environment-settings)
   ;; Run GC
   (mark-and-sweep 3))

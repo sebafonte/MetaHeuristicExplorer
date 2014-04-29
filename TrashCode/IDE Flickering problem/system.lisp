@@ -5,6 +5,7 @@
    :default-type :lisp-file)
   :members ("utilities.lisp"
             "interface.lisp"
+            "task.lisp"
             "base-model.lisp"
             "base-pane.lisp"
             "pane-principal.lisp"

@@ -44,33 +44,33 @@
    (label-connections capi:title-pane 
                      :text "Connections")
    (connections capi:multi-column-list-panel
-                      :items nil
-                      :action-callback 'open-properties-callback 
-                      :visible-min-height 70
-                      :accessor connections
-                      :header-args (list :print-function 'string-capitalize
-                                         :selection-callback
-                                         #'(lambda (interface new-sort-key)
-                                             (declare (ignore interface))
-                                             (set-multi-column-items
-                                              (make-instance 'connection-descriptor)
-                                              connections
-                                              new-sort-key
-                                              (if (eq sortable-lp-reverse new-sort-key)
-                                                  (progn
-                                                    (setf sortable-lp-reverse nil)
-                                                    t)
-                                                (progn
-                                                  (setf sortable-lp-reverse new-sort-key)
-                                                  nil)))))
-                      :keep-selection-p t
-                      :pane-menu (lambda (pane object x y) 
-                                   (make-pane-menu 
-                                    pane 
-                                    object 
-                                    x 
-                                    y 
-                                    (options-menu-description-connection-descriptors))))
+                :items nil
+                :action-callback 'open-properties-callback 
+                :visible-min-height 70
+                :accessor connections
+                :header-args (list :print-function 'string-capitalize
+                                   :selection-callback
+                                   #'(lambda (interface new-sort-key)
+                                       (declare (ignore interface))
+                                       (set-multi-column-items
+                                        (make-instance 'connection-descriptor)
+                                        connections
+                                        new-sort-key
+                                        (if (eq sortable-lp-reverse new-sort-key)
+                                            (progn
+                                              (setf sortable-lp-reverse nil)
+                                              t)
+                                          (progn
+                                            (setf sortable-lp-reverse new-sort-key)
+                                            nil)))))
+                :keep-selection-p t
+                :pane-menu (lambda (pane object x y) 
+                             (make-pane-menu 
+                              pane 
+                              object 
+                              x 
+                              y 
+                              (options-menu-description-connection-descriptors))))
    (simple-toolbar
     capi:toolbar
     :items
@@ -109,9 +109,7 @@
     :callback-type :data-interface
     :title ""
     :title-position :frame
-    :default-image-set (capi:make-general-image-set ;:id 'pane-distributed-environment-configuration-images
-                        :id 'global-button-icons-images
-                        :image-count 8)))
+    :default-image-set (capi:make-general-image-set :id 'global-button-icons-images :image-count 8)))
   (:layouts
    (main-layout capi:column-layout '(label-connections connections simple-toolbar))
    (buttons 

@@ -65,61 +65,6 @@
   (let ((action (cadr (assoc data actions :test #'equalp))))
     (if action (funcall action interface data))))
 
-(defmethod menu-items (description)
-  "Answer menu items for <description>."
-  (loop for i in description collect (car i)))
-
-(defmethod make-pane-menu ((pane t) object x y menus-description)
-  "Answer a new 'capi:menu descripted by <menus-description>."
-  (declare (ignore x) (ignore y))
-  (make-instance 'capi:menu
-                 :title "Options"
-                 :items (menu-items menus-description)
-                 :callback (lambda (interface data) 
-                             (execute-menu-action 
-                              (pane interface)
-                              menus-description interface data))
-                 :callback-type :interface-data))
-
-(defmethod make-pane-menu-with-submenus ((pane t) object x y menus-description)
-  "Answer a new 'capi:menu descripted by <menus-description> with submenus."
-  (declare (ignore x) (ignore y))
-  (make-instance 'capi:menu :title "Options" :items menus-description))
-
-(defmethod make-pane-menu ((pane capi:pinboard-layout) object x y menus-description)
-  (declare (ignore x) (ignore y))
-  (let ((my-interface (capi:element-interface (capi:element-interface pane))))
-    (make-instance 'capi:menu
-                   :title "Options"
-                   :items (menu-items menus-description)
-                   :callback (lambda (interface data) 
-                               (declare (ignore interface))
-                               (execute-menu-action 
-                                (pane my-interface) menus-description my-interface data))
-                   :callback-type :interface-data)))
-
-(defmethod make-pane-menu ((pane capi:graph-pane) object x y menus-description)
-  (declare (ignore x) (ignore y))
-  (let ((my-interface (capi:element-interface pane)))
-    (make-instance 'capi:menu
-                   :title "Options"
-                   :items menus-description
-                   :callback (lambda (interface data) 
-                               (declare (ignore interface))
-                               (execute-menu-action 
-                                (pane my-interface) menus-description my-interface data))
-                   :callback-type :interface-data)))
-
-(defun set-multi-column-list-panel-test-items (instance sortable-lp sort-key &optional reversep)
-  (let ((property (property-labeled instance sort-key)))
-    (setf (capi:collection-items sortable-lp)
-          (sort (capi:collection-items sortable-lp)
-                (if (is-numeric property)
-                    (if reversep '< '>)
-                  (if reversep 'string> 'string<))
-                :key #'(lambda (state)
-                         (get-value-for-property-labeled state sort-key))))))
-
 (defun multi-column-list-panel-test-column-items (state)
   (loop for (nil data) on state by 'cddr collect data))
 

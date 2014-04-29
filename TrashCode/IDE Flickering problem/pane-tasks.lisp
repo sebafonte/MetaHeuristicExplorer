@@ -20,43 +20,20 @@
   "Answer <p> interface class."
   'interface-pane-tasks)
 
-(capi:define-interface interface-pane-subtasks (base-interface)
-  ((sortable-lp-reverse :initform nil)
-   (property-column-list :initform nil :accessor property-column-list))
-  (:layouts
-   (main-layout capi:column-layout '(tasks toolbar))
-   (toolbar capi:column-layout '(simple-toolbar)))
-  (:default-initargs 
-   :best-width 300 :best-height 150 
-   :visible-min-width 100 :visible-min-height 100
-   :title "Search tasks"
-   :destroy-callback 'destroy))
-
-(capi:define-interface interface-pane-tasks (interface-pane-subtasks)
-  ((sortable-lp-reverse :initform nil)
-   (property-column-list :initform nil :accessor property-column-list))
+(capi:define-interface interface-pane-tasks (base-interface)
+  ()
   (:panes
    (tasks capi:multi-column-list-panel
           :items nil
-          :selection-callback 'select-subtask
-          :action-callback 'menu-open-tasks
+          :selection-callback nil
+          :action-callback nil
           :accessor tasks
-          :header-args (list :print-function 'string-capitalize
-                             :selection-callback
-                             #'(lambda (interface new-sort-key)
-                                 (set-multi-column-list-panel-test-items
-                                  (make-instance 'search-task)
-                                  (tasks interface)
-                                  new-sort-key
-                                  (if (eq sortable-lp-reverse new-sort-key)
-                                      (progn
-                                        (setf sortable-lp-reverse nil)
-                                        t)
-                                    (progn
-                                      (setf sortable-lp-reverse new-sort-key)
-                                      nil)))))
+          :header-args (list :print-function 'string-capitalize)
           :keep-selection-p t
-          :pane-menu nil)
+          :pane-menu nil
+          :columns '((:title "Name" :adjust :left :width (character 20)) 
+                     (:title "Status" :adjust :right :visible-min-width (character 10))
+                     (:title "Time" :adjust :right :visible-min-width (character 10))))
    (button-create capi:push-button :text "Create" :callback 'menu-create-task :callback-type :interface-data)
    (button-create-n capi:push-button :text "Create N" :callback 'menu-create-task-n :callback-type :interface-data)
    (button-delete-all capi:push-button :text "Delete all" :callback 'menu-delete-all-tasks :callback-type :interface-data)
@@ -72,11 +49,7 @@
                                 :callback-type :interface-data)
                  (make-instance 'capi:toolbar-button :image 1 :selected-image 1
                                 :help-key "Delete all tasks"
-                                :selection-callback 'menu-delete-all-tasks
-                                :callback-type :interface-data)
-                 (make-instance 'capi:toolbar-button :image 8 :selected-image 8
-                                :help-key "Edit model task"
-                                :selection-callback 'menu-edit-default-subtask
+                                :selection-callback 'menu-clean
                                 :callback-type :interface-data))
            :selection nil))
     :callback-type :interface-data
@@ -87,52 +60,66 @@
    (main-layout capi:column-layout '(tasks toolbar))
    (toolbar capi:column-layout '(simple-toolbar)))
   (:default-initargs 
-   :best-width 280 :best-height 150 
+   :best-width 250 :best-height 150 
    :visible-min-width 100 :visible-min-height 100
-   :title "Search tasks"
+   :title "Tasks"
    :destroy-callback 'destroy))
+
+
+(defmethod initialize-instance :after ((i interface-pane-tasks) &key)
+  (setf (capi::multi-column-list-panel-column-function (tasks i))
+        (lambda (descriptor)
+          (get-task-info descriptor i))))
+
+(defun get-task-info (task pane)
+  "Answer a list with <task> information."
+  (list (name task) (value task)))
 
 (defun menu-create-task (interface data)
   "Create and register a new task on <interface>."
   (declare (ignore data))
   (let* ((pane (pane interface))
-         (task (model-copy pane)))
+         (task (make-instance 'task)))
     ;; Add task to global tasks list
-    (appendf (elements pane) (list task))
+    (appendf (tasks pane) (list task))
     ;; Update interface
     (capi:apply-in-pane-process
      (tasks interface) 
      #'(setf capi:collection-items) 
-     (elements pane) 
+     (tasks pane)
      (tasks interface))
-    (prepare-benchmark (make-instance 'task-benchmark) task)
-    ;; Execute task with task planifier
-    (execute-task (task-planifier task) task)))
+    ;; Execute task
+    (execute-task task)))
 
-(defun menu-create-task-n (interface data)
+(defun execute-task (task)
+  "Executes a task using planifier to determine where to execute it.
+   #NOTE: Execution is done into a mp:process-run-function with low priority."
+  (setf (process task) 
+        (mp:process-run-function
+         "Process task"
+         (list :priority (priority task))
+         (lambda () 
+           (let ((result-task))
+             (appendf *tasks* (list task))
+             (setf result-task (execute-task-local task)))))))
+
+(defun execute-task-local (task)
+  "Executes <task> on <planifier>.
+  #NOTE: Answer <task> because in remote execution instance a copy is returned"
+  (execute-search task)
+  task)
+
+(defun menu-clean (interface data)
   "Ask user for number of tasks to create and run."
-  (let ((n (prompt-for-plusp-integer "Tasks count:")))
-    (if n (dotimes (i n)
-            (menu-create-task interface data)))))
-
-(defun menu-edit-selection (interface tasks)
-  "Open a new pane-entity-editor with selected object on <interface>."
-  (declare (ignore tasks))
-  (let ((selection (selection interface)))
-	(when selection (open-editor-with interface selection))))
+  (setf *tasks* nil)
+  (reset-task-environment-settings))
 
 (defun reset-task-environment-settings ()
-  (setf *simultaneous-processes* 0
-        *target-task-assignment* nil)
-  ;; Delete all task processes
   (dolist (process (mp:list-all-processes))
     (if (or (equal "Process task" (mp:process-name process))
             (and (>= (length (mp:process-name process)) (length "Task dispatcher "))
                  (equal "Task dispatcher " (subseq (mp:process-name process) 0 16))))
-        (mp:process-kill process)))
-  ;; #NOTE: Can be deleted for runtime, this is just for development
-  (if (null *task-planifier-lock*) 
-      (setf *task-planifier-lock* (mp:make-lock))))
+        (mp:process-kill process))))
 
 (defmethod refresh-tasks ((p pane-tasks))
   "Callback to refresh <p> tasks."

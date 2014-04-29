@@ -63,7 +63,7 @@
       :min-value *default-search-task-min-process-priority* :max-value *default-search-task-max-process-priority*
       :object-parameter t)
      (:name 'state :label "State" :accessor-type 'accessor-accessor-type :data-type 'symbol
-      :default-value 'parado :editor 'text-editor :read-only t)
+      :default-value 'stopped :editor 'text-editor :read-only t)
      (:name 'random-seed :label "Random seed" :accessor-type 'accessor-accessor-type 
       :data-type 'boolean :default-value t :editor 'boolean-editor)
      (:name 'seed :label "Seed" :accessor-type 'accessor-accessor-type :object-parameter t
