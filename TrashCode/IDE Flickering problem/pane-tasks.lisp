@@ -20,6 +20,7 @@
   "Answer <p> interface class."
   'interface-pane-tasks)
 
+
 (capi:define-interface interface-pane-tasks (base-interface)
   ()
   (:panes
@@ -34,9 +35,6 @@
           :columns '((:title "Name" :adjust :left :width (character 20)) 
                      (:title "Status" :adjust :right :visible-min-width (character 10))
                      (:title "Time" :adjust :right :visible-min-width (character 10))))
-   (button-create capi:push-button :text "Create" :callback 'menu-create-task :callback-type :interface-data)
-   (button-create-n capi:push-button :text "Create N" :callback 'menu-create-task-n :callback-type :interface-data)
-   (button-delete-all capi:push-button :text "Delete all" :callback 'menu-delete-all-tasks :callback-type :interface-data)
    (simple-toolbar
     capi:toolbar
     :items
@@ -73,27 +71,37 @@
 
 (defun get-task-info (task pane)
   "Answer a list with <task> information."
-  (list (name task) (value task)))
+  (list (name task)
+        (format nil "~A %" (my-round-to-2 (value task)))
+        (search-task-running-time task)))
 
+(defun menu-clean (interface data)
+  "Ask user for number of tasks to create and run."
+  (setf *tasks* nil
+        (tasks (pane interface)) *tasks*)
+  (reset-task-environment-settings)
+  (update-interface (pane interface) interface))
+
+;; #NOTE: Entry point callback
 (defun menu-create-task (interface data)
   "Create and register a new task on <interface>."
   (declare (ignore data))
   (let* ((pane (pane interface))
          (task (make-instance 'task)))
-    ;; Add task to global tasks list
     (appendf (tasks pane) (list task))
-    ;; Update interface
-    (capi:apply-in-pane-process
-     (tasks interface) 
-     #'(setf capi:collection-items) 
-     (tasks pane)
-     (tasks interface))
-    ;; Execute task
+    (update-interface pane interface)
     (execute-task task)))
 
+(defun update-interface (pane interface)
+  (capi:apply-in-pane-process
+   (tasks interface) 
+   #'(setf capi:collection-items) 
+   (tasks pane)
+   (tasks interface)))
+
+;; #NOTE: mp:process creation
 (defun execute-task (task)
-  "Executes a task using planifier to determine where to execute it.
-   #NOTE: Execution is done into a mp:process-run-function with low priority."
+  "Executes a task using planifier to determine where to execute it."
   (setf (process task) 
         (mp:process-run-function
          "Process task"
@@ -101,26 +109,18 @@
          (lambda () 
            (let ((result-task))
              (appendf *tasks* (list task))
-             (setf result-task (execute-task-local task)))))))
+             (execute-task-local task))))))
 
 (defun execute-task-local (task)
-  "Executes <task> on <planifier>.
-  #NOTE: Answer <task> because in remote execution instance a copy is returned"
-  (execute-search task)
-  task)
-
-(defun menu-clean (interface data)
-  "Ask user for number of tasks to create and run."
-  (setf *tasks* nil)
-  (reset-task-environment-settings))
+  "Executes <task> on <planifier>."
+  (execute-search task))
 
 (defun reset-task-environment-settings ()
   (dolist (process (mp:list-all-processes))
-    (if (or (equal "Process task" (mp:process-name process))
-            (and (>= (length (mp:process-name process)) (length "Task dispatcher "))
-                 (equal "Task dispatcher " (subseq (mp:process-name process) 0 16))))
-        (mp:process-kill process))))
+    (when (equal "Process task" (mp:process-name process))
+      (mp:process-kill process))))
 
+;; #NOTE: Refresh methods, responsibile of that horrible flicker effect
 (defmethod refresh-tasks ((p pane-tasks))
   "Callback to refresh <p> tasks."
   (when (interface p)

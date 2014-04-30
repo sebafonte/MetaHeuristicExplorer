@@ -13,29 +13,25 @@
    (value :initarg :value :initform 0 :accessor value)))
 
 
-(defun search-task-running-time (object)
-  "Answer the running time for search task <object>."
-  (let* ((initial-time (initial-time object))
-         (final-time (final-time object))
-         (last-time (if (not (zerop final-time)) 
-                        final-time 
-                      (get-universal-time))))
-    (- last-time initial-time)))
+(defun search-task-running-time (task)
+  "Answer the running time for <task>."
+  (if (null (final-time task)) 
+      (if (null (initial-time task))
+          0
+        (- (get-universal-time) (initial-time task)))
+    (- (final-time task) (initial-time task))))
   
 (defun execute-search (task)
-  "Executes the search children of <task>."
-  (setf (state task) 'running)
-  (execute-task-loop task)
-  (setf (state task) 'finished))
-
-(defun execute-task-loop (task)
-  "Execute <task> as a process."
-  (setf (initial-time task) (get-universal-time))
+  "Execute <task> while updating its state."
+  (setf (state task) 'running
+        (initial-time task) (get-universal-time))
   (search-loop task)
-  (setf (final-time task) (get-universal-time)))
+  (setf (final-time task) (get-universal-time)
+        (state task) 'finished))
 
 (defun search-loop (task)
-  (dotimes (i 100000)
+  "Method where calculations take place for <task>."
+  (dotimes (i 100001)
     (let ((p (/ i 1000)))
       (dotimes (j 1000000)
         (* (sin i) (+ (tan (sin j)))))
