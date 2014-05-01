@@ -174,9 +174,7 @@ D: 2, 4, 1
                   children (reproduce-child a selected (population-size a)))
             ;; #NOTE: Point for possible local optimization
             (register-best-individual a p))
-          (trigger a :progress-change i)))
-      ;; #TODO: #TUNE: Extract new front as final result
-      (setf p (select-pareto-parents a p children)))))
+          (trigger a :progress-change :generation i))))))
 
 (defmethod test-termination-best-individual ((a nsga-ii))
   "Answer whether the steady state search has to finish."

@@ -9,6 +9,7 @@
    (max-depth-mutated-individuals 
     :initarg :max-depth-mutated-individuals :initform 4 :accessor max-depth-mutated-individuals)
    (max-depth-mutated-subtree :initarg :max-depth-mutated-subtree :initform 3 :accessor max-depth-mutated-subtree)
+   (simplification-patterns :initarg :simplification-patterns :accessor simplification-patterns)
    (constants-strategy :initarg :constants-strategy :accessor constants-strategy)
    (functions :initarg :functions :initform nil :accessor functions)
    (variables :initarg :variables :initform nil :accessor variables)
@@ -34,6 +35,8 @@
      (:name 'constants-strategy :label "Constants" :accessor-type 'accessor-accessor-type
       :data-type 'object :possible-values factories :default-value (first factories) 
       :editor 'configurable-copy-list-editor)
+     (:name 'simplification-patterns :label "Edit patterns" :accessor-type 'accessor-accessor-type 
+      :data-type 'list :editor 'list-editor :default-value nil)
      ;; Properties dependent of <o>
      (:name 'functions :label "Functions" :accessor-type 'accessor-accessor-type 
       :data-type 'list-structure :editor 'one-line-lisp-editor)

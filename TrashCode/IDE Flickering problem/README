@@ -1,9 +1,0 @@
-
-This is an example of two problems i actually have on GUI:
-
-	- When i run a process which executes some big calculation on background, interface lags and it´s inusable.
-	
-	- When timer executes (here i use a timer for the example but into an application redraw should be fired 
-	with events) user multi-column-list-panel items might change its selection and could lead to errors when 
-	selecting items.
-	

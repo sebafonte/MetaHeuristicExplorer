@@ -159,7 +159,7 @@
   (opengl:swap-buffers canvas)))
 
 (defmethod draw-opengl-on ((o entity-sample-vrp) canvas viewer)
-  (let* ((evaluator (fitness-evaluator (process (model (pane viewer)))))
+  (let* ((evaluator (fitness-evaluator (context (model (pane viewer)))))
          (width (slot-value canvas 'graphics-ports::width))
          (height (slot-value canvas 'graphics-ports::height))
          (cities-description (cities-description evaluator))

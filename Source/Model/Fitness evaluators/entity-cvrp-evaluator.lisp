@@ -56,7 +56,7 @@
   "Initialize <o> fitness data."
   (setf (demand-matrix o) (to-array (demand-description o)))
   (let ((cities-count (cities-count o)))
-    (setf (costs-matrix o) (make-array (list cities-count cities-count) :elements-type (precision o)))
+    (setf (costs-matrix o) (make-array (list cities-count cities-count) :element-type (precision o)))
     (if (euclidean-distance-mode o)
         (initialize-fitness-data-euclidean o))))
 

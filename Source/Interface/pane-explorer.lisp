@@ -541,14 +541,14 @@
 
 (defmethod adjust-editors-size-interface ((i interface-pane-explorer))
   "Adjust <i> editors size."
-  (adjust-editors-size-imagenes-parent i)
-  (adjust-editors-size-imagenes-children i))
+  (adjust-editors-size-images-parent i)
+  (adjust-editors-size-images-children i))
 
-(defmethod adjust-editors-size-imagenes-parent ((i interface-pane-explorer))
+(defmethod adjust-editors-size-images-parent ((i interface-pane-explorer))
   "Adjust <i> parent editors size."
   (adjust-editors-size i (capi:layout-description (pane-parents i))))
 
-(defmethod adjust-editors-size-imagenes-children ((i interface-pane-explorer))
+(defmethod adjust-editors-size-images-children ((i interface-pane-explorer))
   "Adjust <i> children editors size."
   (adjust-editors-size i (capi:layout-description (pane-children i))))
 

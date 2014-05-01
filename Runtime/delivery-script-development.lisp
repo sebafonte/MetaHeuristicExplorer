@@ -9,9 +9,9 @@
 
 (deliver 'deliver-initialize-system (merge-pathnames "GE025-development.exe" (pathname-location (current-pathname))) 0
          :keep-pretty-printer t
-         :icon-file "d:/explorer/Runtime/explorer.ico"
+         :icon-file (merge-pathnames "explorer.ico" (pathname-location (current-pathname)))
          :interface :capi
-         :startup-bitmap-file "d:/explorer/Runtime/splash001.bmp"
+         :startup-bitmap-file (merge-pathnames "splash001.bmp" (pathname-location (current-pathname)))
 		 :product-name "Genetic explorer"
 		 ;:versioninfo '(())
          )

@@ -3,7 +3,6 @@
   ((name :initarg :name :accessor name)
    (description :initarg :description :accessor description)
    (simplification-function :initarg :simplification-function :accessor simplification-function)
-   (simplification-patterns :initarg :simplification-patterns :accessor simplification-patterns)
    (valid-new-expresion-function :initarg :valid-new-expresion-function :accessor valid-new-expresion-function)
    (operators :initarg :operators :accessor operators)))
 
@@ -16,13 +15,11 @@
     :editor 'text-editor)
    (:name 'description :label "Description" :accessor-type 'accessor-accessor-type :default-value "Description"
     :data-type 'string :editor 'text-editor)
-   (:name 'simplification-function :label "Edit function" :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :editor 'list-editor :possible-values (simplification-functions))
    (:name 'valid-new-expresion-function :label "Valid exp function" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :editor 'list-editor :default-value 'create-new-parent-copy
     :possible-values (valid-new-expressions-functions))
-   (:name 'simplification-patterns :label "Simp. patterns" :accessor-type 'accessor-accessor-type 
-    :data-type 'list :editor 'list-editor :default-value nil)
+   (:name 'simplification-function :label "Edit function" :accessor-type 'accessor-accessor-type 
+    :data-type 'symbol :editor 'list-editor :possible-values (simplification-functions))
    (:name 'operators :label "Genetic operators" :accessor-type 'accessor-accessor-type 
     :data-type 'list-structure :default-value nil :editor 'object-list-probability-editor
     :setter '(setf operators))))
@@ -44,9 +41,7 @@
 
 (defun valid-new-expressions-functions ()
   '(create-new-random-valid
-    create-new-first-parent
     create-new-first-parent-copy
-    create-new-first-parent-program
     create-new-first-parent-program-copy))
 
 (defun simplification-functions ()
@@ -63,10 +58,10 @@
     (simplify l new-random-expression)))
 
 (defmethod create-new-first-parent-program-copy ((l language) parents)
-  (program (first parents)))
+  (copy (program (first parents))))
 
 (defmethod create-new-first-parent-copy ((l language) parents)
-  (first parents))
+  (copy (first parents)))
 
 (defmethod copy ((o language))
   (let ((copy (copy-instance o))

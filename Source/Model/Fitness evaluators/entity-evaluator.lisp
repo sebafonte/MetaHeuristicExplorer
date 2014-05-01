@@ -46,3 +46,8 @@
 (defmethod evaluate-no-evaluation ((e entity-evaluator) (o entity-image-bw))
   "Answer a constant value to avoid evaluation."
   (setf (fitness o) 1))
+
+(defmethod evaluate ((o entity-evaluator) (p population)) 
+  "Evaluate <p> individuals with <a>."
+  (dotimes (i (population-size p))
+    (evaluate o (aref (individuals-array p) i))))

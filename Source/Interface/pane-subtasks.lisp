@@ -479,12 +479,6 @@
                             "Options" 
                             menu-description-pane-subtasks 
                             pane))))
-   (button-create capi:push-button :text "Create" :callback 'menu-create-search-subtask :callback-type :interface-data)
-   (button-create-n 
-    capi:push-button :text "Create N" :callback 'menu-create-search-subtask-n :callback-type :interface-data)
-   (button-delete-all capi:push-button :text "Delete all" :callback 'menu-delete-all-tasks 
-    :callback-type :interface-data)
-   (button-clear-stats capi:push-button :text "Clean stats" :callback 'menu-clear-log-data)
    (simple-toolbar
     capi:toolbar
     :items

@@ -17,16 +17,11 @@
 
 (defmethod ensure-fitness-data-initialized ((o entity-function-evaluator))
   (if (not (slot-boundp o 'fitness-vector))
-      (initialize-fitness-data o)))
+      (initialize-fitness-data o)))	
 
 (defmethod evaluate ((e entity-function-evaluator) (o entity-function))
   "Use <e> to calculate and answer <o> fitness."
   (funcall (fitness-function e) e o))
-
-(defmethod evaluate ((o entity-function-evaluator) (p population)) 
-  "Evaluate <p> individuals with <a>."
-  (dotimes (i (population-size p))
-    (evaluate o (aref (individuals-array p) i))))	
 
 (defmethod possible-fitness-functions ((o entity-function-evaluator))
   "Answer <o> possible fitness-functions."

@@ -79,7 +79,7 @@
   (loop for i below (population-size population) collect 
         (interface (make-image-editor-pane :open nil))))
 
-(defun layout-imagenes (population)
+(defun layout-images (population)
   (make-instance 'capi:column-layout
                  :description (list (make-instance 'capi:grid-layout 
                                                    :columns 5
@@ -114,7 +114,7 @@
 
 (defun pane-buffer-rebuild-editors (i population)
   "Prepare <i> for <population>."
-  (setf (interfaces i) (list (layout-list population) (layout-imagenes population)))
+  (setf (interfaces i) (list (layout-list population) (layout-images population)))
   (setf (capi:capi-object-name (expressions-pane i)) 'expresions
         (capi:capi-object-name (images-pane i)) 'images)
   (initialize-expressions-interface i)
@@ -167,7 +167,7 @@
 (defmethod refresh-interface-images (p (i interface-pane-buffer))
   "Refresh <p> images."
   (remap-population-interface p) 
-  (adjust-editors-size-imagenes p))
+  (adjust-editors-size-images p))
 
 (defmethod remap-population-pane ((p pane-buffer))
   "Synchronize model population with <p> interface."
@@ -377,15 +377,6 @@
   "Adjust <p> editors size."
   nil)
 
-(defmethod drop-action ((pane pane-buffer) (p population) &optional action-key)
-  "Perform drop actions when dropping <p> on <pane>."
-  nil)
-
-(defmethod drop-action ((p pane-buffer) (o entity) &optional action-key)
-  "Perform drop actions when dropping <o> on <pane>."
-  nil)
-
-(defmethod adjust-editors-size-imagenes ((p pane-buffer))
+(defmethod adjust-editors-size-images ((p pane-buffer))
   "Adjust <p> editors size."
   nil)
-

@@ -370,7 +370,7 @@
                   :grammar *intro-sequencer-grammar*
                   :functions (functions-list-from-tokens *intro-definition-grammar-tokens*)
                   :operators (default-genetic-operators-probability-intro-sequencer)
-                  :valid-new-expresion-function 'create-new-first-parent
+                  :valid-new-expresion-function 'create-new-first-parent-copy
                   :tokens *intro-definition-grammar-tokens*))
 
 #|

@@ -1,3 +1,3 @@
 
-;; #FIX: Patch para pruebas de search-task-sample-language
+;; #FIX: Patch for 'search-task-sample-language tests
 ;(initialize-default-search-task-object-templates)

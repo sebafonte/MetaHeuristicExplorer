@@ -1,4 +1,4 @@
-;;; 4 functions for a mini-state machine to handle drag & drop behaviout
+;;; Functions for a mini-state machine to handle drag & drop behaviout
 ;;;		- *drag-context* has the object being dragged
 ;;;
 ;;; #TODO: - Take out the last condition, i think it's unecessary now
@@ -88,3 +88,22 @@
   (let* ((interface (interface *main-pane*))
          (container (capi:document-frame-container interface)))
     (capi:collect-interfaces 'base-interface :screen interface :sort-by :visible)))
+
+	
+#|
+;;; #TODO: 
+;;; Drop modifiers:
+;;;
+;;;    - none: 		Add
+;;;    - shift:   	Replace
+;;;    - control: 	Copy / create
+;;;
+
+(defmethod drop-action ((pane pane-buffer) (o entity) &optional action-key)
+  "Perform drop actions when dropping <o> on <pane>."
+  nil)
+
+(defmethod drop-action ((pane pane-buffer) (p population) &optional action-key)
+  "Perform drop actions when dropping <p> on <pane>."
+  nil)
+|#

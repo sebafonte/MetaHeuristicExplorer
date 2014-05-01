@@ -151,7 +151,7 @@
                   :variables '(x)
                   :functions (functions-list-from-tokens *polynomial-expression-tokens*)
                   :tokens *polynomial-expression-tokens*
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'polynomial-xy
@@ -161,7 +161,7 @@
                   :variables '(x y)
                   :functions (functions-list-from-tokens *polynomial-expression-tokens*)
                   :tokens *polynomial-expression-tokens*
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'polynomial-xyz
@@ -171,7 +171,7 @@
                   :variables '(x y z)
                   :functions (functions-list-from-tokens *polynomial-expression-tokens*)
                   :tokens *polynomial-expression-tokens*
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    ;; Language for search algorithms (generic)
    (make-instance 'cfg-tree-language 
@@ -183,7 +183,7 @@
                   :functions (functions-list-from-tokens *search-algorithm-grammar-tokens*)
                   :tokens *search-algorithm-grammar-tokens*
                   :max-size 100
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    ;; language for search algorithms (specialized later)
    (make-instance 'cfg-tree-language 
@@ -195,7 +195,7 @@
                   :functions (functions-list-from-tokens *search-algorithm-grammar-tokens*)
                   :tokens *search-algorithm-grammar-tokens*
                   :max-size 100
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'evolutive-algorithm-language-vrp
@@ -206,23 +206,23 @@
                   :functions (functions-list-from-tokens *search-algorithm-grammar-tokens*)
                   :tokens *search-algorithm-grammar-tokens*
                   :max-size 100
-                  :valid-new-expresion-function 'create-new-first-parent-program
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-genetic-operators-probability-polynomial-expression))
    ;; VRP languages
    (make-instance 'vrp-list-language 
                   :name 'vrp-default-language
                   :operators (default-genetic-operators-probability-sample-vrp)
-                  :valid-new-expresion-function 'create-new-first-parent)
+                  :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Linear ordering languages
    (make-instance 'language 
                   :name 'lop-default-language
                   :operators (default-genetic-operators-probability-linear-ordering)
-                  :valid-new-expresion-function 'create-new-first-parent)
+                  :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Linear ordering with lists languages
    (make-instance 'language 
                   :name 'lop-lists-default-language
                   :operators (default-genetic-operators-probability-linear-ordering)
-                  :valid-new-expresion-function 'create-new-first-parent)
+                  :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Search task languages
    (make-instance 'cfg-tree-language 
                   :name 'search-task-default-language

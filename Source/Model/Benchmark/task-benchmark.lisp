@@ -42,8 +42,9 @@
                            :name 'inspector-best-individual-by-generation
                            :event :progress-change
                            :subject (algorithm subject)
-                           :action (lambda (benchmark algorithm)
-                                     (let ((task (context algorithm)))
+                           :action (lambda (log-inspector &rest args)
+                                     (let ((algorithm (subject log-inspector))
+                                           (task (context (subject log-inspector))))
                                        (save-log-data-set
                                         o
                                         :generation (generation algorithm)

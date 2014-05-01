@@ -19,23 +19,8 @@
 (defmethod object ((o base-model))
   o)
   
-;;; #TODO: 
-;;; Drop modifiers:
-;;;
-;;;    - shift:   Replace
-;;;    - control: Copy / create
-;;;    - nada:    Add
-;;;
-(defmethod drop-action ((o base-model) contenido &optional action-key)
-  "Toma la accion conveniente cuando se suelta un objeto sobre el receptor."
-  nil)
-
-(defmethod drag-action ((o base-model) &optional action-key)
-  "Toma la accion conveniente cuando se dragea sobre el receptor."
-  nil)
-
 (defmethod properties-definition ((o base-model))
-  "The purpose of this method is to be polimorfic with object-with-properties."
+  "Answer <o> properties definition."
   nil)
 
 (defmethod evolvablep ((o t))
