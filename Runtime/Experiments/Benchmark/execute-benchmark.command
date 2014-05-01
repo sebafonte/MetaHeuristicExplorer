@@ -1,3 +1,2 @@
-(setf *benchmark-tool* (make-instance 'benchmark-reporting-tool :column-properties '(best-fitness likelihood-of-optimality average-fitness-value likelihood-of-evolution-leap time)	:items (tasks-from-directory "D:\\TESTS\\Experiments\\Benchmark\\Tasks") :result-file (concatenate 'string "d:\\TESTS\\result_default_benchmark" (format nil "~a" (get-universal-time)) ".txt")))
+(setf *benchmark-tool* (make-instance 'benchmark-reporting-tool :column-properties '(best-fitness likelihood-of-optimality average-fitness-value likelihood-of-evolution-leap time)	:items (tasks-from-directory (merge-pathnames "Tasks" *command-directory*)) :result-file (concatenate 'string (format nil "~A" (merge-pathnames "Results\\result_default_benchmark" *command-directory*)) (format nil "~a" (get-universal-time)))))
 (write-report *benchmark-tool* "Default system benchmark report")
-(force-exit-image)

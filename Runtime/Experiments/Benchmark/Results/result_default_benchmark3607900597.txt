@@ -1,0 +1,9 @@
+
+<HEADER>
+
+RESULTS
+Task                            BEST-FITNESS  LIKELIHOOD-OF-OPTIMALITY  AVERAGE-FITNESS-VALUE  LIKELIHOOD-OF-EVOLUTION-LEAP  TIME      
+
+NEW                               825.26          0.00                     10.00                 373.00                          0.00  
+
+<GRAPHICS>

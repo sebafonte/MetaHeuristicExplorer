@@ -143,13 +143,14 @@
     :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'object
     :subject o)))
 
-(defun search-task-running-time (object)
-  "Answer the running time for search task <object>."
-  (let* ((initial-time (get-value-for-property-named object 'initial-time))
-         (final-time (get-value-for-property-named object 'final-time))
-         (last-time (if (not (zerop final-time)) final-time (get-universal-time))))
-    (- last-time initial-time)))
-  
+(defun search-task-running-time (task)
+  "Answer the running time for <task>."
+  (if (null (final-time task)) 
+      (if (null (initial-time task))
+          0
+        (- (get-universal-time) (initial-time task)))
+    (- (final-time task) (initial-time task))))
+
 (defmethod execute-search ((task search-task))
   "Executes the search children of <task>.
    Initialization and getting results from task's children is achieved."

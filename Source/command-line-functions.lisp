@@ -18,6 +18,8 @@
   "Execute commands in <command-line>."
   (let ((command-file (argument-from-key-equal command-line ":command-file" 1)))
     (when command-file
+      ;; #TODO: Replace this global binding to an environment argument
+      (setf *command-directory* (pathname-location command-file))
       (let* ((command-string (load-commands-from-file command-file))
              (command-lines (mapcar (lambda (object) 
                                       (let ((trimed (string-trim " " object)))
