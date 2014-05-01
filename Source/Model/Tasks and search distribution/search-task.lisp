@@ -120,10 +120,9 @@
       :data-type 'integer :editor 'number-editor :visible nil :read-only t :category "Result")
      (:name 'final-time :label "Final time" :accessor-type 'valuable-accessor-type 
       :getter '(lambda (task)
-                 (if (children task)
-                     (reduce 'max (mapcar (lambda (task) (if (final-time task) (final-time task) 0))
-                                          (children task)))
-                   0))
+                 (let ((not-nulls (select (children task) (lambda (o) (not (null (final-time o)))))))
+                   (if not-nulls
+                       (reduce 'max (mapcar 'final-time not-nulls)))))
       :data-type 'integer :editor 'number-editor :visible nil :read-only t :category "Result")
      (:name 'running-time :label "Time" :accessor-type 'valuable-accessor-type 
       :getter '(lambda (object) (max (search-task-running-time object) 0))
@@ -145,11 +144,13 @@
 
 (defun search-task-running-time (task)
   "Answer the running time for <task>."
-  (if (null (final-time task)) 
-      (if (null (initial-time task))
-          0
-        (- (get-universal-time) (initial-time task)))
-    (- (final-time task) (initial-time task))))
+  (let* ((initial-time (get-value-for-property-named task 'initial-time))
+         (final-time (get-value-for-property-named task 'final-time)))
+    (if (null final-time) 
+        (if (null initial-time)
+            0
+          (- (get-universal-time) initial-time))
+      (- final-time initial-time))))
 
 (defmethod execute-search ((task search-task))
   "Executes the search children of <task>.

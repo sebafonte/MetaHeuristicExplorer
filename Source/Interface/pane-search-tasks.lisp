@@ -259,7 +259,7 @@
                           (best-individual (selection interface))
                         (make-instance 'object-in-search :object best :context subtask)))))
 
-;; #TODO: HARDCODE, this should check if the process has been initialized
+;; #TODO: #HARDCODE, this should check if the process has been initialized
 (defmethod pane-search-tasks-n-best ((task search-task) n)
   "Answer a new population with the <n> best individuals of <task>."
   (let ((elites)
