@@ -8,6 +8,13 @@
   (declare (ignore object))
   (trigger i :model-changed i))
 
+(defmethod initialize-instance :after ((i interface-pane-editor-entity-base) &rest keys)
+  (initialize-viewer i)
+  (appendf *interface-editors* (list i)))
+
+(defmethod initialize-viewer ((i interface-pane-editor-entity-base))
+  (setf (owner (pane-image i)) i))
+
 (defmethod destroy-interface :before ((i interface-pane-editor-entity-base))
   "Perform actions when <interface> is destroyed."
   (setf *interface-editors* (reject *interface-editors* (lambda (object) (equal object i)))))
@@ -15,13 +22,6 @@
 (defmethod destroy-interface ((i interface-pane-editor-entity-base))
   "Perform actions when <interface> is destroyed."
   (destroy-interface-pixmap i))
-
-(defmethod initialize-instance :after ((i interface-pane-editor-entity-base) &rest keys)
-  (initialize-viewer i)
-  (appendf *interface-editors* (list i)))
-
-(defmethod initialize-viewer ((i interface-pane-editor-entity-base))
-  (setf (owner (pane-image i)) i))
 
 (defmethod set-editor-tab-to ((i interface-pane-editor-entity-base) name)
   "Set tab with <name> on <i>."

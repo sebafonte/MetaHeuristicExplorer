@@ -10,7 +10,7 @@
 ;;; #NOTE: Temporary implementation detail, this var has a reference to all editors shown on screen
 ;;;
 
-(setf *interface-editors* nil)
+(defvar *interface-editors* nil)
 
 
 (defclass pane-editor-entity (base-pane object-with-properties)

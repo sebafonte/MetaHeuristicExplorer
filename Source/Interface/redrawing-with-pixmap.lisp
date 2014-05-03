@@ -88,20 +88,20 @@
      nil))
 
 (defun drag-example-drag-object (pane title &rest drag-args)
-  ;(apply 'capi:drag-pane-object pane drag-args)
-  nil)
+  ;(capi:drag-pane-object pane drag-args)
+  (progn t))
 
+#|
 ;; #TODO: Remove when refactored
 (defmethod drop-example-drop-string-callback ((pane t) x y)
   (let ((target (editor-under-position pane x y))
         (pane-interface (pane (owner (capi:element-interface pane)))))
     (when (and (not (equal target pane-interface)) target)
       (set-model (pane target) (model pane-interface)))))
+|#
 
-#|
-(defmethod drop-example-drop-string-callback ((pane capi:opengl-pane) x y)
+(defmethod drop-example-drop-string-callback ((pane t) x y)
   (let ((target (editor-under-position pane x y))
         (pane-interface (pane (capi:element-interface pane))))
     (when (and (not (equal target pane-interface)) target)
       (set-model (pane target) (model pane-interface)))))
-|#
