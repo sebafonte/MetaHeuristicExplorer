@@ -89,7 +89,81 @@
          (container (capi:document-frame-container interface)))
     (capi:collect-interfaces 'base-interface :screen interface :sort-by :visible)))
 
-	
+
+;;; #TODO: Try to use
+;;;	- Native drag & drop from Lispworks
+;;;     - (capi::pinboard-object-at-position pinboard-layout-target new-x new-y)
+;;;     - examples/capi/elements/convert-relativeposition.lisp
+;;;
+(defmethod editor-under-position ((interface t) x y)
+  "Answer the editor under <x> and <y> mouse position relative to <interface>."
+  (let ((editors)
+        (pinboard-layout-source interface)
+        (interfaces (main-interfaces-list)))
+    (dolist (editor *interface-editors*)
+      (let ((pinboard-layout-target (graphic-part editor)))
+        (if (capi:element-interface pinboard-layout-target)
+            (multiple-value-bind (new-x new-y)
+                (capi::convert-relative-position pinboard-layout-source pinboard-layout-target x y)
+              (capi:with-geometry pinboard-layout-target
+                (if (and (<= new-x capi:%width%)
+                         (>= new-x 0)
+                         (<= new-y capi:%height%)
+                         (>= new-y 0))
+                    (appendf editors (list (list editor (capi:top-level-interface editor))))))))))
+    (caaar (sort (mapcar (lambda (item) 
+                           (list item (position (second item) interfaces)))
+                         editors)
+                 (lambda (x y) 
+                   (< (cadr x) (cadr y)))))))
+
+(defmethod drag-example-drag-from ((pane capi:opengl-pane) x y)
+  (let ((object (model (pane (capi:element-interface pane)))))
+    (typecase object
+      ;; Pinboard items (#CHECK)
+      (capi:item-pinboard-object
+       (let ((string (capi:item-text object)))
+         (drag-example-drag-object pane string nil :string string)))
+      ;; Graphics
+      ;; Search objects
+      (object-in-search
+       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
+     nil))
+
+;; #TODO: Remove when refactored
+(defmethod drag-example-drag-from ((pane t) x y)
+  (let ((object (model (pane (owner (capi:element-parent pane))))))
+    (typecase object
+      ;; Pinboard items (#CHECK)
+      (capi:item-pinboard-object
+       (let ((string (capi:item-text object)))
+         (drag-example-drag-object pane string nil :string string)))
+      ;; Graphics
+      ;; Search objects
+      (object-in-search
+       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
+     nil))
+
+;; #TODO: Check what is better here
+(defun drag-example-drag-object (pane title &rest drag-args)
+  ;(capi:drag-pane-object pane drag-args)
+  nil)
+
+#|
+  ;; #TODO: Remove when refactored
+(defmethod drop-example-drop-string-callback ((pane t) x y)
+  (let ((target (editor-under-position pane x y))
+        (pane-interface (pane (owner (capi:element-interface pane)))))
+    (when (and (not (equal target pane-interface)) target)
+      (set-model (pane target) (model pane-interface)))))
+|#
+
+(defmethod drop-example-drop-string-callback ((pane t) x y)
+  (let ((target (editor-under-position pane x y))
+        (pane-interface (pane (capi:element-interface pane))))
+    (when (and (not (equal target pane-interface)) target)
+      (set-model (pane target) (model pane-interface)))))
+
 #|
 ;;; #TODO: 
 ;;; Drop modifiers:

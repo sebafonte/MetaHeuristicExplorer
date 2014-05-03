@@ -142,16 +142,3 @@
 
 (defun graphic-pane-turn-animation-callback (interface data)
   nil)
-
-(defmethod drag-example-drag-from ((pane capi:opengl-pane) x y)
-  (let ((object (model (pane (capi:element-interface pane)))))
-    (typecase object
-      ;; Pinboard items (VER)
-      (capi:item-pinboard-object
-       (let ((string (capi:item-text object)))
-         (drag-example-drag-object pane string nil :string string)))
-      ;; Graphics
-      ;; Search objects
-      (object-in-search
-       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
-     nil))

@@ -29,3 +29,16 @@
                                  (invoke-restart 'my-restart nil))))
          (progn ,@args))
      (my-restart (&optional v) v)))
+
+(defun absolute-geometry-values (interface)
+  "Answer the values for <interface> with respect to main top level interface."
+  (if (capi:top-level-interface-p interface)
+      (multiple-value-bind (x y h w)
+          (capi:top-level-interface-geometry interface)
+        (list x1 y1 h1 w1))
+    (let ((top (multiple-value-bind (x y) (capi:top-level-interface-geometry (capi:top-level-interface interface)) (list x y))))
+      (capi:with-geometry interface
+        (list (+ capi:%x% (car top))
+              (+ capi:%y% (cadr top))
+              capi:%height% 
+              capi:%width%)))))

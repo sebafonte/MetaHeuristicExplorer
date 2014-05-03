@@ -72,36 +72,3 @@
 (defmethod create-interface-pixmap ((pinboard t) width height)
   "Creates a pixmap port object for pinboard."
   (gp:create-pixmap-port pinboard width height :clear t :background :white))
-
-;; #TODO: Remove when refactored
-(defmethod drag-example-drag-from ((pane t) x y)
-  (let ((object (model (pane (owner (capi:element-parent pane))))))
-    (typecase object
-      ;; Pinboard items (#CHECK)
-      (capi:item-pinboard-object
-       (let ((string (capi:item-text object)))
-         (drag-example-drag-object pane string nil :string string)))
-      ;; Graphics
-      ;; Search objects
-      (object-in-search
-       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
-     nil))
-
-(defun drag-example-drag-object (pane title &rest drag-args)
-  ;(capi:drag-pane-object pane drag-args)
-  (progn t))
-
-#|
-;; #TODO: Remove when refactored
-(defmethod drop-example-drop-string-callback ((pane t) x y)
-  (let ((target (editor-under-position pane x y))
-        (pane-interface (pane (owner (capi:element-interface pane)))))
-    (when (and (not (equal target pane-interface)) target)
-      (set-model (pane target) (model pane-interface)))))
-|#
-
-(defmethod drop-example-drop-string-callback ((pane t) x y)
-  (let ((target (editor-under-position pane x y))
-        (pane-interface (pane (capi:element-interface pane))))
-    (when (and (not (equal target pane-interface)) target)
-      (set-model (pane target) (model pane-interface)))))

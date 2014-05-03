@@ -479,34 +479,6 @@
 (defmethod graphic-part ((interface t))
   (pixmap-layout (pane-image interface)))
 
-
-;;; #TODO: Try to use
-;;;	- Native drag & drop from Lispworks
-;;;     - (capi::pinboard-object-at-position pinboard-layout-target new-x new-y)
-;;;     - examples/capi/elements/convert-relativeposition.lisp
-;;;
-(defmethod editor-under-position ((interface t) x y)
-  "Answer the editor under <x> and <y> mouse position relative to <interface>."
-  (let ((editors)
-        (pinboard-layout-source interface)
-        (interfaces (main-interfaces-list)))
-    (dolist (editor *interface-editors*)
-      (let ((pinboard-layout-target (graphic-part editor)))
-        (if (capi:element-interface pinboard-layout-target)
-            (multiple-value-bind (new-x new-y)
-                (capi::convert-relative-position pinboard-layout-source pinboard-layout-target x y)
-              (capi:with-geometry pinboard-layout-target
-                (if (and (<= new-x capi:%width%)
-                         (>= new-x 0)
-                         (<= new-y capi:%height%)
-                         (>= new-y 0))
-                    (appendf editors (list (list editor (capi:top-level-interface editor))))))))))
-    (caaar (sort (mapcar (lambda (item) 
-                           (list item (position (second item) interfaces)))
-                         editors)
-                 (lambda (x y) 
-                   (< (cadr x) (cadr y)))))))
-
 (defmethod drawable-object ((pane pane-editor-entity))
   "Answer the drawable object of pane."
   (model pane))

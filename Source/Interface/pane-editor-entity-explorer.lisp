@@ -88,10 +88,6 @@
   ;           (constant-p child check-genotype check-phenotype))))
   t)
 
-;; #TODO
-(defun drag-example-drag-object (pane title &rest drag-args)
-  (apply 'capi:drag-pane-object pane drag-args))
-
 (defmethod set-default-editor-tab ((p pane-editor-entity-explorer))
   (declare (ignore p))
   nil)
