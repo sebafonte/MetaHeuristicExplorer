@@ -5,9 +5,10 @@
 
 (defmethod compiled-program ((o entity-function-x))
   "Answer the compiled function for <o>."
-  (compile nil `(lambda () 
-                  (declare (special x))
-                  ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () 
+                    (declare (special x))
+                    ,(program o)))))
 
 (defmethod default-language ((o entity-function-x))
   (system-get 'lisp-math-function-x))

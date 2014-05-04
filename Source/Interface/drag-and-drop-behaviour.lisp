@@ -1,71 +1,6 @@
-;;; Functions for a mini-state machine to handle drag & drop behaviout
-;;;		- *drag-context* has the object being dragged
-;;;
-;;; #TODO: - Take out the last condition, i think it's unecessary now
-;;;        - Use ccase
-;;; 
 
-(defvar *drag-state* 'IDLE)
-(defvar *drag-selected-object*)
 (defvar *drag-context* (make-instance 'selection-context))
 
-
-(defun process-press (self x y)
-  (declare (ignore x))
-  (declare (ignore y))
-  (cond ((equal *drag-state* 'IDLE) (progn 
-                                       (save-drag-source-properties self)
-                                       (setf *drag-state* 'PRESSED)))
-        (t nil)))
-
-(defun process-second-press (self x y)
-  (declare (ignore x) (ignore y) (ignore self))
-  (cond ((equal *drag-state* 'PRESSED) (progn 
-                                          (double-clicked)
-                                          (setf *drag-state* 'IDLE)))
-        (t nil)))
-
-(defun process-motion (self x y)
-  (declare (ignore x) (ignore y) (ignore self))
-  (cond ((equal *drag-state* 'PRESSED) (progn 
-                                          (relative-motion)
-                                          (setf *drag-state* 'DRAGGING)))
-        ((equal *drag-state* 'DRAGGING) (progn 
-                                           (relative-motion-dragging)
-                                           (setf *drag-state* 'DRAGGING)))
-        (t nil)))
-
-(defun process-release (self x y)
-  (declare (ignore x) (ignore y))
-  (cond ((equal *drag-state* 'PRESSED) (progn 
-                                          (clicked)
-                                          (setf *drag-state* 'IDLE)))
-        ((equal *drag-state* 'DRAGGING) (progn 
-                                           (finalize-drag self)
-                                           (setf *drag-state* 'IDLE)))
-        (t nil)))
-
-(defun save-drag-source-properties (pane) 
-  (setf *drag-selected-object* (capi:element-parent (capi:element-parent pane)))
-  (print "Save mouse position."))
-
-(defun double-clicked () 
-  (print "Double click."))
-
-(defun clicked ()
-  (print "Clicked."))
-
-(defun relative-motion () 
-  (print "Moving."))
-
-(defun relative-motion-dragging () 
-  (print "Dragging."))
-
-(defun finalize-drag (pane)
-  (if *drag-selected-object*
-      (set-model (capi:element-parent (capi:element-parent pane)) 
-                 *drag-selected-object*))
-  (print "Drag ended."))
 
 (defun pane-toggle-mouse-cursor-normal (pane x y)
   (declare (ignore x y))
@@ -82,7 +17,6 @@
    (interface *main-pane*)
    (lambda ()
      (setf (capi:simple-pane-cursor (interface *main-pane*)) value))))
-
 
 (defun main-interfaces-list ()
   (let* ((interface (interface *main-pane*))
@@ -117,54 +51,52 @@
                  (lambda (x y) 
                    (< (cadr x) (cadr y)))))))
 
-(defmethod drag-example-drag-from ((pane capi:opengl-pane) x y)
+(defmethod drag-from-pane ((pane capi:opengl-pane) x y)
+  "Perform actions when dropping an object dragged from <pane>."
   (let ((object (model (pane (capi:element-interface pane)))))
     (typecase object
       ;; Pinboard items (#CHECK)
       (capi:item-pinboard-object
        (let ((string (capi:item-text object)))
-         (drag-example-drag-object pane string nil :string string)))
-      ;; Graphics
-      ;; Search objects
+         (drop-from-pane-object pane string nil :string string)))
       (object-in-search
-       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
+       (drop-from-pane-object pane (format nil "DRAG OBJECT") object)))
      nil))
 
+(defmethod drop-from-pane ((pane t) x y)
+  "Perform actions when dropping an object dragged from <pane>."
+  (let ((target (editor-under-position pane x y))
+        (pane-interface (pane (capi:element-interface pane))))
+    (when (and (not (equal target pane-interface)) target)
+      (set-model (pane target) (model pane-interface))
+      (trigger target :interface-model-changed target))))
+
+(defun drop-from-pane-object (pane title &rest drag-args)
+  "Perform actions when dragging an object from <pane>."
+  nil)
+
+#|
 ;; #TODO: Remove when refactored
-(defmethod drag-example-drag-from ((pane t) x y)
+(defmethod drag-from-pane ((pane t) x y)
   (let ((object (model (pane (owner (capi:element-parent pane))))))
     (typecase object
       ;; Pinboard items (#CHECK)
       (capi:item-pinboard-object
        (let ((string (capi:item-text object)))
-         (drag-example-drag-object pane string nil :string string)))
-      ;; Graphics
-      ;; Search objects
+         (drop-from-pane-object pane string nil :string string)))
       (object-in-search
-       (drag-example-drag-object pane (format nil "DRAG OBJECT") object)))
+       (drop-from-pane-object pane (format nil "DRAG OBJECT") object)))
      nil))
 
-;; #TODO: Check what is better here
-(defun drag-example-drag-object (pane title &rest drag-args)
-  ;(capi:drag-pane-object pane drag-args)
-  nil)
-
-#|
   ;; #TODO: Remove when refactored
-(defmethod drop-example-drop-string-callback ((pane t) x y)
+(defmethod drop-from-pane ((pane t) x y)
   (let ((target (editor-under-position pane x y))
         (pane-interface (pane (owner (capi:element-interface pane)))))
     (when (and (not (equal target pane-interface)) target)
-      (set-model (pane target) (model pane-interface)))))
-|#
+      (set-model (pane target) (model pane-interface))
+      (trigger target :interface-model-changed target))))
 
-(defmethod drop-example-drop-string-callback ((pane t) x y)
-  (let ((target (editor-under-position pane x y))
-        (pane-interface (pane (capi:element-interface pane))))
-    (when (and (not (equal target pane-interface)) target)
-      (set-model (pane target) (model pane-interface)))))
 
-#|
 ;;; #TODO: 
 ;;; Drop modifiers:
 ;;;

@@ -76,15 +76,17 @@
 
 (defmethod compiled-program-6-mux ((o entity-mux))
   "Answer the compiled function that representing o genotype."
-  (compile nil `(lambda () 
-                  (declare (special a0 a1 d0 d1 d2 d3))
-                  ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () 
+                    (declare (special a0 a1 d0 d1 d2 d3))
+                    ,(program o)))))
 
 (defmethod compiled-program-11-mux ((o entity-mux))
   "Answer the compiled function that representing o genotype."
-  (compile nil `(lambda () 
-                  (declare (special a0 a1 a2 d0 d1 d2 d3 d4 d5 d6 d7))
-                  ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () 
+                    (declare (special a0 a1 a2 d0 d1 d2 d3 d4 d5 d6 d7))
+                    ,(program o)))))
 
 ;;; Environment auxiliars
 (defmethod default-language ((o entity-mux))
@@ -143,7 +145,7 @@
               (aref array 3) d3)
         (let ((case-value (aref array (+ a0 (* a1 2)))))
           (when (= (funcall compiled-program) case-value)
-            (incf matches)))))                             
+            (incf matches)))))
     (setf (fitness object) matches)
     matches))
 

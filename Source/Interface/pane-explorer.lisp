@@ -252,6 +252,15 @@
    :operation operation
    :filters `("Crossover pane files" "*.crossover-pane")))
 
+(defmethod initialize-interface :after ((p pane-explorer))
+  (let ((parents (capi:layout-description (pane-parents (interface p)))))
+    (dolist (i parents)
+      (when-send-to 
+       (pane i)
+       :interface-model-changed 
+       'update-interface-operations 
+       p))))
+
 (defmethod pane-explorer-set-default (interface data)
   "Set <interface> pane as default."
   (let ((pane (pane interface)))

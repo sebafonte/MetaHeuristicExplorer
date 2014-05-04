@@ -83,5 +83,6 @@
 
 (defmethod compiled-valuable ((o graphic-function-r-r))
   "Answer a compiled function to evaluate <o>"
-  (compile nil (valuable-y-list o)))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil (valuable-y-list o))))
  

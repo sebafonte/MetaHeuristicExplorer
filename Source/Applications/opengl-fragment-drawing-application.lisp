@@ -287,7 +287,8 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
 
 (defmethod compiled-program ((o entity-opengl-fragment-drawing))
   "Answer the compiled function for <o>."
-  (compile nil `(lambda () ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () ,(program o)))))
 
 
 ;;; Environment auxiliars

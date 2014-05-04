@@ -51,9 +51,10 @@
 ;; Fix to solve some warning which can molest the buffer locking and speed
 (defmethod compiled-program ((o entity-function-x-y))
   "Answer the compiled function for <o>."
-  (compile nil `(lambda () 
-                  (declare (special x) (special y) (special *time-variable*)) 
-                  ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () 
+                    (declare (special x) (special y) (special *time-variable*)) 
+                    ,(program o)))))
 
 ;; Copy fixes
 (defmethod copy-cyclic ((i context-free-grammar-with-subroutines) &optional table new-object)

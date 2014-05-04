@@ -333,7 +333,8 @@
 
 (defmethod compiled-program ((o entity-opengl-free-drawing-2d))
   "Answer the compiled function for <o>."
-  (compile nil `(lambda () ,(program o))))
+  (let ((compiler::*compiler-warnings* nil))
+    (compile nil `(lambda () ,(program o)))))
 
 ;;; Environment auxiliars
 (defmethod default-language ((o entity-opengl-free-drawing-2d))

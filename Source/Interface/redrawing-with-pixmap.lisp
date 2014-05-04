@@ -12,13 +12,13 @@
                                          (options-menu-description pane object)))
                            :input-model `(((:button-1 :press)
                                            ,#'(lambda (pane x y)
-                                                (drag-example-drag-from pane x y)
+                                                (drag-from-pane pane x y)
                                                 (pane-toggle-mouse-cursor-on-drag pane x y)))
                                           ((:button-1 :release)
                                            ,#'(lambda (pane x y)
-                                                (drop-example-drop-string-callback pane x y)
+                                                (drop-from-pane pane x y)
                                                 (pane-toggle-mouse-cursor-normal pane x y))))
-                           ;:drop-callback 'drop-example-drop-string-callback
+                           ;:drop-callback 'drop-from-pane
                            :accessor pixmap-layout))
   (:default-initargs
    :destroy-callback 'destroy-interface-pixmap))

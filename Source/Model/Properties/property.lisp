@@ -145,7 +145,8 @@
   "Answer a compiled function to evaluate <p>."
   (if (or (not (slot-value p 'compiled-valuable))
           (numberp (slot-value p 'compiled-valuable)))
-      (setf (compiled-valuable p) (compile nil (getter p))))
+      (let ((compiler::*compiler-warnings* nil))
+        (setf (compiled-valuable p) (compile nil (getter p)))))
   (slot-value p 'compiled-valuable))
 
 (defmethod is-numeric ((p property))

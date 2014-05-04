@@ -93,26 +93,26 @@
 
 (defmethod make-pane-menu ((pane capi:pinboard-layout) object x y menus-description)
   (declare (ignore x) (ignore y))
-  (let ((my-interface (capi:element-interface (capi:element-interface pane))))
+  (let ((pane-interface (capi:element-interface (capi:element-interface pane))))
     (make-instance 'capi:menu
                    :title "Options"
                    :items (menu-items menus-description)
                    :callback (lambda (interface data) 
                                (declare (ignore interface))
                                (execute-menu-action 
-                                (pane my-interface) menus-description my-interface data))
+                                (pane pane-interface) menus-description pane-interface data))
                    :callback-type :interface-data)))
 
 (defmethod make-pane-menu ((pane capi:graph-pane) object x y menus-description)
   (declare (ignore x) (ignore y))
-  (let ((my-interface (capi:element-interface pane)))
+  (let ((pane-interface (capi:element-interface pane)))
     (make-instance 'capi:menu
                    :title "Options"
                    :items menus-description
                    :callback (lambda (interface data) 
                                (declare (ignore interface))
                                (execute-menu-action 
-                                (pane my-interface) menus-description my-interface data))
+                                (pane pane-interface) menus-description pane-interface data))
                    :callback-type :interface-data)))
 
 (defun set-multi-column-items (instance sortable-lp sort-key &optional reversep)
