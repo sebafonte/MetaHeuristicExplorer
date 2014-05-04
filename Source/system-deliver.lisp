@@ -268,7 +268,7 @@
             "Interface\\pane-search-tasks.lisp"
             "Interface\\pane-subtasks.lisp"
             "Interface\\pane-map.lisp"
-            "Interface\\drag-and-drop-behaviour.lisp"
+            "Interface\\drag-and-drop.lisp"
             "Interface\\pane-test-runner.lisp"
             "Interface\\pane-performance-test-runner.lisp"
             "Interface\\pane-performance-test-runner-comparer.lisp"
