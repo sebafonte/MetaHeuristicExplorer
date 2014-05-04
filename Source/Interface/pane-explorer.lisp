@@ -14,8 +14,7 @@
    (number-children :initarg :number-children :accessor number-children)
    (parents :initarg :parents :initform nil :accessor parents)
    (children :initform nil :accessor children)
-   (history :initarg :history :initform nil :accessor history)
-   (index-history :initarg :index-history :initform 0 :accessor index-history)
+   (history :initarg :history :initform (make-instance 'sample-history-manager) :accessor history)
    (algorithm :initarg :algorithm :accessor algorithm)
    (render-step :initarg :render-step :accessor render-step)
    (pane-feedback :initarg :pane-feedback :initform nil :accessor pane-feedback)
@@ -24,10 +23,12 @@
    (check-phenotype :initarg :check-phenotype :initform nil :accessor check-phenotype)
    (fail-iterations :initarg :fail-iterations :accessor fail-iterations)))
 
+
 (defmethod initialize-instance :after ((p pane-explorer) &key key)
   "Initialize <p>."
   (declare (ignore key))
-  (setf (slot-value p 'parents) 
+  (setf (level (history p)) (get-value-for-property-named p 'history-level)
+        (slot-value p 'parents)
         (make-instance 'population :count-individuals (number-parents p))
         (slot-value p 'children) 
         (make-instance 'population :count-individuals (number-children p)))
@@ -84,7 +85,7 @@
    (:name 'number-children :label "Children count" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :default-value *pane-explorer-default-children-number* :editor 'integer-editor)
    (:name 'history-level :label "History level" :accessor-type 'property-accessor-type 
-    :data-type 'integer :default-value 1 :editor 'integer-editor)
+    :data-type 'integer :default-value 5 :editor 'integer-editor)
    ;; Pane children visualization properties
    (:name 'rezisable :label "Auto adjust size" :accessor-type 'property-accessor-type 
     :data-type 'boolean :default-value nil :editor 'boolean-editor)
@@ -137,11 +138,13 @@
    (button-back capi:push-button :text "<" :callback-type :interface-data
                 :callback (lambda (interface data) 
                             (declare (ignore data))
-                            (back (pane interface))))
+                            (back (pane interface)))
+                :accessor button-back)
    (button-next capi:push-button :text ">" :callback-type :interface-data
                 :callback (lambda (interface data) 
                             (declare (ignore data))
-                            (next (pane interface))))
+                            (next (pane interface)))
+                :accessor button-next)
    ;; Pane properties
    (label-edit-properties capi:title-pane :text "Pane actions")
    (button-edit-properties capi:push-button :text "Edit properties" :visible-min-width 120  
@@ -196,7 +199,7 @@
                                  navigation-layout)
             :gap 20))
   (:default-initargs 
-   :visible-min-height 630 :visible-min-width 800 
+   :visible-min-height 670 :visible-min-width 800 
    :title "Crossover editor"
    :destroy-callback 'destroy-interface))
 
@@ -253,6 +256,7 @@
    :filters `("Crossover pane files" "*.crossover-pane")))
 
 (defmethod initialize-interface :after ((p pane-explorer))
+  (check-history-buttons p)
   (let ((parents (capi:layout-description (pane-parents (interface p)))))
     (dolist (i parents)
       (when-send-to 
@@ -342,6 +346,8 @@
   "#NOTE: Includes population remap behaviour."
   (remap-population-interface i)
   (pane-explorer-operate (pane i) :operation operation)
+  (add-page (history (pane i)) (copy (children (pane i))))
+  (check-history-buttons (pane i))
   (remap-interface-population i)
   (update-editor-properties i))
 
@@ -390,7 +396,7 @@
           (dotimes (i (count-individuals (children p)))
             (setf (aref (individuals-array (children p)) i) 
                   (pane-explorer-create-new-child p parents :operation operation)))))))
- 
+
 (defmethod genetic-operations ((p pane-explorer))
   "Answer the genetic operators of <p>."
   (operators (algorithm p)))
@@ -469,15 +475,34 @@
     (when-send-to editor :model-changed 'update-interface-operations object)
     (open-pane editor)))
 
-(defmethod back ((pane pane-explorer))
-  "Switch to previous population in <pane> populations pool."
-  (decf (index-history pane))
-  (setf (children p) (aref (history p) index-history)))
+(defmethod back ((p pane-explorer))
+  "Switch to previous population in <p> populations pool."
+  (let ((interface (interface p)))
+    (setf (children p) (back (history p)))
+    (check-history-buttons p)
+    (remap-interface-population interface)
+    (update-editor-properties interface)))
 
-(defmethod next ((pane pane-explorer))
-  "Switch to next population in <pane> populations pool."
-  (incf (index-history pane))
-  (setf (children pane) (aref (history pane) index-history)))
+(defmethod next ((p pane-explorer))
+  "Switch to next population in <p> populations pool."
+  (let ((interface (interface p)))
+    (setf (children p) (next (history p)))
+    (check-history-buttons p)
+    (remap-interface-population interface)
+    (update-editor-properties interface)))
+
+(defmethod check-history-buttons ((p pane-explorer))
+  (let ((interface (interface p))
+        (value-back (and (not (empty-p (history p))) (not (first-page-p (history p)))))
+        (value-next (and (not (empty-p (history p))) (not (last-page-p (history p))))))
+    (set-button-enable-back interface value-back)
+    (set-button-enable-next interface value-next)))
+
+(defmethod set-button-enable-back ((i interface-pane-explorer) value)
+  (capi:apply-in-pane-process i #'(setf capi:button-enabled) value (button-back i)))
+
+(defmethod set-button-enable-next ((i interface-pane-explorer) value)
+  (capi:apply-in-pane-process i #'(setf capi:button-enabled) value (button-next i)))
 
 (defmethod create-population-editors ((p pane-explorer) population)
   "Answer a list of editors for individuals in <population>."
@@ -543,7 +568,7 @@
   (declare (ignore editor))
   (remap-population-interface (interface p))
   (prepare-operations p (individuals (parents-sized-population p))))
-  
+
 (defmethod refresh-images ((p pane-explorer))
   "Refresh <p> images."
   (adjust-editors-size-interface (interface p)))

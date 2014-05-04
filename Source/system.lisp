@@ -56,6 +56,7 @@
             "Model\\genotype.lisp"
             "Model\\population.lisp"
             "Model\\elite-manager.lisp"
+            "Model\\sample-history-manager.lisp"
             ;; Entities
             "Model\\Entities\\entity-function.lisp"
             "Model\\Entities\\entity-function-x.lisp"
