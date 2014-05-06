@@ -13,14 +13,14 @@
   (toggle-mouse-cursor (interface *main-pane*) :move))
 
 (defun toggle-mouse-cursor (interface value)
+  (declare (ignore interface))
   (capi:apply-in-pane-process
    (interface *main-pane*)
    (lambda ()
      (setf (capi:simple-pane-cursor (interface *main-pane*)) value))))
 
 (defun main-interfaces-list ()
-  (let* ((interface (interface *main-pane*))
-         (container (capi:document-frame-container interface)))
+  (let ((interface (interface *main-pane*)))
     (capi:collect-interfaces 'base-interface :screen interface :sort-by :visible)))
 
 
@@ -73,6 +73,7 @@
 
 (defun drop-from-pane-object (pane title &rest drag-args)
   "Perform actions when dragging an object from <pane>."
+  (declare (ignore pane title drag-args))
   nil)
 
 #|

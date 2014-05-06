@@ -62,6 +62,7 @@
   (graphic p))
 
 (defun redisplay-canvas (canvas &rest ignore)
+  (declare (ignore ignore))
   (let ((viewer (capi:element-interface canvas)))
     (when viewer
       (let ((selection (displayed-object (pane viewer))))

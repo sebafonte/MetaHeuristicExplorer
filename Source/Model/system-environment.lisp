@@ -29,7 +29,3 @@
   (mapcar 
    (lambda (object) (get-description (pane object)))
    (capi:collect-interfaces 'base-interface :screen (interface *main-pane*))))
-
-
-
-

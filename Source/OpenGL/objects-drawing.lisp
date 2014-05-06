@@ -166,9 +166,7 @@
          (depot-description (first cities-description))
          (depot-x (first depot-description))
          (depot-y (second depot-description))
-         (route-index 0)
-         (center-x 5)
-         (center-y 5))
+         (route-index 0))
     (opengl:rendering-on (canvas)
       (initialize-ortho-2d (minimum-vrp-x o evaluator) width height (minimum-vrp-y o evaluator))
       (dolist (route (program o))
@@ -194,7 +192,7 @@
           (opengl:gl-end))
         (incf route-index)))
     (opengl:swap-buffers canvas)))
-         
+
 (defmethod draw-opengl-on ((o graphic-function-r-r) canvas viewer)
   "Compute pixmap values into <o> pixmap."
   (let* ((compiled-valuable (compiled-valuable o))
@@ -212,7 +210,7 @@
       (opengl:gl-color3-f (coerce 1 'single-float) (coerce 1 'single-float) (coerce 1 'single-float))
       (draw-lines-gl points ymax)
       (opengl:swap-buffers canvas))))
-     
+
 (defun draw-lines-with-points-gl (point-list ymax)
   "Draws points from point-list."
   (draw-lines-gl point-list ymax)
@@ -336,7 +334,7 @@
         (height (slot-value canvas 'graphics-ports::height))
         (expresion (compiled-program o)))
     (opengl:rendering-on (canvas)
-      (initialize-ortho-2d 0.d0 1 1 0.d0)      
+      (initialize-ortho-2d 0.d0 1 1 0.d0)
       (opengl:gl-color4-f 1.0 1.0 1.0 1.0)
       (turn-on-texture *texture-manager* 'sample)
       (opengl:gl-begin opengl:*gl-quads*)

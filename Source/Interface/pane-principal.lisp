@@ -5,7 +5,7 @@
 
 (defmethod initialize-instance :after ((p pane-principal) &optional &key mdi-interface (open t))  
   "Initialize <p>."
-  (declare (ignore mdi-interface))
+  (declare (ignore mdi-interface open))
   (maximize (interface p)))
 
 (defmethod interface-class ((p pane-principal))
@@ -56,7 +56,7 @@
 
 (defun open-pane-listener (interface data)
   "Open a pane-listener on <interface>."
-  (declare (ignore data) (ignore interface))
+  (declare (ignore data))
   (let ((listener-interface (make-instance 'capi:listener-pane))
         (screen (capi:screen-active-interface (capi:element-screen interface))))
     (capi:contain listener-interface :best-width 300 :best-height 200 :screen screen)
@@ -193,6 +193,7 @@
 
 
 (defun load-environment-callback (data interface)
+  (declare (ignore data interface))
   (let ((path (capi:prompt-for-file "Select environment to load"
                                     :filter "*.environment"
                                     :operation :open
@@ -202,6 +203,7 @@
         (update-system environment)))))
 
 (defun save-environment-callback (data interface)
+  (declare (ignore data interface))
   (let ((path (capi:prompt-for-file "Select environment to save"
                                     :filter "*.environment"
                                     :operation :save
@@ -211,6 +213,7 @@
         (save-source-description environment path)))))
 
 (defun reset-environment-callback (data interface)
+  (declare (ignore data interface))
   "Perform actions to reset system."
   ;; Delete all tasks
   (setf *search-tasks* nil)
@@ -222,6 +225,7 @@
   (mark-and-sweep 3))
 
 (defun disable-animation-callback (data interface)
+  (declare (ignore data interface))
   "Disables system animation. This includes setting the frame counter to 1 "
   ;; Reset mouse pointer icon
   (toggle-mouse-cursor (interface *main-pane*) nil)
@@ -235,6 +239,7 @@
   (setf *time-variable* 1))
 
 (defun reset-interface-bugs-callback (data interface)
+  (declare (ignore data interface))
   "Perform actions to reset system."
   ;; Reset mouse pointer
   (toggle-mouse-cursor (interface *main-pane*) nil)
@@ -247,6 +252,7 @@
   (start-updater))
 
 (defun execute-command-callback (data interface)
+  (declare (ignore data interface))
   (let ((path (capi:prompt-for-file "Select command to execute"
                                     :filter "*.command"
                                     :operation :open
@@ -255,9 +261,11 @@
       (apply-command (system-get 'main-command-line-interpreter) (list nil ":command-file" path)))))
 
 (defun configure-callback (data interface)
+  (declare (ignore data interface))
   (prompt-for-plusp-integer "Configure"))
 
 (defun exit-callback (data interface)
+  (declare (ignore data))
   (when (capi:confirm-yes-or-no "Exit environment")
     (capi:apply-in-pane-process interface 'capi:quit-interface interface)))
 

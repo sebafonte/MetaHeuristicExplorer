@@ -149,7 +149,7 @@
          (random-element-prioridad-weigth-function
           '(1 2 3)
           (lambda (list position value)
-            (declare (ignore list))
+            (declare (ignore list position))
             (if (equal value 3) 1 0)))))))
 
 #|

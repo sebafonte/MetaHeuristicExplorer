@@ -14,7 +14,6 @@
 (defmethod test-constant-expressions-simplify-1 ((o test-constant-simplification))
   "Verify some expresion simplification cases."
   (let* ((algorithm (default-algorithm o))
-         (language (language algorithm))
          (method (system-get 'optimize-lisp-math-simplification))
          (object (make-instance 'object-in-search
                                 :object (make-instance 'entity-function-x-y)

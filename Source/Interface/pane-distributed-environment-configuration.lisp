@@ -125,8 +125,9 @@
     ("")
     ("Send buffered object" send-buffered-object-callback)))
 
+;; #TODO: 
 (defun see-stats-callback (interface data)
-  (declare (ignore data))
+  (declare (ignore interface data))
   nil)
 
 (defmethod default-connection-property-names ((i interface-pane-distributed-environment-configuration))
