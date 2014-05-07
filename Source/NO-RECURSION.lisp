@@ -23,7 +23,6 @@
 ;; Compress 2
 (defun compress-2 (program language operator)
   "Apply compress subroutine mutation on <program>."
-  (declare (ignore operator))
   (if (> (tree-depth program) 1)
       (let* ((point (get-compress-random-point program language))
              (tree (get-internal-subtree program point language))

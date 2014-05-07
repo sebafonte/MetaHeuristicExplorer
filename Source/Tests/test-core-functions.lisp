@@ -16,7 +16,7 @@
       (test '((x v) (y v))         '(x y))
       (test '((x v) (y 0))         '(x))
       (test '((x 0) (y v))         '(y))
-      ;; 3 elements: (idem 1 and 2 but we does not test each variable)
+      ;; 3 elements: idem 1 and 2 but we does not test each variable
       (test '((x v) (y v) (z v))   '(x y z))
       (test '((x 0) (y v) (z v))   '(y z))
       (test '((x v) (y 0) (z v))   '(x z))
@@ -142,11 +142,11 @@
       (check (find (create-constant strategy) 
                    (constants-set strategy))))))
 
-(defmethod test-random-element-prioridad-index ((o test-core-functions))
+(defmethod test-random-element-priority-index ((o test-core-functions))
   (dotimes (i 100)
     (check
       (= 3 
-         (random-element-prioridad-weigth-function
+         (random-element-priority-weigth-function
           '(1 2 3)
           (lambda (list position value)
             (declare (ignore list position))

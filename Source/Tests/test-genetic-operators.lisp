@@ -15,7 +15,7 @@
                (check (<= (tree-size exp) (max-size algorithm)))))
       ;; Create new functions with crossover #1 (expresion expresion)
       (dotimes (i 100)
-        (multiple-value-bind (x y) 
+        (multiple-value-bind (x y)
             (operate operator algorithm (list '(cos (cos (sin (sin (sin y))))) '(1 2 3 4 5 6 7 8 9 10)))
           (test x)))
       ;; Create new functions with crossover #2 (expresion atom)

@@ -66,7 +66,7 @@
 
 (defun select-random-production (grammar productions production size weight-function)
   (let ((possible (sized-productions-for grammar productions production size)))
-    (car (random-element-prioridad-weigth-function possible weight-function))))
+    (car (random-element-priority-weigth-function possible weight-function))))
 
 (defun productions-for (grammar productions production)
   (declare (ignore grammar))
@@ -191,4 +191,3 @@
       (if (not (gethash k not-found-table))
           (appendf result (list (list (intern k) (intern k))))))
     result))
-      

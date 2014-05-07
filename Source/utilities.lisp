@@ -129,17 +129,17 @@
 
 (defun select-ranking-index-list (list value-function)
   (let ((result)
-        (suma-ranking 0)
+        (sum-ranking 0)
         (size (length list)))
     (dotimes (i size)
-      (incf suma-ranking (funcall value-function list i (nth i list))))
-    (let ((suma 0.0) 
-          (value (random-real 0 suma-ranking)))
+      (incf sum-ranking (funcall value-function list i (nth i list))))
+    (let ((sum 0.0) 
+          (value (random-real 0 sum-ranking)))
       (setf result 
             (do ((i 0 (1+ i)))
-                ((or (>= i size) (>= (+ suma (funcall value-function list i (nth i list))) value))
+                ((or (>= i size) (>= (+ sum (funcall value-function list i (nth i list))) value))
                  i)
-              (incf suma (funcall value-function list i (nth i list))))))
+              (incf sum (funcall value-function list i (nth i list))))))
     (nth result list)))
 
 (defun random-element (list) 
@@ -166,12 +166,12 @@
          value))
      selections)))
 
-(defun random-element-prioridad-index (list) 
+(defun random-element-priority-index (list) 
   "Answer a <list> random element."
   (select-ranking-index-list list 'lambda-weight-for-index-random-selection-list))
 
-(defun random-element-prioridad-weigth-function (list weigth-function) 
-  "Answer a <list> random element."
+(defun random-element-priority-weigth-function (list weigth-function) 
+  "Answer a <list> random element using <wight-function>."
   (select-ranking-index-list list weigth-function))
 
 (defmethod save-to-file ((object list) file-path &optional &key (tag "#base-model"))
@@ -194,10 +194,9 @@
 (defun load-object-from (path)
   (if (probe-file path)
       (eval (read-from-string (car (load-from-file path))))))
-	
+
 (defmethod load-lop-matrix-description (file-path)
-  "Loads objects from file specified by file-path. It optionally accepts a tag argument, used
-   to specify what kind of objects we want to load."
+  "Loads objects from <file-path>."
   (with-open-file (stream file-path)
     (let* ((size (read-from-string (format nil "(~A)" (read-line stream))))
            (result size))
@@ -256,7 +255,7 @@
    [1] to-vector, with elements start to end - 1
        from-vector copied into corresponding
        elements 0 to end - start - 1 of to-vector
- 
+
    Note: if to-vector is being created on the spot,
          might consider using CL's copy-seq instead."
   (replace to-vector from-vector :start2 start :end2 end))
