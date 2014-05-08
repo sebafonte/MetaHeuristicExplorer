@@ -23,16 +23,21 @@
    (check-phenotype :initarg :check-phenotype :initform nil :accessor check-phenotype)
    (fail-iterations :initarg :fail-iterations :accessor fail-iterations)))
 
-
 (defmethod initialize-instance :after ((p pane-explorer) &key key)
   "Initialize <p>."
   (declare (ignore key))
+  (initialize-defaults p))
+
+(defmethod initialize-defaults ((p pane-explorer))
   (setf (level (history p)) (get-value-for-property-named p 'history-level)
         (slot-value p 'parents)
         (make-instance 'population :count-individuals (number-parents p))
         (slot-value p 'children) 
         (make-instance 'population :count-individuals (number-children p)))
   (load-default-configuration p)
+  (update-pane-interface p))
+
+(defmethod update-pane-interface ((p pane-explorer))
   (remap-interface-population (interface p))
   (refresh-images p)
   (connect-interface p))

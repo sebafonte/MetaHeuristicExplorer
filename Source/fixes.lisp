@@ -62,3 +62,39 @@
 
 (defmethod copy-cyclic ((i compression-tree-language) &optional table new-object)
   (copy i))
+
+;; Patch to avoid missing behaviour when creating instances / load from serialized 'pane-explorer
+;;   The instance is created before the object executes it's most specific intialize-instance :after method.
+;;   So initialization code cannot be there, when a pane gets instanciated from serialization, interface is nill during the
+;;   execution of that method and we cant trust it should be there.
+(defmethod initialize-instance :after ((p pane-explorer) &key key)
+  "Initialize <p>."
+  (declare (ignore key))
+  (initialize-defaults p))
+
+(defmethod initialize-defaults ((p pane-explorer))
+  (setf (level (history p)) (get-value-for-property-named p 'history-level)
+        (slot-value p 'parents)
+        (make-instance 'population :count-individuals (number-parents p))
+        (slot-value p 'children) 
+        (make-instance 'population :count-individuals (number-children p)))
+  (load-default-configuration p))
+
+(defmethod new-from-description ((o pane-description))
+  "Answer a new instance of the pane described by <o>."
+  (let ((pane (pane o)))
+    (appendf (interface-arguments pane) 
+             (list :x (x o) :y (y o) :best-height (heigth o) :best-width (width o)))
+    (initialize-interface pane)
+    (open-pane pane :mdi-interface (interface *main-pane*))
+    (update-pane-interface pane)))
+
+(defun open-pane-explorer (interface data)
+  "Open a 'pane-explorer on <interface>."
+  (declare (ignore data))
+  (let ((pane (make-instance 'pane-explorer :mdi-interface (interface *main-pane*) :open nil)))
+    (update-pane-interface pane)
+    (open-pane pane :mdi-interface (interface *main-pane*))))
+
+(defmethod update-pane-interface ((pane t))
+  t)

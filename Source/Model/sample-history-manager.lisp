@@ -1,5 +1,5 @@
 
-(defclass sample-history-manager ()
+(defclass sample-history-manager (base-model)
   ((current-index :accessor current-index)
    (pages :initarg :pages :initform nil :accessor pages)
    (level :initarg :level :initform 3 :accessor level)))

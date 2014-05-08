@@ -464,8 +464,9 @@
     (set-model editor object)
     (open-pane editor)))
 
-(defmethod pane-entity-view-optimized-constants-function (interface data)
+(defun pane-entity-view-optimized-constants-function (interface data)
   "Open an editor with a constant optimized <interface> model copy."
+  (declare (ignore data))
   (let ((new-object (copy (model (pane (element-interface interface))))))
     (execute-optimization-on
      (system-get 'optimization-method-steepest-descent)

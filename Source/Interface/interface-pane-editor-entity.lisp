@@ -5,6 +5,7 @@
 (defconstant *title-pane-properties* "Properties")
 (defconstant *title-pane-parameters* "Parameters")
 
+
 (capi::define-interface interface-pane-editor-entity (interface-pane-editor-entity-base)
   ((pixmap :initform nil :accessor pixmap)
    (image-heigth :initform 0 :accessor image-heigth)
@@ -57,12 +58,6 @@
   (let ((selected-tab (assoc :selected-tab (to-pairlist keys))))
     (if selected-tab
         (setf (capi:choice-selection (tab i)) (cadr selected-tab)))))
-
-(defmethod ensure-selection-image-refresh ((i interface-pane-editor-entity) o)
-  "Ensures the image of <o> selected on <i> is refreshed when necessary."
-  (if (equal (capi:tab-layout-visible-child (tab i))
-             (pane-image i))
-      (set-image-model i o (pane-image i))))
 
 (defmethod set-model ((i interface-pane-editor-entity) (o t))
   "Set <o> as <i> model."
@@ -157,4 +152,9 @@
        (declare (ignore args))
        (setf (capi:choice-selection (tab i)) (capi:choice-selection (tab i))))))))
 
+(defmethod ensure-selection-image-refresh ((i interface-pane-editor-entity) o)
+  "Ensures the image of <o> selected on <i> is refreshed when necessary."
+  (if (equal (capi:tab-layout-visible-child (tab i))
+             (pane-image i))
+      (set-image-model i o (pane-image i))))
 
