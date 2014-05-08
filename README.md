@@ -55,7 +55,7 @@ Working on
 ----------
 Actually, many features not listed on the above features have to be tested because of some refactoring. Soon i expect to get  working again objects for experiments with:
 
-- Finding the description of a combination of algorithms to resolve a task
+- Finding the description of algorithms tree combination to resolve a task
 - Subroutine encapsulation for genetic programming
 - N-ary representation for classical evolutionary algorithms
 - OpenCL for fitness evaluation
