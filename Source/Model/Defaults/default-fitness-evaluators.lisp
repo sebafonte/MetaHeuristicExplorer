@@ -1,6 +1,13 @@
 
 (defun initialize-default-fitness-evaluators ()
   (system-add
+   ;; Evaluators for function-maximization-evaluator
+   (make-instance 'entity-function-maximization-evaluator
+                  :name 'function-maximization-evaluator
+                  :description "Function maximization"
+                  :target-program 'x
+                  :measure-start 0
+                  :measure-end 10)
    ;; Evaluators for entity-function-x
    (make-instance 'entity-function-x-evaluator
                   :name 'fine-0-10-function-x-evaluator

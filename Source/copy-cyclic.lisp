@@ -128,7 +128,7 @@
 
 (defun copy-simple-array-cyclic (array &optional table new-object)
   (let* ((dimensions (array-dimensions array))
-	 (new-array (make-array dimensions))
+	 (new-array (make-array dimensions :element-type (array-element-type array)))
 	 (n (first dimensions)))
     (do ((i 0 (1+ i)))
 	((> i (1- n)))

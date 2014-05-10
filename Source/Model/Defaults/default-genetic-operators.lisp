@@ -1,6 +1,11 @@
 
 (defun initialize-genetic-operators ()
   (system-add
+   ;; Binary operators
+   (make-instance 'one-point-array-crossover
+                  :name 'one-point-array-crossover)
+   (make-instance 'one-point-array-mutation
+                  :name 'one-point-array-mutation)
    ;;; TREE Operators
    ;; Crossover
    (make-instance 'subtree-crossover
@@ -268,3 +273,8 @@
         (list (system-get 'mutate-cfg)                 0.45)
         (list (system-get 'random-create-cfg)          0.1)
         (list (system-get 'shake-1)                    0.0)))
+
+(defun default-genetic-operators-probability-binary-ga ()
+  "Answer a structure with default operations with each normalized probability."
+  (list (list (system-get 'one-point-array-crossover)  0.9)
+        (list (system-get 'one-point-array-mutation)   0.1)))

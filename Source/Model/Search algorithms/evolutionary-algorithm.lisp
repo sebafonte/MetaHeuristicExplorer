@@ -9,7 +9,7 @@
    (breed-method :initarg :breed-method :accessor breed-method)
    (registry :initform (make-hash-table :test #'equal) :accessor registry)
    (max-unique-iterations :initarg :max-unique-iterations :accessor max-unique-iterations)
-   (constant-optimization :initarg :constant-optimization :accessor constant-optimization)
+   (local-optimization :initarg :local-optimization :accessor local-optimization)
    (elite-manager :initarg :elite-manager :accessor elite-manager)))
 
 
@@ -39,15 +39,15 @@
    (:name 'max-unique-iterations :label "Max iterations unique" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 0 :max-value 100000 :default-value 10 :editor 'one-line-lisp-editor
     :category "Parameters")
-   (:name 'constant-optimization :label "Constant optimization" :accessor-type 'accessor-accessor-type 
+   (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value nil :possible-values (optimization-strategies) 
     :editor 'configurable-copy-list-editor :category "Methods")))
 
 (defmethod copy ((object evolutionary-algorithm))
-  (setf (subject (constant-optimization object)) nil)
+  (setf (subject (local-optimization object)) nil)
   (let ((new-instance (copy-instance object)))
-    (setf (subject (constant-optimization new-instance)) new-instance
-          (subject (constant-optimization object)) object)
+    (setf (subject (local-optimization new-instance)) new-instance
+          (subject (local-optimization object)) object)
     new-instance))
 
 (defmethod all-individuals ((a evolutionary-algorithm))
@@ -79,7 +79,7 @@
   (trigger a :initial-population-generation-end (population a)))
 
 (defmethod execute-constant-local-optimization ((a evolutionary-algorithm))
-  (check-execute-optimization (constant-optimization a)))
+  (check-execute-optimization (local-optimization a)))
 
 (defmethod breed ((a evolutionary-algorithm))
   (breed-population (breed-method a) a))
