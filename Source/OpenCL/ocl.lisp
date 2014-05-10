@@ -478,10 +478,10 @@
             (fli:dereference error))))
 
 (defun create-read-buffer (context size &optional (host-ptr nil))
-  (create-buffer-helper context size 2 host-ptr))
+  (create-buffer-helper context size 0 host-ptr))
 
 (defun create-write-buffer (context size &optional (host-ptr nil))
-  (create-buffer-helper context size 9 host-ptr))
+  (create-buffer-helper context size 0 host-ptr))
 
 (defun dalloc (type initial-contents)
   (let ((length (length initial-contents)))
