@@ -24,6 +24,9 @@
   (declare (number min) (number max))
   (+ min (floor (* (park-miller-randomizer) (- max min)))))
 
+(defun random-bit ()
+  (random-integer 0 2))
+
 (defun /- (a b) 
   "Answer the value for the protected division of <a> by <b>."
   (declare (number a) (number b))

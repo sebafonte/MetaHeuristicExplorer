@@ -4,11 +4,10 @@
    (max-depth :initarg :max-depth :initform 8 :accessor max-depth)
    (max-depth-new-individuals :initarg :max-depth-new-individuals :initform 5 :accessor max-depth-new-individuals)
    (max-size-new-individuals :initarg :max-size-new-individuals :initform 10 :accessor max-size-new-individuals)
-   (max-depth-crossover-individuals 
-    :initarg :max-depth-crossover-individuals :initform 4 :accessor max-depth-crossover-individuals)
-   (max-depth-mutated-individuals 
-    :initarg :max-depth-mutated-individuals :initform 4 :accessor max-depth-mutated-individuals)
+   (max-depth-crossover :initarg :max-depth-crossover :initform 4 :accessor max-depth-crossover)
+   (max-depth-mutated :initarg :max-depth-mutated :initform 4 :accessor max-depth-mutated)
    (max-depth-mutated-subtree :initarg :max-depth-mutated-subtree :initform 3 :accessor max-depth-mutated-subtree)
+   (simplification-function :initarg :simplification-function :accessor simplification-function)
    (simplification-patterns :initarg :simplification-patterns :accessor simplification-patterns)
    (constants-strategy :initarg :constants-strategy :accessor constants-strategy)
    (functions :initarg :functions :initform nil :accessor functions)
@@ -35,6 +34,8 @@
      (:name 'constants-strategy :label "Constants" :accessor-type 'accessor-accessor-type
       :data-type 'object :possible-values factories :default-value (first factories) 
       :editor 'configurable-copy-list-editor)
+     (:name 'simplification-function :label "Edit function" :accessor-type 'accessor-accessor-type 
+      :data-type 'symbol :editor 'list-editor :possible-values (simplification-functions))
      (:name 'simplification-patterns :label "Edit patterns" :accessor-type 'accessor-accessor-type 
       :data-type 'list :editor 'list-editor :default-value nil)
      ;; Properties dependent of <o>
@@ -53,10 +54,10 @@
   "Answer wheter <node> represent a <language> function."
   (not (null (assoc node (functions language)))))
 
-(defmethod node-language-variable-p (node (language tree-language))
+(defmethod node-language-variable-p (node (l tree-language))
   "Answer wheter <node> represent a <language> variable."
   (block nil
-    (dolist (var (variables language))
+    (dolist (var (variables l))
       (if (eq var node) (return t)))))
 
 (defmethod node-variable-p (node (language tree-language))
@@ -75,12 +76,12 @@
   "Answer wheter <node> is a <language> constant."
   (node-constant-p (constants-strategy language) node))
 
-(defmethod subexp-constant-p (exp (language tree-language))
+(defmethod subexp-constant-p (exp (l tree-language))
   "Answer wheter <exp> is constant for <language>."
   (not 
    (if (atom exp)
-       (node-variable-p exp language)
-     (subexp-variable-p exp language))))
+       (node-variable-p exp l)
+     (subexp-variable-p exp l))))
 
 (defmethod subexp-variable-p (exp language)
   "Answer whether <exp> is variable for <language>."
@@ -89,3 +90,83 @@
     (if (subexp-variable-p (car exp) language) 
         t
       (subexp-variable-p (cdr exp) language))))
+
+(defmethod simplify ((l tree-language) exp)
+  (let ((simplification-function (simplification-function l)))
+    (if simplification-function
+        (apply simplification-function (list exp nil l))
+      exp)))
+
+(defun simplification-functions ()
+  '(simplify-strategy
+    simplify-polynomial
+    simplify-texture-deformation-separate
+    nil))
+
+(defmethod create-random-from-production ((l tree-language) terminal max-size weight-function)
+  (if (null weight-function) 
+      (setf weight-function #'lambda-weight-equal-random-selection-list))
+  (let* ((grammar (grammar l))
+         (exp-list terminal)
+         (productions (updated-productions grammar)))
+    ;; #REFACTOR: Check why it has been done in this way, i is never used
+    (do ((i 0))
+        ((all-keywords-in exp-list))
+      (setf exp-list (replace-random-production grammar exp-list productions max-size weight-function)))
+    (de-flatten-parenthesis (generate-random-token-values l exp-list))))
+
+(defun generate-random-token-values (language expression)
+  (let ((result))
+    (dolist (i expression)
+      (appendf result (list (create-random-token language i))))
+    result))
+
+(defmethod create-random-token (language (token (eql :var)))
+  "Answer a random value for <token>."
+  (random-element (variables language)))
+
+(defmethod create-random-token (language (token (eql :constant)))
+  "Answer a random value for <token>."
+  (create-constant (constants-strategy language)))
+
+(defmethod create-random-token (language (token symbol))
+  "Answer a random value for <token>."
+  (car (random-element
+        (select (tokens (grammar language))
+                (lambda (value) 
+                  (and (equal token (cadr value))
+                       (can-create-token language (car value))))))))
+
+(defmethod can-create-token (language token)
+  "Answer whether <language> can create <token> in a new random expression." 
+  (or (structural-symbol token)
+      (find-if (lambda (value) (equal token (car value)))
+               (functions language))))
+
+(defmethod arity-token ((l tree-language) word)
+  (arity-token (language grammar) word))
+
+(defun lambda-weight-for-index-random-selection-list (list position value)
+  (declare (ignore list) (ignore value))
+  (1+ position))
+
+(defun lambda-weight-equal-random-selection-list (list position value)
+  (declare (ignore list) (ignore position) (ignore value))
+  1)
+
+(defun lambda-weight-heuristic-1-random-selection-list (list position value)
+  "Select with index selection prioring to productions with more elements."
+  (declare (ignore list) (ignore position))
+  (tree-size (cdar value)))
+
+(defun lambda-weight-heuristic-2-random-selection-list (list position value)
+  "Always select the one with maximum elements."
+  (declare (ignore position))
+  (let* ((production-core (cdar value))
+         (max-size (tree-size (cdar (maximum-of list (lambda (value) (tree-size value)))))))
+    (if (equal (tree-size production-core) max-size)
+        1
+      0)))
+
+(defmethod prepare-children-language ((l tree-language) exp)
+  (simplify l exp))

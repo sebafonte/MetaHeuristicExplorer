@@ -31,8 +31,8 @@ Examples of use cases could be:
 
 Features
 --------
-- Three different evolutionary algorithms at the moment (generational, steady state and NSGA-II added recently).
-- Other heuristics like Clark & Wright savings algorithm for VRP problem.
+- Three different evolutionary algorithms at the moment (generational, steady-state and NSGA-II added recently)
+- Other heuristics like Clark & Wright savings algorithm for VRP problem
 - Objects for modeling problems as:
 	- Symbolic regression on lisp expressions
 	- Symbolic regression using grammar guided operators

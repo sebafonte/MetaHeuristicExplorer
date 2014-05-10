@@ -111,10 +111,8 @@
             "Model\\Operators\\subtree-crossover.lisp"
             "Model\\Operators\\mutations.lisp"
             "Model\\Operators\\branch-delete.lisp"
-            "Model\\Operators\\default-genetic-operators.lisp"
-            "Model\\Operators\\one-point-array-crossover.lisp"
+            "Model\\Operators\\one-point-array-operators.lisp"
             "Model\\Operators\\array-mutation.lisp"
-            "Model\\Operators\\array-permutation-operations.lisp"
             "Model\\Operators\\sample-vrp-operations.lisp"
             "Model\\Operators\\sample-vrp-crossover-ox.lisp"
             ;; Languages
@@ -132,6 +130,7 @@
             "Model\\Languages\\search-task-grammar.lisp"
             "Model\\Languages\\search-algorithm-grammar.lisp"
             "Model\\Languages\\language.lisp"
+            "Model\\Languages\\binary-language.lisp"
             "Model\\Languages\\tree-language.lisp"
             "Model\\Languages\\search-algorithm-language.lisp"
             "Model\\Languages\\cfg-tree-language.lisp"
@@ -223,7 +222,8 @@
             "Model\\log-inspector.lisp"
             "Model\\log-data-container.lisp"
             "Model\\log-data.lisp"
-            ;; Default objects 
+            ;; Default objects
+            "Model\\Defaults\\default-genetic-operators.lisp"
             "Model\\Defaults\\default-constant-factory.lisp"
             "Model\\Defaults\\default-grammars.lisp"
             "Model\\Defaults\\default-languages.lisp"

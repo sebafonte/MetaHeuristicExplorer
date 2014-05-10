@@ -6,10 +6,8 @@
    (max-depth :initarg max-depth :initform 8 :accessor max-depth)
    (max-depth-new-individuals :initarg :max-depth-new-individuals :initform 5 :accessor max-depth-new-individuals)
    (max-size-new-individuals :initarg :max-size-new-individuals :initform 10 :accessor max-size-new-individuals)
-   (max-depth-crossover-individuals :initarg :max-depth-crossover-individuals :initform 4 
-                                    :accessor max-depth-crossover-individuals)
-   (max-depth-mutated-individuals :initarg :max-depth-mutated-individuals :initform 4 
-                                  :accessor max-depth-mutated-individuals)
+   (max-depth-crossover :initarg :max-depth-crossover :initform 4 :accessor max-depth-crossover)
+   (max-depth-mutated :initarg :max-depth-mutated :initform 4 :accessor max-depth-mutated)
    (max-depth-mutated-subtree :initarg :max-depth-mutated-subtree :initform 3 :accessor max-depth-mutated-subtree)
    (max-size :initarg :max-size :initform 16 :accessor max-size)
    (constants-strategy :initarg :constants-strategy :accessor constants-strategy)))
@@ -35,7 +33,7 @@
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
    (:name 'constants-strategy :label "Constants" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value (system-get-copy 'default-fixed-set-numerical-1) :editor 'list-editor)
-   (:name 'max-depth-mutated-individuals :label "Max depth mutated child" :accessor-type 'accessor-accessor-type 
+   (:name 'max-depth-mutated :label "Max depth mutated child" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
    (:name 'max-depth-mutated-subtree :label "Max depth mutated subtree" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)))

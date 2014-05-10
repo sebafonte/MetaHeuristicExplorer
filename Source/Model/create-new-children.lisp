@@ -5,6 +5,12 @@
   (let ((child (operate operation (language algorithm) parents)))
     (prepare-children-from o child algorithm)))
 
+(defmethod create-child ((o entity-function-maximization) algorithm operation parents)
+  "Perform <operation> to <parents>, then perform corrections and simplifications."
+  (let* ((program-list (mapcar (lambda (i) (program i)) parents))
+         (new-expression (operate operation (language algorithm) program-list)))
+    (prepare-children-from o new-expression algorithm)))
+
 (defmethod create-child ((o entity-function) algorithm operation parents)
   "Perform <operation> to <parents>, then perform corrections and simplifications."
   (let* ((program-list (mapcar (lambda (i) (program i)) parents))
