@@ -105,7 +105,7 @@
          (operation (select-genetic-operation a))
          (parents (perform-selection (selection-method a) (population a) (arity operation)))
          (programs (mapcar (lambda (i) (program i)) parents)))
-    (create-new-children child operation a programs)
+    (create-child child operation a programs)
     (when evaluate (evaluate a child))
     child))
 
@@ -120,11 +120,11 @@
     ;; Iterate to get an unique child
     (do ((i 0 (1+ i)))
         ((or created (>= i max-iterations)))
-      (create-new-children child a operation parents)
+      (create-child child a operation parents)
       (setf created (not (gethash (program child) registry))))
     ;; #LOG: Random creation
     (when (not created) 
-      (create-new-valid-children child a parents))
+      (create-valid-child child a parents))
     ;; Register child in hash table
     (setf (gethash (program child) registry) t)
     child))

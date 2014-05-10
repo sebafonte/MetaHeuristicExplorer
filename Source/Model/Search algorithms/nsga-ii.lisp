@@ -158,7 +158,7 @@ D: 2, 4, 1
   (let ((p (population a)))
     (fast-nondominated-sort a p)
     (register-best-individual a p)
-    ;; Create children using #'create-new-children which uses #'better-rank
+    ;; Create children using #'create-child which uses #'better-rank
     (let* ((selected (select-from a (loop for i from 0 to (1- (population-size a)) collect i) (population-size a)))
            (children (reproduce-child a selected (population-size a))))
       ;; #TODO: This could be avoided, this is done in the next step?
@@ -273,7 +273,7 @@ D: 2, 4, 1
              ;; #TODO: Avoid population instanciation (profile)
              (population (make-population-with individuals))
              (parents (perform-selection (selection-method a) population (arity operation))))
-        (create-new-children child a operation parents)
+        (create-child child a operation parents)
         (when evaluate (evaluate a child))
         (appendf result (list child))))
     result))
@@ -301,7 +301,7 @@ D: 2, 4, 1
   (if (or (eql a +1D++0) (eql b +1D++0))
       +1D++0
     (+ a b)))
-      
+
 (defmethod objetive-value ((a nsga-ii) (o entity) (objetive t))
   (declare (ignore a))
   (value-for-objetive objetive o))

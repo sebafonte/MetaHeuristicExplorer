@@ -300,7 +300,7 @@
             ;; Local search methods
             "Model\\Local search methods\\steepest-descent-1.lisp"
             ;; Other
-            "Model\\create-new-children.lisp"
+            "Model\\create-child.lisp"
             "copy-cyclic.lisp"
             "command-line-functions.lisp"
             "Model\\Reporting\\reporting.lisp"

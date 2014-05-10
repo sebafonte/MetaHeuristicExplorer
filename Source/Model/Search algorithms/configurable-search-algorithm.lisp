@@ -343,14 +343,14 @@
     (gp:free-image-access access)
     image))
 
-(defmethod create-new-children ((o configurable-search-algorithm) algorithm operation parents)
+(defmethod create-child ((o configurable-search-algorithm) algorithm operation parents)
   "Perform <operation> to <parents>, perform final corrections and simplifications.
    The result replaces <o> geneotype."
   (let* ((parent-programs (mapcar (lambda (i) (program i)) parents))
          (new-expression (operate operation (language algorithm) parent-programs)))
     (prepare-children-from o new-expression algorithm)))
 
-(defmethod create-new-valid-children ((o configurable-search-algorithm) algorithm parents)
+(defmethod create-valid-child ((o configurable-search-algorithm) algorithm parents)
   "Perform <operation> to <parents>, perform final corrections and simplifications.
    The result replaces <o> geneotype."
   (let* ((parent-programs (mapcar (lambda (i) (program i)) parents))

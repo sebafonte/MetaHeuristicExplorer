@@ -1,4 +1,4 @@
-(defmethod create-new-children ((o entity-function) algorithm operacion parents)
+(defmethod create-child ((o entity-function) algorithm operacion parents)
   "Perform <operation> to <parents>, perform final corrections and simplifications.
    The result replaces <o> geneotype."
   (let* ((program-list (mapcar (lambda (i) (program i)) parents))
