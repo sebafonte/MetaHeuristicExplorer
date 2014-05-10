@@ -87,10 +87,6 @@
   "Answer the published actions for <o>."
   nil)
 
-(defmethod prepare-children-from ((o entity) expression algorithm)
-  "Prepares <o> to behave like <expression>."
-  (setf (program o) (simplify (language algorithm) expression)))
-
 (defmethod default-language ((o entity))
   (first (possible-languages o)))
 
@@ -106,4 +102,9 @@
 
 (defmethod equals ((a entity) (b entity))
   (equals (program a) (program b)))
+
+;; #TODO: REFACTORING
+(defmethod prepare-children-from ((o entity) exp algorithm)
+  "Prepares <o> to behave like <expression>."
+  (setf (program o) (prepare-children-language (language algorithm) exp)))
 

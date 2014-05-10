@@ -8,11 +8,11 @@
 (defmethod initialize-properties :after ((a steady-state-algorithm))
   "Initialize <a> properties."
   ;; Constant optimization properties
-  (let ((constant-optimization (copy (system-get 'default-iterational-optimization-strategy)))
+  (let ((local-optimization (copy (system-get 'default-iterational-optimization-strategy)))
         (simplification-optimization (copy (system-get 'default-iterational-optimization-strategy))))
-    (setf (subject constant-optimization) a
+    (setf (subject local-optimization) a
           (subject simplification-optimization) a
-          (max-iterations constant-optimization) nil
+          (max-iterations local-optimization) nil
           (max-iterations simplification-optimization) nil)
     ;; Properties
     (add-properties-from-values
@@ -27,8 +27,8 @@
      (:name 'breed-method :label "Breed method" :accessor-type 'accessor-accessor-type :data-type 'object 
       :default-value (system-get 'full-population-breeding) :possible-values (list (system-get 'full-population-breeding))
       :editor 'configurable-copy-list-editor :category "Methods")
-     (:name 'constant-optimization :label "Constant optimization" :accessor-type 'accessor-accessor-type 
-      :data-type 'symbol :default-value constant-optimization :possible-values (optimization-strategies) 
+     (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
+      :data-type 'symbol :default-value local-optimization :possible-values (optimization-strategies) 
       :editor 'configurable-copy-list-editor :category "Methods")
      (:name 'simplification-optimization :label "Simplification optimization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value simplification-optimization :possible-values (optimization-strategies) 

@@ -36,7 +36,7 @@ D: 2, 4, 1
    (population-size :initarg :population-size :accessor population-size)
    (selection-method :initarg :selection-method :accessor selection-method)
    (initialization-method :initarg :initialization-method :accessor initialization-method)
-   (constant-optimization :initarg :constant-optimization :accessor constant-optimization)
+   (local-optimization :initarg :local-optimization :accessor local-optimization)
    (registry :initform (make-hash-table :test #'eql) :accessor registry)
    (max-generations :initarg :max-generations :initform 100 :accessor max-generations)
    ;; #TODO: Check if move this to fitness evaluator
@@ -74,7 +74,7 @@ D: 2, 4, 1
      (:name 'initialization-method :label "Initialization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value (system-get 'random-trees-initializer)
       :possible-values (system-population-initializer-methods) :editor 'configurable-copy-list-editor)
-     (:name 'constant-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
+     (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value nil :possible-values (optimization-strategies) 
       :editor 'configurable-copy-list-editor)
      (:name 'best :label "Best individual" :accessor-type 'accessor-accessor-type :read-only t
@@ -100,12 +100,12 @@ D: 2, 4, 1
   (get-random-element (operators a)))
 
 (defmethod copy ((o nsga-ii))
-  (when (constant-optimization o)
-    (setf (subject (constant-optimization o)) nil))
+  (when (local-optimization o)
+    (setf (subject (local-optimization o)) nil))
   (let ((new-instance (copy-instance o)))
-    (when (constant-optimization o)
-      (setf (subject (constant-optimization new-instance)) new-instance
-            (subject (constant-optimization o)) o))
+    (when (local-optimization o)
+      (setf (subject (local-optimization new-instance)) new-instance
+            (subject (local-optimization o)) o))
     new-instance))
 
 (defmethod default-progress-indicator-value ((a nsga-ii))

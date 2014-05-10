@@ -7,9 +7,9 @@
 (defmethod initialize-properties :after ((a generational-algorithm))
   "Initialize <a> properties."
   ;; Initialize optimization strategy
-  (let ((constant-optimization (system-get-copy 'default-generational-optimization-strategy)))
-    (setf (subject constant-optimization) a
-          (max-generations constant-optimization) nil)
+  (let ((local-optimization (system-get-copy 'default-generational-optimization-strategy)))
+    (setf (subject local-optimization) a
+          (max-generations local-optimization) nil)
     ;; Initialize default properties
     (add-properties-from-values
      a
@@ -21,8 +21,8 @@
      (:name 'breed-method :label "Breed method" :accessor-type 'accessor-accessor-type :data-type 'object 
       :default-value (system-get 'full-population-breeding) :possible-values (list (system-get 'full-population-breeding))
       :editor 'configurable-copy-list-editor :category "Methods")
-     (:name 'constant-optimization :label "Constant optimization" :accessor-type 'accessor-accessor-type 
-      :data-type 'object :default-value constant-optimization :possible-values (optimization-strategies) 
+     (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
+      :data-type 'object :default-value local-optimization :possible-values (optimization-strategies) 
       :editor 'configurable-copy-list-editor))))
 
 (defmethod search-loop ((a generational-algorithm) seed)
@@ -31,7 +31,7 @@
   ;; Initialize population
   (generate-initial-population a)
   ;; Generational loop
-  (do ((generation 1 (1+ generation)))      
+  (do ((generation 1 (1+ generation)))
       ((test-termination a generation))
     (setf (generation a) generation)
     ;; Breed population
