@@ -36,11 +36,7 @@
     create-new-first-parent-program-copy))
 
 (defmethod create-new-random-valid ((l language) parents)
-  (declare (ignore parents))
-  (let* ((max-size (max-size-new-individuals l))
-         (max-depth (max-depth-new-individuals l))
-         (new-random-exp (create-expresion l max-size max-depth t t)))
-    (simplify l new-random-exp)))
+  (error "Subclass responsibility"))
 
 (defmethod create-new-first-parent-program-copy ((l language) parents)
   (copy (program (first parents))))

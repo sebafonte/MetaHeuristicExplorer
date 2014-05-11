@@ -7,12 +7,12 @@
                   :name 'binary-language-32
                   :valid-new-expresion-function 'create-new-random-valid
                   :operators (default-genetic-operators-probability-binary-ga)
-                  :bits 32)
+                  :elements 32)
    (make-instance 'binary-language 
                   :name 'binary-language-64
                   :valid-new-expresion-function 'create-new-random-valid
                   :operators (default-genetic-operators-probability-binary-ga)
-                  :bits 64)
+                  :elements 64)
    ;; Languages for simple math expressions
    (make-instance 'cfg-tree-language 
                   :name 'lisp-math-function-x 

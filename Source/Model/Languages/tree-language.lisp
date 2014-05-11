@@ -103,6 +103,13 @@
     simplify-texture-deformation-separate
     nil))
 
+(defmethod create-new-random-valid ((l tree-language) parents)
+  (declare (ignore parents))
+  (let* ((max-size (max-size-new-individuals l))
+         (max-depth (max-depth-new-individuals l))
+         (new-random-exp (create-expresion l max-size max-depth t t)))
+    (simplify l new-random-exp)))
+
 (defmethod create-random-from-production ((l tree-language) terminal max-size weight-function)
   (if (null weight-function) 
       (setf weight-function #'lambda-weight-equal-random-selection-list))
