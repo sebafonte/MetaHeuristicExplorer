@@ -1,65 +1,65 @@
 
-(defun weight-nodes-print (expresion function language &optional (include-functions nil))
-  "Answer node probability selection list for <expression> in order, using <function> for probability assignment.
+(defun weight-nodes-print (exp function language &optional (include-functions nil))
+  "Answer node probability selection list for <exp> in order, using <function> for probability assignment.
    #NOTE: Slow print version."
   (let ((selection-subtrees)
         (selection-indexes)
         (index 0)
         (sum 0))
-    (labels ((weight-nodes-recursive (expresion function tree-node-p)
+    (labels ((weight-nodes-recursive (exp function tree-node-p)
                ;; Conditions
-               (format t "Received  ~A ~A~%" expresion index)
+               (format t "Received  ~A ~A~%" exp index)
                (if (and tree-node-p 
                         (or include-functions 
-                            (not (function-symbol-p expresion language))))
-                   (let ((p (apply function (list expresion index-current))))
-                     (format t "Put  ~A ~A~%" expresion index)
+                            (not (function-symbol-p exp language))))
+                   (let ((p (apply function (list exp index-current))))
+                     (format t "Put  ~A ~A~%" exp index)
                      (incf sum p) 
-                     (push (cons expresion p) selection-subtrees)
+                     (push (cons exp p) selection-subtrees)
                      (push (cons index p) selection-indexes)
                      (incf index)))
                ;; Go thru CAR and CDR
-               (when (consp expresion)
-                 (weight-nodes-recursive (car expresion) function t)
-                 (weight-nodes-recursive (cdr expresion) function nil))))
+               (when (consp exp)
+                 (weight-nodes-recursive (car exp) function t)
+                 (weight-nodes-recursive (cdr exp) function nil))))
       ;; Recursive function call
-      (weight-nodes-recursive expresion function t))
+      (weight-nodes-recursive exp function t))
     ;; Process results (reverse)
     (dolist (i selection-subtrees) (setf (cdr i) (/- (cdr i) sum)))
     (dolist (i selection-indexes) (setf (cdr i) (/- (cdr i) sum)))
     (values (reverse selection-subtrees)
             (reverse selection-indexes))))
 
-(defun weight-nodes (expresion function language &optional (include-functions nil))
-  "Answer node probability selection list for <expression> in order, using <function> for probability assignment."
+(defun weight-nodes (exp function language &optional (include-functions nil))
+  "Answer node probability selection list for <exp> in order, using <function> for probability assignment."
   (let ((selection-indexes)
         (sum 0)
         (last 0)
         (index-current 0)
         (index-global 0))
-    (labels ((weight-nodes-recursive (expresion function tree-node-p)
+    (labels ((weight-nodes-recursive (exp function tree-node-p)
                ;; Conditions
                (if (and tree-node-p 
                         (or include-functions
-                            (not (function-symbol-p expresion language))))
-                   (let ((p (apply function (list expresion index-current))))
+                            (not (function-symbol-p exp language))))
+                   (let ((p (apply function (list exp index-current))))
                      (incf index-current)
                      (incf sum p)
                      (push p selection-indexes)))
                (incf index-global)
                ;; Go thru CAR and CDR
-               (when (consp expresion)
-                 (weight-nodes-recursive (car expresion) function t)
-                 (weight-nodes-recursive (cdr expresion) function nil))))
-      (weight-nodes-recursive expresion function t))
+               (when (consp exp)
+                 (weight-nodes-recursive (car exp) function t)
+                 (weight-nodes-recursive (cdr exp) function nil))))
+      (weight-nodes-recursive exp function t))
     (mapcar (lambda (i) (incf last (/ i sum))) 
             (nreverse selection-indexes))))
 
-(defun get-random-subtree-index (expresion function language &optional (include-functions nil))
-  "Answer the index for a random <expression> subtree."
+(defun get-random-subtree-index (exp function language &optional (include-functions nil))
+  "Answer the index for a random <exp> subtree."
   (block nil
     (let ((value (park-miller-randomizer))
-          (cumulative-list (weight-nodes expresion function language include-functions))
+          (cumulative-list (weight-nodes exp function language include-functions))
           (index 0))
       ;; When value >= 1 (maybe cuz low precision) answer the last element
       (cond ((zerop value) 0)
@@ -69,39 +69,39 @@
                  (incf index)))))))
 
 ;;; #NOTE: Nodes weight functions for selection with arguments
-(defun weight-nodes-with-arguments (expresion function language &optional (include-functions nil) (arguments nil))
-  "Answer node probability selection list for <expression> in order, using <function> for probability assignment.
+(defun weight-nodes-with-arguments (exp function language &optional (include-functions nil) (arguments nil))
+  "Answer node probability selection list for <exp> in order, using <function> for probability assignment.
   #NOTE: With arguments function version."
   (let ((selection-indexes)
         (sum 0)
         (last 0)
         (index-current 0)
         (index-global 0))
-    (labels ((weight-nodes-recursive (expresion function tree-node-p arguments)
+    (labels ((weight-nodes-recursive (exp function tree-node-p arguments)
                ;; Conditions
                (if (and tree-node-p 
                         (or include-functions
-                            (not (function-symbol-p expresion language))))
-                   (let ((p (apply function (list expresion index-current (list language arguments)))))
+                            (not (function-symbol-p exp language))))
+                   (let ((p (apply function (list exp index-current (list language arguments)))))
                      (incf index-current)
                      (incf sum p)
                      (push p selection-indexes)))
                (incf index-global)
                ;; Go thru CAR and CDR
-               (when (consp expresion)
-                 (weight-nodes-recursive (car expresion) function t arguments)
-                 (weight-nodes-recursive (cdr expresion) function nil arguments))))
-      (weight-nodes-recursive expresion function t arguments))
+               (when (consp exp)
+                 (weight-nodes-recursive (car exp) function t arguments)
+                 (weight-nodes-recursive (cdr exp) function nil arguments))))
+      (weight-nodes-recursive exp function t arguments))
     (mapcar (lambda (i) (incf last (/ i sum))) 
             (nreverse selection-indexes))))
 
-(defun get-random-subtree-index-with-arguments (expresion function language &optional (include-functions nil) (arguments nil))
-  "Answer the index for a random <expression> subtree.
+(defun get-random-subtree-index-with-arguments (exp function language &optional (include-functions nil) (arguments nil))
+  "Answer the index for a random <exp> subtree.
   #NOTE: With arguments function version."
   (block nil
     (let ((value (park-miller-randomizer))
           (cumulative-list (weight-nodes-with-arguments 
-                            expresion function language include-functions arguments))
+                            exp function language include-functions arguments))
           (index 0))
       ;; When value >= 1 (maybe cuz low precision) answer the last element
       (cond ((zerop value) 0)
@@ -136,11 +136,11 @@
   (tree-size subtree))
 
 ;; #TODO: Make max-depth condition work
-(defun node-selection-function-size-with-subexp (subtree new-expression algorithm expresion)
+(defun node-selection-function-size-with-subexp (subtree new-expression algorithm exp)
   "Answer the probability to select <subtree>.
   #NOTE: Select nodes where replacing new-expression, result will not exceed <algorithm> max-depth/max-size."
   (declare (ignore index))
-  (if (and (<= (+ (tree-size new-expression) (tree-size expresion) (- (tree-size subtree)))
+  (if (and (<= (+ (tree-size new-expression) (tree-size exp) (- (tree-size subtree)))
                (max-size algorithm))
            (not (function-symbol-p subtree algorithm))
            t)

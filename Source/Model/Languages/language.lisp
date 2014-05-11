@@ -39,8 +39,8 @@
   (declare (ignore parents))
   (let* ((max-size (max-size-new-individuals l))
          (max-depth (max-depth-new-individuals l))
-         (new-random-expression (create-expresion l max-size max-depth t t)))
-    (simplify l new-random-expression)))
+         (new-random-exp (create-expresion l max-size max-depth t t)))
+    (simplify l new-random-exp)))
 
 (defmethod create-new-first-parent-program-copy ((l language) parents)
   (copy (program (first parents))))

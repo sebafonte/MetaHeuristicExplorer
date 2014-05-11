@@ -13,18 +13,18 @@
     (< (evaluate evaluator b) max-fitness)))
 
 (defmethod default-search-object ((test test-core-objects) &optional &key 
-                                  (expression '(+ (* x x) 7)) 
+                                  (exp '(+ (* x x) 7)) 
                                   (class 'entity-function-x-y))
   "Answer a default object for <test>."
-  (make-instance class :gen expression))
+  (make-instance class :gen exp))
 
 (defmethod test-reinitialize-properties-process-language ((o test-core-objects))
   "Verifies whether a algorithm reinitialize dependent properties for <o>."
   (let* ((algorithm (default-algorithm o))
          (context (context algorithm)))
-    (setf (language context) (copy (language context)))
-    (setf (slot-value (language context) 'operators) 'some-value)
-    (setf (objetive-class context) 'entity-function-x)
+    (setf (language context) (copy (language context))
+          (slot-value (language context) 'operators) 'some-value
+          (objetive-class context) 'entity-function-x)
     (check (not (equal 'some-value (operators (language context)))))))
 
 (defmethod test-fitness-evaluation-case-comparison ((o test-entity-x))

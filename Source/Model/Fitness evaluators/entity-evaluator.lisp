@@ -14,7 +14,7 @@
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :default-value nil 
     :data-type 'string :editor 'text-editor)
    (:name 'solution-fitness :label "Solution fitness" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :min-value 0 :max-value 10 :default-value 9.98 :editor 'number-editor)
+    :data-type 'number :min-value 0 :max-value 10 :default-value nil :editor 'number-editor)
    (:name 'min-fitness :label "Min fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 10 :default-value 0 :editor 'number-editor)
    (:name 'max-fitness :label "Max fitness" :accessor-type 'accessor-accessor-type 

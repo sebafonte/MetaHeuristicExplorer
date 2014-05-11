@@ -12,6 +12,8 @@
    (:name 'fitness-function :label "Fitness function" :default-value #'evaluate-distance
     :possible-values (possible-fitness-functions o) :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :editor 'list-editor :subject o)
+   (:name 'solution-fitness :label "Solution fitness" :accessor-type 'accessor-accessor-type 
+    :data-type 'number :min-value 0 :max-value 10 :default-value 9.98 :editor 'number-editor)
    (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
     :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor :subject o)))
 

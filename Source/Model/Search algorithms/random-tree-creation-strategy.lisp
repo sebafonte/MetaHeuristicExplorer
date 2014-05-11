@@ -5,9 +5,9 @@
 
 (defmethod create-individual ((a random-tree-creation-strategy) &optional (evaluate t))
   "Answer a new individual for <a>."
-  (let* ((new-expression (create-expresion a (max-size a) (max-depth a) t nil))
-         (simplified-expression (simplify-strategy (language a) new-expression a))
-         (child (make-instance (objetive-class (context a)) :expresion simplified-expression)))
+  (let* ((new-exp (create-expresion a (max-size a) (max-depth a) t nil))
+         (simplified-exp (simplify-strategy (language a) new-exp a))
+         (child (make-instance (objetive-class (context a)) :expresion simplified-exp)))
     (when evaluate (evaluate a child))
     child))
 

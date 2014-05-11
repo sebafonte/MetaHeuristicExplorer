@@ -229,8 +229,8 @@
 (defmethod breed-individual-into ((e evolver) source-population target-population)
   (let* ((algorithm (algorithm e))
          (operation (select-operation e))
-         (new-expression (execute-operation-on operation algorithm))
-         (object (make-instance (objetive-class algorithm) :expresion new-expression)))
+         (new-exp (execute-operation-on operation algorithm))
+         (object (make-instance (objetive-class algorithm) :expresion new-exp)))
     (replace-individual-into e operation object target-population)))
 
 (defmethod register-run-data ((e evolver))
@@ -347,8 +347,8 @@
   "Perform <operation> to <parents>, perform final corrections and simplifications.
    The result replaces <o> geneotype."
   (let* ((parent-programs (mapcar (lambda (i) (program i)) parents))
-         (new-expression (operate operation (language algorithm) parent-programs)))
-    (prepare-children-from o new-expression algorithm)))
+         (new-exp (operate operation (language algorithm) parent-programs)))
+    (prepare-children-from o new-exp algorithm)))
 
 (defmethod create-valid-child ((o configurable-search-algorithm) algorithm parents)
   "Perform <operation> to <parents>, perform final corrections and simplifications.

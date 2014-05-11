@@ -15,7 +15,7 @@
     (format t "~%~%Average size: ~A ~%Average fitness: ~A~%" 
             (float (/ size-total (length population))) 
             (float (/ fitness-total (length population))))))
-			
+
 ;; #TODO: Add option to print population
 (defun print-subtasks (&optional &key print-population)
   "Print sysem subtasks state info."
@@ -23,7 +23,7 @@
   (dolist (p *search-subtasks*)
     (print-state p)))
 
-(defun print-subtasks-result (&optional &key print-expression)
+(defun print-subtasks-result (&optional &key print-exp)
   "Print sysem subtasks result info."
   (if *search-subtasks*
     (let ((best-of-all)
@@ -39,7 +39,7 @@
                 (name p)
                 (generation (algorithm p))
                 (fitness (best-individual (algorithm p)))
-                (if print-expression (program best) "")))
+                (if print-exp (program best) "")))
       ;; Print subtasks result (general)
       (format t "~%Subtasks: ~A (~A good)~%Best fitness: ~A -   ~A~%~%"
               (length *search-subtasks*)

@@ -48,21 +48,19 @@
     (dotimes (i 6)
       (let ((max-size (1+ i)))
         (dotimes (j 25)
-          (let ((expression (create-random-from-production
-                             language '(start) max-size 'lambda-weight-equal-random-selection-list)))
-            (check (<= (tree-size expression) max-size))))))))
+          (let ((exp (create-random-from-production
+                      language '(start) max-size 'lambda-weight-equal-random-selection-list)))
+            (check (<= (tree-size exp) max-size))))))))
 
 (defmethod test-code-generation-functions ((o test-tree-cfg-language))
- (let ((language (default-tree-cfg-language o)))
-  (dotimes (j 50)
-    (let ((expression (create-random-from-production 
-                       language '(start) 20 'lambda-weight-equal-random-selection-list)))
-      (dolist (i (flatten expression))
-        (check (or (numberp i)
-                   (equal 'x i)
-                   (equal 'y i)
-                   (equal '+ i)
-                   (equal 'abs i))))))))
-
-
+  (let ((language (default-tree-cfg-language o)))
+    (dotimes (j 50)
+      (let ((exp (create-random-from-production 
+                  language '(start) 20 'lambda-weight-equal-random-selection-list)))
+        (dolist (i (flatten exp))
+          (check (or (numberp i)
+                     (equal 'x i)
+                     (equal 'y i)
+                     (equal '+ i)
+                     (equal 'abs i))))))))
 

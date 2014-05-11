@@ -5,9 +5,10 @@
    (make-instance 'entity-function-maximization-evaluator
                   :name 'function-maximization-evaluator
                   :description "Function maximization"
-                  :target-program 'x
-                  :measure-start 0
-                  :measure-end 10)
+                  :target-program '(+ 1 (* x (sin (* 10 pi x))))
+                  :decode-function 'decode-to-double
+                  :measure-start -1.0
+                  :measure-end 2.0)
    ;; Evaluators for entity-function-x
    (make-instance 'entity-function-x-evaluator
                   :name 'fine-0-10-function-x-evaluator
