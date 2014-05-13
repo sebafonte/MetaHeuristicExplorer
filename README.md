@@ -1,5 +1,5 @@
-MetaExplorer
-============
+MetaHeuristicExplorer
+=====================
 
 An object oriented application intended for design of experiments using metaheuristics. 
 
