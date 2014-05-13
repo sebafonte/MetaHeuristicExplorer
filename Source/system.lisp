@@ -266,6 +266,7 @@
             "Interface\\pane-principal.lisp"
             "Interface\\pane-search-tasks.lisp"
             "Interface\\pane-subtasks.lisp"
+            "Interface\\pane-task-creator.lisp"
             "Interface\\pane-map.lisp"
             "Interface\\drag-and-drop.lisp"
             "Interface\\pane-test-runner.lisp"

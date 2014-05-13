@@ -120,6 +120,10 @@
                  (make-instance 'capi:toolbar-button :image 9 :selected-image 9
                                 :help-key "Pane properties"
                                 :selection-callback 'menu-pane-subtasks-properties
+                                :callback-type :interface-data)
+                 (make-instance 'capi:toolbar-button :image 11 :selected-image 11
+                                :help-key "Tasks creator"
+                                :selection-callback 'menu-pane-tasks-creator
                                 :callback-type :interface-data))
            :selection nil))
     :callback-type :interface-data

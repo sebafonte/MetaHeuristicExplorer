@@ -63,6 +63,7 @@
             "Model\\sample-history-manager.lisp"
             ;; Entities
             "Model\\Entities\\entity-function.lisp"
+            "Model\\Entities\\entity-function-maximization.lisp"
             "Model\\Entities\\entity-function-x.lisp"
             "Model\\Entities\\entity-function-x-y.lisp"
             "Model\\Entities\\entity-image-bw.lisp"
@@ -166,7 +167,8 @@
             "Model\\Tasks and search distribution\\search-task.lisp"
             "Model\\Tasks and search distribution\\print-tasks.lisp"
             ;; Fitness evaluators
-            "Model\\Fitness evaluators\\entity-evaluator.lisp"            
+            "Model\\Fitness evaluators\\entity-evaluator.lisp"       
+            "Model\\Fitness evaluators\\entity-function-maximization-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-x-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-x-values-evaluator.lisp"
@@ -268,6 +270,7 @@
             "Interface\\pane-principal.lisp"
             "Interface\\pane-search-tasks.lisp"
             "Interface\\pane-subtasks.lisp"
+            "Interface\\pane-task-creator.lisp"
             "Interface\\pane-map.lisp"
             "Interface\\drag-and-drop.lisp"
             "Interface\\pane-test-runner.lisp"
@@ -370,7 +373,6 @@
   ((:in-order-to :compile :all
     (:requires (:load :previous)))))
 
-;; #TODO: Check if necessary still to have to compile the system two times
 (setf *system* (compile-system 'gp-tool :force t :load t))
 
 ;; #FIX: Patch for search-task-sample-language tests
