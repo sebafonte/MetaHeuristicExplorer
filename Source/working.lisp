@@ -1,5 +1,4 @@
 
- 
 (defun feasible-size-depth-fix-check (program language parent-a parent-b)
   (declare (ignore parent-b))
   (if (or (> (tree-depth program) (max-depth language))

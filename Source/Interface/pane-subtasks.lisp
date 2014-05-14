@@ -219,7 +219,7 @@
 
 (defun menu-pane-tasks-creator (interface data)
   (declare (ignore data))
-  (let ((pane (make-instance 'pane-task-creator :model (model (pane interface)) :mdi-interface interface)))
+  (let ((pane (make-instance 'pane-task-creator :task (model (pane interface)) :mdi-interface interface)))
     (open-pane pane)))
 
 (defun open-new-buffer-with-population-individuals (individuals interface)

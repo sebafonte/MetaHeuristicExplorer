@@ -53,7 +53,7 @@
 
 
 (defmethod initialize-properties :after ((o task-creator))
-  "Initialize <object> properties."
+  "Initialize <o> properties."
   (add-properties-from-values
    o 
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
