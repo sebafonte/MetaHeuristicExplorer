@@ -12,7 +12,7 @@
 ;; 10- Tune!
 ;;
 
-(defclass configurable-search-algorithm (search-algorithm)
+(defclass configurable-search-algorithm (search-algorithm entity)
   ((population-size :initarg :population-size :accessor population-size)
    (registry :initform (make-hash-table :test #'equal) :accessor registry)
    (program :initarg :program :accessor program)

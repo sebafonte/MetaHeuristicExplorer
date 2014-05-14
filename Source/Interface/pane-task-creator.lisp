@@ -103,7 +103,10 @@
   (let ((path (capi:prompt-for-directory "Select result path")))
     (when path
       (setf (path (model (pane interface))) path)
-      (update-creator-path interface path))))
+      (update-creator-path interface path)))
+  ;(setf (capi:simple-pane-enabled (third (items (toolbar interface)))) 
+  ;      (not (null path)))
+  )
 
 (defun update-creator-path (interface path)
   (setf (capi:title-pane-text (text-path interface)) 
@@ -123,7 +126,7 @@
   (let ((p (pane interface)))
     (let ((variation (capi:prompt-for-string
                       "Enter variation" 
-                      :text "((algorithm population-size) . (:values 5 10 15 20 25))")))
+                      :text "((algorithm population-size) . (:from 5 :to 500 :step 10))")))
       (when (and variation (valid-variation-p (read-from-string variation)))
         (add-variation (model p) variation)
         (update-creator-variations interface)))))

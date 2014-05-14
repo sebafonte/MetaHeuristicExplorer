@@ -36,10 +36,12 @@
 
 (defmethod report-item ((o benchmark-reporting-tool) item ostream benchmark)
   (let ((name-string (format nil "~a" (name item))))
+    (setf (current-item benchmark) item)
     (format ostream (name-format o item) (subseq name-string 0 (min (length name-string) (name-column-length o))))
     (format ostream (space-string o))
     (dolist (i (column-properties o))
-      (let ((value (funcall (get-value-for-property-named benchmark i) item)))
+      (let* ((property-value (get-value-for-property-named benchmark i))
+             (value (if (functionp property-value) (funcall property-value item) property-value)))
         (format ostream (format 
                          nil 
                          (concatenate 'string "~" (format nil "~a" (max (value-column-length o) (length (format nil "~a" i)))) ",a")
@@ -71,6 +73,7 @@
 
 (defmethod space-string ((o benchmark-reporting-tool))
   "  ")
+
 
 (defclass test-benchmark-reporting-tool (test-case)
   ())

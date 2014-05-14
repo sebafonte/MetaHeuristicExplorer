@@ -17,9 +17,18 @@
 
 ;; Benchmark objects
 (defclass base-benchmark (object-with-properties)
-  ((log-data :initarg :log-data :initform (make-instance 'log-data-container) :accessor log-data)
+  ((current-item :initarg :current-item :accessor current-item)
+   (log-data :initarg :log-data :initform (make-instance 'log-data-container) :accessor log-data)
    (log-inspectors :initarg :log-inspectors :initform nil :accessor log-inspectors)))
 
+
+(defmethod initialize-properties :after ((o base-benchmark))
+  "Initialize <object> properties.
+   #NOTE: these properties should return the function to obatin the value for the argument (a task)."
+  (add-properties-from-values
+   o
+   (:name 'item :label "Item" :accessor-type 'valuable-accessor-type :visible nil
+    :data-type 'object :getter (lambda (object) (current-item o)))))
 
 (defmethod abstractp ((o (eql 'base-benchmark)))
   "Answer whether <o> is abstract."

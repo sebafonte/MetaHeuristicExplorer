@@ -22,7 +22,7 @@
                 (compute-object-interface-pixmap-normal
                  (object o) (context o) pixmap width height)
               (compute-object-interface-pixmap-step
-                 (object o) (context o) pixmap width height (image-render-step pane)))))
+               (object o) (context o) pixmap width height (image-render-step pane)))))
   (gp:draw-image pixmap (image-buffer pane) 0 0))
 
 (defmethod compute-object-interface-pixmap-normal 

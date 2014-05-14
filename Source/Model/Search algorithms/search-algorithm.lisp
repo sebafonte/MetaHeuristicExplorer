@@ -1,5 +1,5 @@
 
-(defclass search-algorithm (entity object-with-properties)
+(defclass search-algorithm (object-with-properties)
   ((name :initarg :name :initform "Search algorithm" :accessor name)
    (max-iterations :initarg :max-iterations :initform 1000 :accessor max-iterations)  
    (iteration :initform 0 :accessor iteration)

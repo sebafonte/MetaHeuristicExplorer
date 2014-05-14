@@ -27,10 +27,17 @@
 
 
 (defmethod try-parse-from ((o (eql 'from-to-range)) value)
-  nil)
-
-(defmethod variations ((o from-to-range))
-  ())
+  (if (and (position :from value)
+           (position :to value)
+           (position :step value))
+      (values
+       (loop for i 
+             from (nth (1+ (position :from value)) value)
+             to (nth (1+ (position :to value)) value)
+             by (nth (1+ (position :step value)) value)
+             collect i)
+       (car value))
+    (values nil nil)))
 
 
 (defclass values-range (range-generator)
@@ -41,9 +48,6 @@
   (if (equal (cadr value) :values)
       (values (cddr value) (car value))
     (values nil nil)))
-
-(defmethod variations ((o values-range))
-  elements)
 
 
 (defclass task-creator (object-with-properties)
@@ -89,7 +93,7 @@
       (let ((new-task (copy-cyclic task)))
         (setf (name new-task) (format nil "~A~A.task" (task-name creator) (length result)))
         (apply-variation creator new-task i properties)
-        (appendf result (list (copy-cyclic new-task)))))
+        (appendf result (list new-task))))
     ;; #TODO: Check if necessary
     (setf (process task) old-process)
     result))
@@ -125,7 +129,7 @@
   (dolist (i tasks)
     (let ((file-name (merge-pathnames (name i) path)))
       (if (probe-file file-name) (delete-file file-name))
-      (save-source-description task file-name))))
+      (save-source-description i file-name))))
 
 
 #|

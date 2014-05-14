@@ -37,15 +37,17 @@
 ;; #TODO: Refactor on accesor type object eql methods
 (defmethod get-value-for-property-named ((o base-model) name)
   "Answer value for property named <name> for <o>."
-  (let ((property (property-named o name)))
-    (if property
-        (cond ((equal (accessor-type property) 'property-accessor-type) 
-               (gethash name (properties-values o)))
-              ((equal (accessor-type property) 'accessor-accessor-type) 
-               (funcall name o))
-              ((equal (accessor-type property) 'valuable-accessor-type) 
-               (funcall (compiled-valuable property) o))
-              (t nil)))))
+  (if (consp name)
+      (get-property-chain-name o name)
+    (let ((property (property-named o name)))
+      (if property
+          (cond ((equal (accessor-type property) 'property-accessor-type) 
+                 (gethash name (properties-values o)))
+                ((equal (accessor-type property) 'accessor-accessor-type) 
+                 (funcall name o))
+                ((equal (accessor-type property) 'valuable-accessor-type) 
+                 (funcall (compiled-valuable property) o))
+                (t nil))))))
 
 (defmethod get-value-for-property-labeled ((o base-model) label)
   "Answer value for property labeled as <label> for <o>."
