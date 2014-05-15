@@ -8,6 +8,8 @@
 
 (defun default-reporting-headers ()
   '(objetive-class 
+    task-planifier
+    task-builder
     fitness-evaluator 
     algorithm 
     (algorithm selection-method)
@@ -31,7 +33,7 @@
       (let ((item (first (items o))))
         (dolist (i (header-properties o))
           (format ostream (concatenate 'string "~a: ~a~%") 
-                  i ;(label (property-named item i))
+                  (string-downcase (format nil "~a" i)) ;(label (property-named item i))
                   (get-value-for-property-named item i))))
       (format ostream (space-string o))
       (format ostream "~%RESULTS~%" name)

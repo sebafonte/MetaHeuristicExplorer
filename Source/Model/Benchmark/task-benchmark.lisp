@@ -33,7 +33,10 @@
    (:name 'average-fitness-value :label "Average best fitness" :accessor-type 'property-accessor-type
     :data-type 'number :default-value (lambda (object) (lambda-average-fitness-value o object)))
    (:name 'likelihood-of-evolution-leap :label "Evolution Leap" :accessor-type 'property-accessor-type
-    :data-type 'number :default-value (lambda (object) (lambda-likelihood-of-evolution-leap o object)))))
+    :data-type 'number :default-value (lambda (object) (lambda-likelihood-of-evolution-leap o object)))
+   (:name 'evaluations :label "Evaluations" :accessor-type 'property-accessor-type
+    :data-type 'number :default-value (lambda (object) (mapcar (lambda (o) (evaluations (fitness-evaluator o)))
+                                                               (children object))))))
 
 (defmethod initialize-log-inspectors :after ((o task-benchmark) subject)
   (appendf (log-inspectors o)

@@ -25,3 +25,6 @@
       (appendf subtask-list (list (copy-cyclic task))))
     (setf (process task) old-process)
     subtask-list))
+
+(defmethod print-object ((builder n-runs-task-builder) seq)
+  (format seq "~A (~Ax)" (name builder) (runs builder)))

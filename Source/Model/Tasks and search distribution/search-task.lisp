@@ -294,7 +294,7 @@
   (equal 'FINISHED (state task)))
 
 (defmethod set-task-values-into ((o search-task) (p search-task))
-  (setf (slot-value p 'fitness-evaluator) (fitness-evaluator o)
+  (setf (slot-value p 'fitness-evaluator) (copy (fitness-evaluator o))
         (slot-value p 'objetive-class) (objetive-class o)
         (slot-value p 'language) (language o)))
   
