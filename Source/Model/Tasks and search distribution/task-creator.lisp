@@ -126,6 +126,7 @@
   (first variations))
 
 (defun save-task-on (creator tasks path)
+  (declare (ignore creator))
   (dolist (i tasks)
     (let ((file-name (merge-pathnames (name i) path)))
       (if (probe-file file-name) (delete-file file-name))

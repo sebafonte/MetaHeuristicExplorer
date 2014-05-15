@@ -10,7 +10,7 @@
 
 (defmethod execute-subtask ((planifier remote-planifier) (subtask search-task))
   (let ((target (select-subtask-target planifier subtask)))
-    (execute-subtask-remote planifier subtask target)))
+    (if target
+        (execute-subtask-remote planifier subtask target)
+      (error "No available remote target"))))
 
-
- 

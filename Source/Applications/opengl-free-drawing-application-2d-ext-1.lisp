@@ -10,7 +10,7 @@
 ;;;  - repeat-var function to retrieve loop index
 ;;;
 
-(load-application-file "opengl-free-drawing-evaluator-image-distance.lisp")
+(load-application-file "Applications\\opengl-free-drawing-evaluator-image-distance.lisp")
 
 ;; OpenGL free drawing language definition 
 (defparameter *opengl-free-drawing-expression-tokens-2d-ext-1*

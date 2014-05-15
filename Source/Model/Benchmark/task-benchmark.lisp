@@ -35,8 +35,8 @@
    (:name 'likelihood-of-evolution-leap :label "Evolution Leap" :accessor-type 'property-accessor-type
     :data-type 'number :default-value (lambda (object) (lambda-likelihood-of-evolution-leap o object)))
    (:name 'evaluations :label "Evaluations" :accessor-type 'property-accessor-type
-    :data-type 'number :default-value (lambda (object) (mapcar (lambda (o) (evaluations (fitness-evaluator o)))
-                                                               (children object))))))
+    :data-type 'number :default-value (lambda (object) (reduce '+ (mapcar (lambda (o) (evaluations (fitness-evaluator o)))
+                                                                          (children object)))))))
 
 (defmethod initialize-log-inspectors :after ((o task-benchmark) subject)
   (appendf (log-inspectors o)
@@ -46,6 +46,7 @@
                            :event :progress-change
                            :subject (algorithm subject)
                            :action (lambda (log-inspector &rest args)
+                                     (declare (ignore args))
                                      (let ((algorithm (subject log-inspector))
                                            (task (context (subject log-inspector))))
                                        (save-log-data-set
@@ -57,6 +58,7 @@
 
 (defun lambda-likelihood-of-optimality (benchmark object)
   "Likelihood of optimality benchmark measure."
+  (declare (ignore benchmark))
   (count-if
    (lambda (o) 
      (let ((best-individual (best-individual o))
@@ -68,11 +70,14 @@
 ;; #NOTE: Evaluated when all children have finished
 (defun lambda-average-fitness-value (benchmark object)
   "Average fitness value of the best individuals found."
+  (declare (ignore benchmark))
   (let ((values (mapcar (lambda (o) (fitness (best-individual o))) (children object))))
     (/ (reduce '+ values) (length values))))
 
 (defun lambda-likelihood-of-evolution-leap (benchmark object)
   "Likelihood of evolution leap benchmark measure."
-  (length
-   (unique-equals (mapcar (lambda (o) (program (second (assoc :best-individual (data o)))))
-                          (log-data-for-criteria (log-data benchmark) :best-individual)))))
+  (let ((all (unique-equals 
+              (mapcar (lambda (o) (program (second (assoc :best-individual (data o)))))
+                      (log-data-for-criteria (log-data benchmark) :best-individual)))))
+    (/ (reduce '+ (mapcar 'fitness all))
+       (length (children object)))))

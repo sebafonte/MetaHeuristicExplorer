@@ -89,7 +89,6 @@
 (defun remove-and-normalize-list (list remove-index)
   "Answer a new normalized <list> without element in <remove-index>."
   (let ((sum 0)
-        (last 0)
         (result))
     ;; Create a new list
     (dotimes (i (length list))
@@ -129,7 +128,6 @@
 (defun probability-list-cfg-or-nil (expresion function)
   (let ((result)
         (sum 0)
-        (last 0)
         (actual-index 0))
     (declare (integer actual-index) (number sum))
     (labels ((accumulated-probability-recursive (sub-expresion function tree-node-p)

@@ -6,6 +6,7 @@
   "Answer whether <expresion> is valid for <g>."
   (multiple-value-bind (result error)
       (parse g expresion)
+    (declare (ignore result))
     (not error)))
 
 (defun compress-flatten-parenthesis-token-value (expression)

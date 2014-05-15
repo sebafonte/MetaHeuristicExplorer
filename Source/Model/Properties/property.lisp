@@ -196,5 +196,5 @@
   (if (symbolp name)
       (get-value-for-property-named object name)
     (if (functionp name)
-        (apply name (list object value))
+        (apply name (list object))
       (error "Bad property"))))

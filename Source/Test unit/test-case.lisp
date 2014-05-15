@@ -73,9 +73,6 @@
   (dolist (i (test-containers o))
     (run-case i)))
 
-(defmethod run-test ((o test-case))
-  (run-case-with result o))
-
 (defmethod set-up ((o test-case))
   nil)
   
@@ -99,3 +96,8 @@
 
 (defmethod result-for-case ((o test-case))
   (make-instance 'behaviour-test-result))
+
+
+; #CHECK: ???
+;(defmethod run-test ((o test-case))
+;  (run-case-with result o))

@@ -4,7 +4,6 @@
 (apply-command (system-get 'main-command-line-interpreter) 
                '(GE025.exe ":command-file" "d:\\vrp_500_0003.command"))
 
-
 ;;; #CASE 1 - Background search of a task from a file location
 (register-task-path 'example-task-vrp-001 "d:\\tasks\\Examples_VRP_001.task")
 (execute-registered-task 'example-task-vrp-001)

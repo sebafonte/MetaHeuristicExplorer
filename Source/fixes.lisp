@@ -91,7 +91,7 @@
 
 (defun open-pane-explorer (interface data)
   "Open a 'pane-explorer on <interface>."
-  (declare (ignore data))
+  (declare (ignore data interface))
   (let ((pane (make-instance 'pane-explorer :mdi-interface (interface *main-pane*) :open nil)))
     (update-pane-interface pane)
     (open-pane pane :mdi-interface (interface *main-pane*))))

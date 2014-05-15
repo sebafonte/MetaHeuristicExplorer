@@ -79,6 +79,7 @@
 
 ;;; SELECCION DE CUALQUIER NODO (solo en source)
 (defun mutate-production-cfg-source-selection (parse-tree index algorithm)
+  (declare (ignore parse-tree index algorithm))
   1)
 
 

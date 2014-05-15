@@ -47,11 +47,11 @@
 (defmethod execute-task ((planifier task-planifier) task)
   "Executes a search-task using planifier to determine where to execute it.
    #NOTE: Execution is done into a mp:process-run-function with low priority."
-  (setf (process task) 
+  (setf (process task)
         (mp:process-run-function
          "Process task"
          (list :priority (priority task))
-         (lambda () 
+         (lambda ()
            (let ((result-task))
              (appendf *search-subtasks* (children task))
              (setf result-task (execute-task-local planifier task)))))))
@@ -65,7 +65,7 @@
 (defmethod execute-task-remote ((planifier task-planifier) (task search-task) (target connection-descriptor))
   "Executes <task> on a remote client application."
   (let ((message (make-tcp-message 'message-send-task task)))
-    (with-open-stream       
+    (with-open-stream
         (stream (comm:open-tcp-stream (ip-address target) (port target)))
       (if stream
           (progn
@@ -85,8 +85,8 @@
                                    (target connection-descriptor))
   "Executes <subtask> on a remote image."
   (let* ((new-subtask (simplified-copy subtask))
-         (message-string (make-tcp-message-string 'message-send-process new-subtask)))
-    (with-open-stream       
+         (message-string (make-tcp-message-string 'message-send-subtask new-subtask)))
+    (with-open-stream
         (stream (comm:open-tcp-stream (ip-address target) (port target)))
       (if stream
           (progn

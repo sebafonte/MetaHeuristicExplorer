@@ -20,9 +20,10 @@
               (gene-mutate (aref point-index gen) language))))
     gen))
 
+#|
 ;; #TODO:     
 (defun gene-mutate (gene language)
   "Mutate <gene> of <language>."
   nil)
-  
+|#
 

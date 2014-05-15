@@ -120,6 +120,6 @@
             files)))
 
 (defun date-to-string (date)
-  (multiple-value-bind (s m h dd mm yy)
+  (multiple-value-bind (s m h)
       (decode-universal-time date)
     (format nil "~2,'0D:~2,'0D:~2,'0D" h m s)))

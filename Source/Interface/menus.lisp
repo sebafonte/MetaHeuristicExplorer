@@ -1,6 +1,7 @@
 
 (defun options-menu-description-subtasks (title menu-description-list pane)
   "Answer a menu description with <title> for <pane>."
+  (declare (ignore title))
   (let ((description-list))
     (dolist (item menu-description-list)
       (appendf 

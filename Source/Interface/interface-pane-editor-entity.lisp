@@ -89,7 +89,7 @@
 
 (defmethod pane-graph ((i interface-pane-editor-entity))
   "Answer <i> graphic pane."
-  (editor-tab *title-pane-graph*))
+  (editor-tab i *title-pane-graph*))
 
 (defmethod pane-image ((i interface-pane-editor-entity))
   "Answer <i> image pane."
@@ -128,7 +128,7 @@
     ;; Add editors to category tabs
     (let* ((keys (sort (sort (keys editors)
                                    (lambda (x y) (or (null x) (null y) (string< x y))))
-                             (lambda (x y) (null x))))
+                             (lambda (x y) (declare (ignore y)) (null x))))
            (items))
       (dolist (key keys)
         (appendf items 

@@ -37,25 +37,22 @@
   (initialize-stack)
   (initialize-image-vector-functions))
 
-
-(defun application-relative-pathname (directory-specification-list file-name)
+(defun application-relative-pathname (file)
   (let* ((executable-name (car sys:*line-arguments-list*))
-         (directory (append (pathname-directory executable-name) directory-specification-list)))
-    (merge-pathnames
-     (make-pathname :device :unspecific :directory directory :name file-name :type :unspecific :version :unspecific)
-     (format nil "~A:" (pathname-host executable-name)))))
+         (directory (pathname-location executable-name)))
+    (merge-pathnames file directory)))
 
 (defun initialize-config-directories ()
   (setf *default-configuration-path-benchmark-transfer-file*
-        (application-relative-pathname '("Configurations") "default-benchmark-transfer-file.explorer")
+        (application-relative-pathname "Configurations\\default-benchmark-transfer-file.explorer")
         *default-configuration-path-pane-explorer*
-        (application-relative-pathname '("Configurations") "default-pane-explorer.crossover-pane")
+        (application-relative-pathname "Configurations\\default-pane-explorer.crossover-pane")
         *default-configuration-path-possible-remote-hosts*
-        (application-relative-pathname '("Configurations") "possible-remote-hosts.explorer")
+        (application-relative-pathname "Configurations\\possible-remote-hosts.explorer") 
         *default-pane-subtasks-default-model*
-        (application-relative-pathname '("Configurations") "default-search-subtask.subtask")
+        (application-relative-pathname "Configurations\\default-search-subtask.subtask") 
         *default-pane-tasks-default-model*
-        (application-relative-pathname '("Configurations") "default-search-task.task")))
+        (application-relative-pathname "Configurations\\default-search-task.task")))
 
 (defun initialize-network-connections () 
   "Initialize network related objects."
@@ -127,12 +124,13 @@
   (system-add-with-name 
    (make-instance 'compression-subroutine-manager)
    'default-compression-subroutine-manager))
- 
+
 (defun initialize-texture-manager ()
   (setf *texture-manager* (make-instance 'gl-texture-manager))
   (register-texture-from-data *texture-manager* 'sample (temp-icosahedron-texture-data) 64 64 opengl:*gl-rgba*)
   (register-texture-from-data *texture-manager* 'sample7 (temp-sample-7-texture-data) 256 256 opengl:*gl-rgb*))
 
 (defun initialize-stack ()
+  ;; #DEBUG:
   (let ((length (hcl:extend-current-stack 0)))
     (hcl:extend-current-stack 1000)))
