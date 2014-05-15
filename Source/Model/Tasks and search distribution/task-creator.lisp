@@ -91,7 +91,7 @@
     (setf (process task) nil)
     (dolist (i combinations)
       (let ((new-task (copy-cyclic task)))
-        (setf (name new-task) (format nil "~A~A.task" (task-name creator) (length result)))
+        (setf (name new-task) (format nil "~A~A.task" (name new-task) (length result)))
         (apply-variation creator new-task i properties)
         (appendf result (list new-task))))
     ;; #TODO: Check if necessary

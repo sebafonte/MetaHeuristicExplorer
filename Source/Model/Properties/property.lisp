@@ -182,17 +182,17 @@
             (update-callback c) update-callback-backup)
       c)))
 
-(defun get-property-chain-name (object chain)
+(defun get-property-chain-value (object chain)
   ;; Go to last property of the chain
   (let ((final-object object))
     (dolist (j chain)
       (if (eql j (car (last chain)))
           ;; Get value
-          (return-from get-property-chain-name (get-chained-property final-object j))
+          (return-from get-property-chain-value (get-chained-property-value final-object j))
         ;; Move to next object
         (setf final-object (get-value-for-property-named final-object j))))))
 
-(defmethod get-chained-property (object name)
+(defmethod get-chained-property-value (object name)
   (if (symbolp name)
       (get-value-for-property-named object name)
     (if (functionp name)

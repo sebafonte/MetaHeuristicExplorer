@@ -4,7 +4,8 @@
    (description :initarg :description :accessor description)
    (solution-fitness :initarg :solution-fitness :accessor solution-fitness)
    (min-fitness :initarg :min-fitness :accessor min-fitness)
-   (max-fitness :initarg :max-fitness :accessor max-fitness)))
+   (max-fitness :initarg :max-fitness :accessor max-fitness)
+   (evaluations :initform 0 :accessor evaluations)))
 
 
 (defmethod initialize-properties :after ((o entity-evaluator))
@@ -18,7 +19,9 @@
    (:name 'min-fitness :label "Min fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 10 :default-value 0 :editor 'number-editor)
    (:name 'max-fitness :label "Max fitness" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :min-value 0 :max-value 10 :default-value 10 :editor 'number-editor)))
+    :data-type 'number :min-value 0 :max-value 10 :default-value 10 :editor 'number-editor)
+   (:name 'evaluations :label "Evaluations" :read-only t
+    :accessor-type 'accessor-accessor-type :data-type 'integer :editor 'integer-editor)))
 
 (defmethod print-object ((o entity-evaluator) seq)
   (format seq "~A" (description o)))
@@ -51,3 +54,7 @@
   "Evaluate <p> individuals with <a>."
   (dotimes (i (population-size p))
     (evaluate o (aref (individuals-array p) i))))
+
+(defmethod evaluate :after ((o entity-evaluator) (e entity)) 
+  "Evaluate <p> individuals with <a>."
+  (incf (evaluations o)))

@@ -71,10 +71,12 @@
   (let ((best-individual (best-individual a))
         (solution-fitness (solution-fitness (fitness-evaluator a))))
     (or (> generation (max-generations a))
-        (and 
-         solution-fitness
-         (better-than-fitness-value best-individual solution-fitness)
-         (= (fitness best-individual) solution-fitness)))))
+        (and solution-fitness
+             (better-than-fitness-value best-individual solution-fitness)
+             (= (fitness best-individual) solution-fitness))
+        (and (max-evaluations a)
+             (>= (evaluations (fitness-evaluator a) )
+                 (max-evaluations a))))))
 
 (defmethod default-progress-indicator-value ((a generational-algorithm))
   (generation a))

@@ -19,7 +19,7 @@
 
 (defmethod ensure-fitness-data-initialized ((o entity-function-evaluator))
   (if (not (slot-boundp o 'fitness-vector))
-      (initialize-fitness-data o)))	
+      (initialize-fitness-data o)))
 
 (defmethod evaluate ((e entity-function-evaluator) (o entity-function))
   "Use <e> to calculate and answer <o> fitness."

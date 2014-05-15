@@ -253,7 +253,10 @@
   (iteration e))
 
 (defmethod test-termination ((a configurable-search-algorithm) (e iterational-evolver))
-  (>= (iteration e) (max-iterations e)))
+  (or (>= (iteration e) (max-iterations e))
+      (and (max-evaluations a) 
+           (> (evaluations (fitness-evaluator a))
+              (max-evaluations a)))))
 
 (defmethod increase-evolution-phase ((e iterational-evolver))
   "Increase <e> evolution phase counter."
@@ -289,7 +292,10 @@
   (generation e))
 
 (defmethod test-termination ((a configurable-search-algorithm) (e generational-evolver))
-  (>= (generation e) (max-generations e)))
+  (or (>= (generation e) (max-generations e))
+      (and (max-evaluations a) 
+           (> (evaluations (fitness-evaluator a))
+              (max-evaluations a)))))
 
 (defmethod increase-evolution-phase ((e generational-evolver))
   "Increase <e> evolution phase counter."

@@ -38,7 +38,7 @@
 (defmethod get-value-for-property-named ((o base-model) name)
   "Answer value for property named <name> for <o>."
   (if (consp name)
-      (get-property-chain-name o name)
+      (get-property-chain-value o name)
     (let ((property (property-named o name)))
       (if property
           (cond ((equal (accessor-type property) 'property-accessor-type) 

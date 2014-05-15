@@ -1,13 +1,22 @@
 
 (defclass tabbed-text-reporting-tool (object-with-properties)
   ((result-file :initarg :result-file :accessor result-file)
+   (header-properties :initarg :header-properties :initform (default-reporting-headers) :accessor header-properties)
    (column-properties :initarg :column-properties :accessor column-properties)
    (graphics :initarg :graphics :accessor graphics)
    (items :initarg :items :accessor items)))
 
+(defun default-reporting-headers ()
+  '(objetive-class 
+    fitness-evaluator 
+    algorithm 
+    (algorithm selection-method)
+    (fitness-evaluator samples) (fitness-evaluator fitness-function) (fitness-evaluator precision)))
+
 
 (defclass benchmark-reporting-tool (tabbed-text-reporting-tool)
-  ())
+  ((start-time :initarg :start-time :accessor start-time)
+   (final-time :initarg :final-time :accessor final-time)))
 
 
 (defmethod write-report ((o benchmark-reporting-tool) name)
@@ -17,7 +26,14 @@
                            :if-does-not-exist :create)
     (let ((*print-level* 64)
           (*print-length* 10000000))
-      (format ostream "~%<HEADER>~%" name)
+      (setf (start-time o) (get-universal-time))
+      (format ostream "~%<HEADER>~%~%" name)
+      (let ((item (first (items o))))
+        (dolist (i (header-properties o))
+          (format ostream (concatenate 'string "~a: ~a~%") 
+                  i ;(label (property-named item i))
+                  (get-value-for-property-named item i))))
+      (format ostream (space-string o))
       (format ostream "~%RESULTS~%" name)
       (format ostream (name-format o nil) "Task")
       (format ostream (space-string o))
@@ -31,6 +47,11 @@
           (process-item o i benchmark)
           (report-item o i ostream benchmark)
           (stream:stream-flush-buffer ostream)))
+      (setf (final-time o) (get-universal-time))
+      (format ostream "~%<FOOTER>~%~%")
+      (format ostream "Start time: ~a~%" (date-to-string (start-time o)))
+      (format ostream "End time: ~a~%" (date-to-string (final-time o)))
+      (format ostream "Total: ~a seconds~%" (- (final-time o) (start-time o)))
       (format ostream "~%<GRAPHICS>~%")
       (stream:stream-flush-buffer ostream))))
 
@@ -95,3 +116,8 @@
          (files (directory spec :directories nil)))
     (mapcar (lambda (object) (eval (read-from-string (car (load-from-file object)))))
             files)))
+
+(defun date-to-string (date)
+  (multiple-value-bind (s m h dd mm yy)
+      (decode-universal-time date)
+    (format nil "~2,'0D:~2,'0D:~2,'0D" h m s)))

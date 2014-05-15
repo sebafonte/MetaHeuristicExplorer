@@ -39,7 +39,7 @@
   (appendf (log-inspectors o)
            (list 
             (make-instance 'log-inspector
-                           :name 'inspector-best-individual-by-generation
+                            :name 'inspector-best-individual-by-generation
                            :event :progress-change
                            :subject (algorithm subject)
                            :action (lambda (log-inspector &rest args)
@@ -58,16 +58,15 @@
    (lambda (o) 
      (let ((best-individual (best-individual o))
            (solution-fitness (solution-fitness (fitness-evaluator o))))
-       (better-than-fitness-value best-individual solution-fitness)
-       (= (fitness best-individual) solution-fitness)))
+       (or (better-than-fitness-value best-individual solution-fitness)
+           (= (fitness best-individual) solution-fitness))))
    (children object)))
 
+;; #NOTE: Evaluated when all children have finished
 (defun lambda-average-fitness-value (benchmark object)
   "Average fitness value of the best individuals found."
-  (count-if
-   (lambda (o) 
-     (log-data-for-criteria (log-data benchmark) :best-individual))
-   (children object)))
+  (let ((values (mapcar (lambda (o) (fitness (best-individual o))) (children object))))
+    (/ (reduce '+ values) (length values))))
 
 (defun lambda-likelihood-of-evolution-leap (benchmark object)
   "Likelihood of evolution leap benchmark measure."

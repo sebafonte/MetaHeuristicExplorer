@@ -66,7 +66,10 @@
   (or (> iteration (max-iterations a))
       (and solution-fitness
            (>= (fitness (best-individual a)) 
-               (solution-fitness (fitness-evaluator a))))))
+               (solution-fitness (fitness-evaluator a))))
+      (and (max-evaluations a)
+           (>= (evaluations (fitness-evaluator a))
+               (max-evaluations a)))))
 
 (defmethod population-replacement-strategies ((a steady-state-algorithm))
   "Answer possible individual replacement method for <a>."

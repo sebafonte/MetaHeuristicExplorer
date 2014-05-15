@@ -1,7 +1,8 @@
 
 (defclass search-algorithm (object-with-properties)
   ((name :initarg :name :initform "Search algorithm" :accessor name)
-   (max-iterations :initarg :max-iterations :initform 1000 :accessor max-iterations)  
+   (max-iterations :initarg :max-iterations :initform 1000 :accessor max-iterations)
+   (max-evaluations :initarg :max-evaluations :accessor max-evaluations)
    (iteration :initform 0 :accessor iteration)
    (context :initarg :context :initform nil :accessor context)))
 
@@ -16,6 +17,8 @@
     :data-type 'integer :read-only t :editor 'number-editor)
    (:name 'max-iterations :label "Max iterations" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 0 :max-value 100000 :default-value 10000 :editor 'number-editor)
+   (:name 'max-evaluations :label "Max evaluations" :accessor-type 'accessor-accessor-type 
+    :data-type 'integer :min-value 0 :max-value 10000000 :default-value nil :editor 'number-editor)
    (:name 'context :label "Context" :accessor-type 'accessor-accessor-type :data-type 'object 
     :editor 'button-editor)))
 

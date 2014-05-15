@@ -9,8 +9,7 @@
    (:name 'solution-fitness :label "Solution fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 10 :default-value 1000 :editor 'number-editor)))
 
-(defmethod evaluate ((evaluator entity-linear-ordering-evaluator) 
-                     (o entity-linear-ordering))
+(defmethod evaluate ((evaluator entity-linear-ordering-evaluator) (o entity-linear-ordering))
   "Use <evaluator> to calculate and answer <o> fitness."
   (setf (fitness o) (/ (sum-value o) 1000)))
 
