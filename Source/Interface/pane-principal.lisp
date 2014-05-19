@@ -226,17 +226,20 @@
   (mark-and-sweep 3))
 
 (defun reset-network-environment-callback (data interface)
-  (let ((administrator (system-get 'main-connection-administrator)))
-    (dolist (i (active-connections administrator))
-      (reset-host-connection i))))
+  (declare (ignore data interface))
+  (mp:process-run-function "Resetting tasks"
+                           '()
+                           (lambda (administrator)
+                             (dolist (i (active-connections administrator))
+                               (reset-host-connection i)))
+                           (system-get 'main-connection-administrator)))
 
 (defun reset-host-connection (c)
   (with-open-stream       
       (stream (comm:open-tcp-stream (ip-address c) (port c)))
     (when stream
       (format stream (make-tcp-message-string 'message-clean-image nil))
-      (force-output stream)
-      (read-line stream nil nil))))
+      (force-output stream))))
 
 (defun disable-animation-callback (data interface)
   (declare (ignore data interface))

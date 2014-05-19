@@ -29,13 +29,10 @@
 
 (capi:define-interface interface-check-list-editor ()
   ()
-  (:panes
-   (check-button-1 capi:check-button))
-  (:layouts
-   (column-layout-1 capi:column-layout '(check-button-1)))
-  (:default-initargs
-   :layout 'column-layout-1
-   :title ""))
+  (:panes (check-button capi:check-button))
+  (:layouts (column-layout capi:column-layout '(check-button)))
+  (:default-initargs :layout 'column-layout :title ""))
+
 
 (defclass button-editor (capi:push-button property-editor) 
   ((subject :initarg :subject :initform nil :accessor subject)))
