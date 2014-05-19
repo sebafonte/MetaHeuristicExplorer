@@ -16,8 +16,12 @@
    (b-rx :initarg :b-rx :initform 0 :accessor b-rx)
    (b-tx :initarg :b-tx :initform 0 :accessor b-tx)
    ;; Other
-   (tasks-asigned :initarg :tasks-asigned :initform 0 :accessor tasks-asigned)))
+   (tasks-asigned :initarg :tasks-asigned :initform 0 :accessor tasks-asigned) 
+   (finished-tasks :initarg :finished-tasks :initform 0 :accessor finished-tasks)))
 
+
+(defmethod current-tasks ((o connection-descriptor))
+  (- (tasks-asigned o) (finished-tasks o)))
 
 (defmethod initialize-properties :after ((d connection-descriptor))
   "Initialize <d> properties."
@@ -53,6 +57,10 @@
                 (select *target-task-assignment* (lambda (object) (equal (car object) descriptor)))))
     :data-type 'integer :editor 'number-editor :visible t)
    (:name 'tasks-asigned :label "Tasks assigned" :accessor-type 'accessor-accessor-type 
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
+   (:name 'finished-tasks :label "Finished assigned" :accessor-type 'accessor-accessor-type 
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
+   (:name 'current-tasks :label "Current tasks" :accessor-type 'accessor-accessor-type :read-only t
     :data-type 'number :editor 'number-editor :default-value 0 :read-only t)))
 
 (defmethod print-object ((o connection-descriptor) seq)

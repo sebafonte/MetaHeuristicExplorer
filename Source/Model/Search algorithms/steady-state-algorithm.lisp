@@ -17,6 +17,8 @@
     ;; Properties
     (add-properties-from-values
      a
+     (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :data-type 'symbol
+      :default-value "Steady state algorithm" :editor 'text-editor)
      (:name 'replacement-strategy :label "Replacement strategy" :accessor-type 'accessor-accessor-type 
       :possible-values (system-selection-methods) :editor 'configurable-copy-list-editor
       :data-type 'object :category "Methods" :default-value (system-get 'inverse-fitness-selection-method))
@@ -64,7 +66,7 @@
 (defmethod test-termination ((a steady-state-algorithm) iteration)
   "Answer whether the steady state search has to finish."
   (or (> iteration (max-iterations a))
-      (and solution-fitness
+      (and (solution-fitness (fitness-evaluator a))
            (>= (fitness (best-individual a)) 
                (solution-fitness (fitness-evaluator a))))
       (and (max-evaluations a)

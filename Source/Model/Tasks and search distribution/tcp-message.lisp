@@ -29,9 +29,10 @@
    (make-instance 'tcp-message :name 'message-object-list-send :content nil)
    (make-instance 'tcp-message :name 'message-object-request :content nil)
    (make-instance 'tcp-message :name 'message-object-send :content nil)
+   (make-instance 'tcp-message :name 'message-object-property-update :content nil)
    ;; Image purging / control
-   (make-instance 'tcp-message :name 'message-respwan-client :content nil)
-   (make-instance 'tcp-message :name 'message-clean-client-image :content nil)
+   (make-instance 'tcp-message :name 'message-respawn-image :content nil)
+   (make-instance 'tcp-message :name 'message-clean-image :content nil)
    (make-instance 'tcp-message :name 'message-update-version :content nil)
    (make-instance 'tcp-message :name 'message-remote-client-advisor :content nil)))
    
@@ -87,8 +88,7 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-clean-image)) message administrator stream)
   "Executes garbage collector and purge all known buffers and unused object."
   (setf *search-subtasks* nil)
-  (clean-down)
-  (gc-generation t))
+  (reset-environment-callback nil nil))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-remote-client-advisor)) message administrator stream)
   "Updates client version automatically to current version if newer."

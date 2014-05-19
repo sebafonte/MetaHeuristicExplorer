@@ -132,7 +132,7 @@
 
 (defmethod default-connection-property-names ((i interface-pane-distributed-environment-configuration))
   "Answer a list with default property for connections to be shown on <i>."
-  '(ip-address port descriptor-machine-instance state b-cpu b-ping b-rx b-tx tasks-asigned))
+  '(ip-address port descriptor-machine-instance state b-cpu b-ping b-rx b-tx current-tasks))
 
 (defmethod initialize-instance :after ((i interface-pane-distributed-environment-configuration) &key)
   ;; Set interface properties
@@ -244,8 +244,7 @@
   (mp:process-run-function 
    "Connections scanner."
    nil
-   (lambda () 
-     (check-connections-state (model (pane interface))))))
+   (lambda () (check-connections-state (model (pane interface))))))
 
 (defun save-defaults-callback (data interface)
   (declare (ignore data))
@@ -259,7 +258,7 @@
 (defmethod create-new-user-connection ((p pane-distributed-environment-configuration))
   (make-instance 'connection-descriptor 
                  :ip-address "200.0.0.1" 
-                 :port 19999
+                 :port 20000
                  :is-remote t))
 
 (defmethod delete-selected-connection ((p pane-distributed-environment-configuration) selected-connection)
@@ -285,8 +284,7 @@
   (mp:process-run-function 
    "Process remote task"
    nil
-   (lambda () 
-     (scan-neighbor (model p)))))
+   (lambda () (scan-neighbor (model p)))))
 
 (defmethod connect-selected-connection ((p pane-distributed-environment-configuration))
   "Connects <p> selected connection descriptor."

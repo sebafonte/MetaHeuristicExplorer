@@ -33,7 +33,7 @@
   ()
   (:panes
    ;; Task
-   (label-task capi:title-pane :text "Model")
+   (label-task capi:title-pane :text "Model: ")
    (text-task capi:title-pane :text "" :accessor text-task)
    ;; Path
    (label-path capi:title-pane :text "Path")
@@ -72,6 +72,10 @@
             (make-instance 'capi:toolbar-button :image 3 :selected-image 3
                            :help-key "Create tasks"
                            :selection-callback 'create-variations-callback
+                           :callback-type :interface-data)
+            (make-instance 'capi:toolbar-button :image 25 :selected-image 25
+                           :help-key "Execute tasks"
+                           :selection-callback 'execute-variations-callback
                            :callback-type :interface-data))
            :selection nil))
     :callback-type :data-interface
@@ -139,6 +143,11 @@
   (let* ((model (model (pane interface)))
          (creator (make-instance 'task-creator :variations-description (mapcar 'read-from-string (variations model)))))
     (save-task-on creator (create-tasks-on creator (task model)) (path model))))
+
+;; #TODO: 
+(defun execute-variations-callback (interface data)
+  (declare (ignore data))
+  nil)
 
 (defun delete-variation-callback (interface data)
   "Add a new connection configured by the user to the model of <p>."

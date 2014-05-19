@@ -38,7 +38,7 @@
   t)
 
 (defmethod drawablep ((o object-in-search))
-  "Answer whether <o> can be displayed on the GUI."
+  "Answer whether <o> has a graphical representation."
   t)
 
 (defmethod constant-p ((o object-in-search) &optional (check-genotype t) (check-phenotype t))

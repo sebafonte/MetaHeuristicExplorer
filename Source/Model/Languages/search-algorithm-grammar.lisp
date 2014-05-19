@@ -301,6 +301,7 @@
 (defun MAKE-EVOLUTIONARY-ALGORITHM-DESCRIPTION (&key name language population-size initializer evolver elite-manager)
   (make-instance 'configurable-search-algorithm
                  :name name
+                 :description name
                  :language language
                  :population-size population-size
                  :initializer initializer

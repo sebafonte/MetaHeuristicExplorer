@@ -1,6 +1,7 @@
 
 (defclass population-generator (object-with-properties)
-  ((name :initarg :name :accessor name)))
+  ((name :initarg :name :accessor name)
+   (description :initarg :description :accessor description)))
 
 
 (defmethod initialize-properties :after ((object population-generator))
@@ -11,7 +12,7 @@
     :data-type 'symbol :default-value 'population-generator :editor 'symbol-editor)))
 
 (defmethod print-object ((o population-generator) seq)
-  (format seq "~A" (name o)))
+  (format seq "~A" (description o)))
 
 (defmethod generate-population ((generator population-generator) (algorithm search-algorithm))
   "Generate population for search on <algorithm>."
@@ -642,20 +643,43 @@
 
 (defun initialize-default-population-generators ()
   (system-add
-   (make-instance 'random-binary-generator :name 'random-binary-initializer)
-   (make-instance 'random-trees-generator :name 'random-trees-initializer)
+   (make-instance 'random-binary-generator 
+                  :name 'random-binary-initializer 
+                  :description "Random binary 32")
+   (make-instance 'random-trees-generator 
+                  :name 'random-trees-initializer 
+                  :description "Random binary 64")
    (make-instance 'random-trees-generator-with-operator
                   :name 'random-trees-cfg-initializer
+                  :description "Random trees using"
                   :operator (system-get-copy 'initial-random-create-cfg-1))
-   (make-instance 'fixed-solutions-generator :name 'fixed-expressions-initializer)
-   (make-instance 'ramped-half-and-half-generator :name 'ramped-half-and-half-initializer)
-   (make-instance 'sample-linear-ordering-population-generator :name 'sample-lop-initializer)
-   (make-instance 'sample-vrp-population-generator :name 'sample-vrp-initializer)
-   (make-instance 'property-sampling-population-generator :name 'sample-property-sampling-initializer)
-   (make-instance 'polynomial-sample-generator :name 'sample-random-polynomial-generator)
-   (make-instance 'search-task-sample-generator :name 'sample-search-task-generator)
-   (make-instance 'evolutive-algorithm-sample-generator :name 'evolutive-algorithm-sample-generator)
-   (make-instance 'task-best-objects-initializer :name 'task-best-objects-initializer)))
+   (make-instance 'fixed-solutions-generator 
+                  :name 'fixed-expressions-initializer
+                  :description "Fixed expressions")
+   (make-instance 'ramped-half-and-half-generator 
+                  :description "Ramped half & half"
+                  :name 'ramped-half-and-half-initializer)
+   (make-instance 'sample-linear-ordering-population-generator 
+                  :name 'sample-lop-initializer
+                  :description "Sample LOP")
+   (make-instance 'sample-vrp-population-generator 
+                  :name 'sample-vrp-initializer
+                  :description "Sample VRP")
+   (make-instance 'property-sampling-population-generator 
+                  :name 'sample-property-sampling-initializer
+                  :description "Sample property sampling")
+   (make-instance 'polynomial-sample-generator 
+                  :name 'sample-random-polynomial-generator
+                  :description "Sample polynomial")
+   (make-instance 'search-task-sample-generator 
+                  :name 'sample-search-task-generator
+                  :description "Sample search task")
+   (make-instance 'evolutive-algorithm-sample-generator 
+                  :name 'evolutive-algorithm-sample-generator
+                  :description "Sample algorithm")
+   (make-instance 'task-best-objects-initializer 
+                  :name 'task-best-objects-initializer
+                  :description "Task best objects")))
 
 (defun system-population-initializer-methods ()
   (list 

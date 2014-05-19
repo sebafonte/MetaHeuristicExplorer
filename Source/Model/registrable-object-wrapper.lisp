@@ -1,7 +1,7 @@
 (defclass registrable-object-wrapper (base-model)
   ((name :initarg :name :accessor name)
    (subject :initarg :subject :accessor subject)
-   (description :initarg :description :accessor description)))
+   (description :initarg :description :initform nil :accessor description)))
 
 
 (defmethod initialize-instance :after ((r registrable-object-wrapper) &key subject name description)
@@ -12,4 +12,5 @@
   (system-add r))
 
 (defmethod print-object ((r registrable-object-wrapper) seq)
-  (format seq "~A" (name r)))
+  (format seq "~A" (if (description r) (description r) (name r))))
+

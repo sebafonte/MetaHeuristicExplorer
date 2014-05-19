@@ -1,16 +1,22 @@
 
 (defclass optimization-strategy (object-with-properties)
   ((name :initarg :name :initform nil :accessor name)
+   (description :initarg :description :initform nil :accessor description)
    (subject :initarg :subject :initform nil :accessor subject)
    (optimization-target :initarg :optimization-target :accessor optimization-target)
    (optimization-method :initarg :optimization-method :accessor optimization-method)))
 
+
+(defmethod print-object ((o optimization-strategy) seq)
+  (format seq "~A" (description o)))
 
 (defmethod initialize-properties :after ((a optimization-strategy))
   "Initialize <a> properties."
   (add-properties-from-values
    a 
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
+    :data-type 'string  :editor 'text-editor)
+   (:name 'description :label "Description" :accessor-type 'accessor-accessor-type 
     :data-type 'string  :editor 'text-editor)
    (:name 'subject :label "Subject" :accessor-type 'accessor-accessor-type 
     :data-type 'object :editor 'button-editor :visible nil)

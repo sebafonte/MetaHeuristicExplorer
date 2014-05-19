@@ -5,17 +5,20 @@
    ;; Binary GAs
    (make-instance 'binary-language 
                   :name 'binary-language-32
+                  :description "Binary 32"
                   :valid-new-expresion-function 'create-new-random-valid
                   :operators (default-genetic-operators-probability-binary-ga)
                   :elements 32)
    (make-instance 'binary-language 
                   :name 'binary-language-64
+                  :description "Binary 64"
                   :valid-new-expresion-function 'create-new-random-valid
                   :operators (default-genetic-operators-probability-binary-ga)
                   :elements 64)
    ;; Languages for simple math expressions
    (make-instance 'cfg-tree-language 
                   :name 'lisp-math-function-x 
+                  :description "F(x) CFG"
                   :grammar (system-get-copy 'lisp-math-function-grammar-x)
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
@@ -28,6 +31,7 @@
                   :operators (default-genetic-operators-probability-lisp-expression))
    (make-instance 'cfg-tree-language 
                   :name 'lisp-math-function-xy
+                  :description "F(xy) CFG"
                   :grammar (system-get-copy 'lisp-math-function-grammar-x-y)
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
@@ -40,6 +44,7 @@
                   :operators (default-genetic-operators-probability-lisp-expression))
    (make-instance 'cfg-tree-language 
                   :name 'lisp-math-function-xyz
+                  :description "F(xyz) CFG"
                   :grammar (system-get-copy 'lisp-math-function-grammar-x-y-z)
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
@@ -53,6 +58,7 @@
    ;; Languages for simple math expressions with ADFs
    (make-instance 'adf-tree-language 
                   :name 'adf-lisp-math-function-x
+                  :description "F(x) ADF"
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
                   :functions (entity-function-default-functions-info)
@@ -64,6 +70,7 @@
                   :operators (default-genetic-operators-probability-adf-lisp-expression))
    (make-instance 'adf-tree-language 
                   :name 'adf-lisp-math-function-xy
+                  :description "F(xy) ADF"
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
                   :functions (entity-function-default-functions-info)
@@ -76,6 +83,7 @@
    ;; Languages for simple math expressions with compression
    (make-instance 'compression-tree-language 
                   :name 'compression-lisp-math-function-x
+                  :description "F(x) Compression"
                   ;; Grammar is supplied to allow cfg operations
                   :grammar (system-get-copy 'lisp-math-expression-with-subroutines-grammar-x)
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
@@ -89,6 +97,7 @@
                   :operators (default-genetic-operators-probability-compression-lisp-expression))
    (make-instance 'compression-tree-language
                   :name 'compression-lisp-math-function-xy
+                  :description "F(xy) compression"
                   ;; Grammar is supplied to allow cfg operations
                   :grammar (system-get-copy 'lisp-math-expression-with-subroutines-grammar-x-y)
                   :simplification-patterns *lisp-math-expression-simplification-patterns*
@@ -103,6 +112,7 @@
    ;; Languages for rgb images
    (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images
+                  :description "RGB images"
                   :grammar (system-get-copy 'lisp-rgb-images-grammar)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :max-size 40
@@ -117,6 +127,7 @@
    ;; Languages for rgb images with subroutines
    (make-instance 'compression-tree-language 
                   :name 'rgb-color-images-srt
+                  :description "RGB images srt"
                   :grammar (system-get-copy 'lisp-rgb-images-with-subroutines-grammar)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :max-size 30
@@ -131,6 +142,7 @@
    ;; Languages for texture deformation
    (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images-separate
+                  :description "RGB images separate"
                   :grammar (system-get-copy 'lisp-rgb-images-grammar-separate)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :max-size 30
@@ -143,6 +155,7 @@
                   :operators (default-genetic-operators-probability-texture-separate))
    (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images-enclosure
+                  :description "RGB images enclosure"
                   :grammar (system-get-copy 'lisp-rgb-images-grammar-enclosure)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :max-size 100
@@ -156,6 +169,7 @@
    ;; Languages for polynomial expressions
    (make-instance 'cfg-tree-language 
                   :name 'polynomial-x
+                  :description "Polynomial x"
                   :grammar (system-get-copy 'polinomyal-grammar-x)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(x :constant)
@@ -166,6 +180,7 @@
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'polynomial-xy
+                  :description "Polynomial xy"
                   :grammar (system-get-copy 'polinomyal-grammar-x-y)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(x y :constant)
@@ -176,6 +191,7 @@
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'polynomial-xyz
+                  :description "Polynomial xyz"
                   :grammar (system-get-copy 'polinomyal-grammar-x-y-z)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(x y z :constant)
@@ -187,6 +203,7 @@
    ;; Language for search algorithms (generic)
    (make-instance 'cfg-tree-language 
                   :name 'evolutive-algorithm-language
+                  :description "Evolutive algorithm"
                   :grammar (system-get-copy 'search-algorithm-grammar)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(:constant)
@@ -199,6 +216,7 @@
    ;; language for search algorithms (specialized later)
    (make-instance 'cfg-tree-language 
                   :name 'evolutive-algorithm-language-x-y
+                  :description "Evolutive algorithm xy"
                   :grammar (system-get-copy 'search-algorithm-grammar)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(:constant)
@@ -210,6 +228,7 @@
                   :operators (default-genetic-operators-probability-polynomial-expression))
    (make-instance 'cfg-tree-language 
                   :name 'evolutive-algorithm-language-vrp
+                  :description "Evolutive algorithm VRP"
                   :grammar (system-get-copy 'search-algorithm-grammar)
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :terminals '(:constant)
@@ -222,21 +241,25 @@
    ;; VRP languages
    (make-instance 'vrp-list-language 
                   :name 'vrp-default-language
+                  :description "VRP default"
                   :operators (default-genetic-operators-probability-sample-vrp)
                   :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Linear ordering languages
    (make-instance 'language 
                   :name 'lop-default-language
+                  :description "LOP default"
                   :operators (default-genetic-operators-probability-linear-ordering)
                   :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Linear ordering with lists languages
    (make-instance 'language 
                   :name 'lop-lists-default-language
+                  :description "LOP list"
                   :operators (default-genetic-operators-probability-linear-ordering)
                   :valid-new-expresion-function 'create-new-first-parent-copy)
    ;; Search task languages
    (make-instance 'cfg-tree-language 
                   :name 'search-task-default-language
+                  :description "Search task default"
                   :grammar (system-get-copy 'search-task-sample-grammar)
                   :functions (functions-list-from-tokens *search-task-grammar-tokens*)
                   :operators (default-genetic-operators-probability-search-task)
@@ -245,6 +268,7 @@
    ;; Lisp -> CL translation language
    (make-instance 'cfg-tree-language 
                   :name 'lisp-cl-translation-language
+                  :description "CL translation"
                   :grammar (system-get-copy 'cl-parsing-grammar)
                   :functions (entity-function-default-functions-info)
                   :terminals '(x y z :constant)

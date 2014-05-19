@@ -64,7 +64,8 @@
   ;; Add default task planifiers
   (system-add 
    (default-local-only-task-planifier)
-   (default-remote-only-task-planifier))
+   (default-remote-only-task-planifier)
+   (default-random-image-task-planifier))
   ;; Initialize variable that handles active processes count
   (setf *task-planifier-lock* (mp:make-lock :name "task-planifier-lock")))
 
@@ -79,6 +80,9 @@
 (defun default-remote-only-task-planifier ()
   "Answer the default remote only task planifier."
   (system-get 'global-remote-planifier))
+
+(defun default-random-image-task-planifier ()
+  (system-get 'global-random-task-planifier))
 
 (defun load-default-panes () 
   "Load default pane configuration on main interface."

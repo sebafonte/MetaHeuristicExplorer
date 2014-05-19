@@ -28,7 +28,7 @@
   (equal (name a) (name b)))
 
 (defmethod print-object ((o language) seq)
-  (format seq "~A" (name o)))
+  (format seq "~A" (description o)))
 
 (defmethod valid-new-expressions-functions ((o language))
   '(create-new-random-valid

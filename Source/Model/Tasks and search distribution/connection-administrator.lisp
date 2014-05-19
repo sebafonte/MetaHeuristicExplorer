@@ -58,10 +58,10 @@
 
 (defmethod startup-image-tcp-server ((a connection-administrator))
   "Start up running image tcp server owned by <a>."
-  (setf (server a) (comm:start-up-server :function (lambda (handle) (atender-mensaje handle a))
+  (setf (server a) (comm:start-up-server :function (lambda (handle) (message-handler handle a))
                                          :service (port (system-get 'running-image-descriptor)))))
 
-(defun atender-mensaje (handle administrator)
+(defun message-handler (handle administrator)
   "Creates a new process to handle <handle> socket by <administrator>. "
   (let ((stream (make-instance 'comm:socket-stream :socket handle :direction :io :element-type 'base-char)))
     (mp:process-run-function (format nil "Task dispatcher ~D" handle)

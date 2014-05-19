@@ -1,11 +1,15 @@
 
 (defclass search-algorithm (object-with-properties)
   ((name :initarg :name :initform "Search algorithm" :accessor name)
+   (description :initarg :description :initform nil :accessor description)
    (max-iterations :initarg :max-iterations :initform 1000 :accessor max-iterations)
    (max-evaluations :initarg :max-evaluations :accessor max-evaluations)
    (iteration :initform 0 :accessor iteration)
    (context :initarg :context :initform nil :accessor context)))
 
+
+(defmethod print-object ((o search-algorithm) seq)
+  (format seq "~A" (description o)))
 
 (defmethod initialize-properties :after ((a search-algorithm))
   "Initialize <a> properties."
@@ -13,12 +17,14 @@
    a 
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :data-type 'symbol
     :default-value 'search-algorithm :editor 'text-editor)  
+   (:name 'description :label "Description" :accessor-type 'accessor-accessor-type 
+    :data-type 'string  :editor 'text-editor)
    (:name 'iteration :label "Iteration" :default-value 0 :accessor-type 'accessor-accessor-type 
     :data-type 'integer :read-only t :editor 'number-editor)
    (:name 'max-iterations :label "Max iterations" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 0 :max-value 100000 :default-value 10000 :editor 'number-editor)
    (:name 'max-evaluations :label "Max evaluations" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 0 :max-value 10000000 :default-value nil :editor 'number-editor)
+    :data-type 'integer :default-value 10000000 :min-value 0 :max-value 10000000 :default-value nil :editor 'number-editor)
    (:name 'context :label "Context" :accessor-type 'accessor-accessor-type :data-type 'object 
     :editor 'button-editor)))
 

@@ -5,32 +5,32 @@
    (make-instance 'registrable-object-wrapper
                   :name 'default-generational-algorithm
                   :subject (make-instance 'generational-algorithm)
-                  :description 'default-generational-algorithm)
+                  :description "Generational")
    (make-instance 'registrable-object-wrapper
                   :name 'default-steady-state-algorithm
                   :subject (make-instance 'steady-state-algorithm)
-                  :description 'default-steady-state-algorithm)
+                  :description "Steady state")
    (make-instance 'registrable-object-wrapper
                   :name 'default-nsga-ii-algorithm
                   :subject (make-instance 'nsga-ii)
-                  :description 'default-nsga-ii-algorithm)
+                  :description "NSGA-II")
    ;; Composite algorithms
    (make-instance 'registrable-object-wrapper
                   :name 'default-iterational-algorithm-1
                   :subject (make-sample-composite-algorithm (sample-composite-algorithm-code-1))
-                  :description 'default-iterational-algorithm-1)
+                  :description "Iterational 1")
    (make-instance 'registrable-object-wrapper
                   :name 'default-iterational-algorithm-2
                   :subject (make-sample-composite-algorithm (sample-composite-algorithm-code-2))
-                  :description 'default-iterational-algorithm-2)
+                  :description "Iterational 2")
    (make-instance 'registrable-object-wrapper
                   :name 'default-iterational-algorithm-3
                   :subject (make-sample-composite-algorithm (sample-composite-algorithm-code-3))
-                  :description 'default-iterational-algorithm-3)
+                  :description "Iterational 3")
    (make-instance 'registrable-object-wrapper
                   :name 'default-iterational-algorithm-4
                   :subject (make-sample-composite-algorithm (sample-composite-algorithm-code-4))
-                  :description 'default-iterational-algorithm-4)))
+                  :description "Iterational 4")))
 
 (defun default-search-algorithms ()
   (list (system-get-subject-copy 'default-generational-algorithm)
@@ -51,7 +51,7 @@
 
 (defun sample-composite-algorithm-code-1 ()
   '(make-evolutionary-algorithm-description
-    :name "Generational"
+    :name "Composite generational 1"
     :language 
     (make-tree-language :name :lisp-math-function-xy :max-size 10)
     :population-size 20
@@ -82,7 +82,7 @@
 
 (defun sample-composite-algorithm-code-2 ()
   '(make-evolutionary-algorithm-description
-    :name "Iterational 2"
+    :name "Composite iterational 1"
     :language 
     (make-tree-language :name :lisp-math-function-xy :max-size 10)
     :population-size 20
@@ -120,7 +120,7 @@
 
 (defun sample-composite-algorithm-code-3 ()
   '(make-evolutionary-algorithm-description
-    :name "Generational"
+    :name "Composite generational 2"
     :language 
     (make-tree-language :name :lisp-math-function-xy :max-size 10)
     :population-size 20

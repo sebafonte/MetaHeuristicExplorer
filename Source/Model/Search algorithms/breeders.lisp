@@ -12,6 +12,9 @@
    (new-population :initarg :new-population :accessor new-population)))
 
 
+(defmethod print-object ((o breeder) seq)
+  (format seq "~A" (description o)))
+
 (defmethod initialize-properties :after ((o breeder))
   "Initialize <o> properties."
   (add-properties-from-values

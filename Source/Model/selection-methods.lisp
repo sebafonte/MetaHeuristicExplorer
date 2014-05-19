@@ -1,6 +1,7 @@
 
 (defclass selection-method (object-with-properties)
-  ((name :initarg :name :initform nil :accessor name)))
+  ((name :initarg :name :initform nil :accessor name)
+   (description :initarg :description :accessor description)))
 
 
 (defmethod initialize-properties :after ((o selection-method))
@@ -13,7 +14,7 @@
     :data-type 'symbol :default-value nil :editor 'text-editor)))
 
 (defmethod print-object ((o selection-method) seq)
-  (format seq "~A" (name o)))
+  (format seq "~A" (description o)))
 
 ; -----------------------------------------------------------------------------
 
@@ -276,21 +277,29 @@
 (defun initialize-selection-methods ()
   (system-add 
    (make-instance 'random-selection 
-                  :name 'random-selection-method)
+                  :name 'random-selection-method
+                  :description "Random")
    (make-instance 'tournament-selection 
-                  :name 'tournament-selection-method)
+                  :name 'tournament-selection-method
+                  :description "Tournament")
    (make-instance 'best-fitness-selection
-                  :name 'best-fitness-selection-method)
+                  :name 'best-fitness-selection-method
+                  :description "Best fitness")
    (make-instance 'worst-fitness-selection
-                  :name 'worst-fitness-selection-method)
+                  :name 'worst-fitness-selection-method
+                  :description "Worst fitfness")
    (make-instance 'ranking-proportionate-selection 
-                  :name 'ranking-proportionate-selection-method)
+                  :name 'ranking-proportionate-selection-method
+                  :description "Ranking proportional")
    (make-instance 'ranking-inverse-proportionate-selection
-                  :name 'ranking-inverse-proportionate-selection-method)
+                  :name 'ranking-inverse-proportionate-selection-method
+                  :description "Ranking inverse")
    (make-instance 'fitness-proportionate-selection 
-                  :name 'fitness-proportionate-selection-method)
+                  :name 'fitness-proportionate-selection-method
+                  :description "Fitness proportional")
    (make-instance 'fitness-inverse-proportionate-selection 
-                  :name 'inverse-fitness-selection-method)))
+                  :name 'inverse-fitness-selection-method
+                  :description "Fitness inverse")))
 
 (defun system-selection-methods ()
   (list 

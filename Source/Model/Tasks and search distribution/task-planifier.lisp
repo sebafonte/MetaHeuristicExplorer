@@ -4,9 +4,16 @@
 
 (defclass task-planifier (object-with-properties)
   ((name :initarg :name :accessor name)
+   (description :initarg :description :accessor description)
+   (local :initarg :local :accessor local)
+   (remote :initarg :remote :accessor remote)
+   (running-image :initarg :running-image :accessor running-image)
    (connection-administrator :initarg :connection-administrator :accessor connection-administrator)
    (max-simultaneous-processes :initarg :max-simultaneous-processes :accessor max-simultaneous-processes)))
 
+
+(defmethod print-object ((o task-planifier) seq)
+  (format seq "~A" (description o)))
 
 (defmethod initialize-properties :after ((object task-planifier))
   "Initialize <object> properties."
@@ -14,10 +21,15 @@
    object
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
     :data-type 'object :editor 'string-editor :default-value "Task planifier")
+   (:name 'description :label "Description" :accessor-type 'accessor-accessor-type 
+    :data-type 'string  :editor 'text-editor)
    (:name 'connection-administrator :label "Connections administrator" :accessor-type 'accessor-accessor-type
     :data-type 'string :editor 'button-editor :default-value nil)
    (:name 'max-simultaneous-processes :label "Max simoultaneous processes" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 1 :min-value 1 :max-value 8 :object-parameter t)))
+    :data-type 'number :editor 'number-editor :default-value 1 :min-value 1 :max-value 8 :object-parameter t)
+   (:name 'local :label "Local hosts" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)
+   (:name 'remote :label "Remote hosts" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)
+   (:name 'running-image :label "Running image" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)))
 
 (defmethod copy ((object task-planifier))
   (let ((connection-administrator (connection-administrator object)))
@@ -94,13 +106,15 @@
             (write-line message-string stream)
             (force-output stream)
             (incf (tasks-asigned target))
-            (setf (state subtask) 'RUNNING-REMOTE)
-            (let ((initial-time (get-universal-time))
-                  (result-subtask (content (eval (read-from-string (read-line stream nil nil))))))
-              (update-transfered-subtask result-subtask subtask)
-              (setf (initial-time result-subtask) initial-time
-                    (final-time result-subtask) (get-universal-time))
-              result-subtask))
+            (let ((initial-time (get-universal-time)))
+              (setf (state subtask) 'RUNNING-REMOTE
+                    (initial-time subtask) initial-time)
+              (let ((result-subtask (content (eval (read-from-string (read-line stream nil nil))))))
+                (update-transfered-subtask result-subtask subtask)
+                (incf (finished-tasks target))
+                (setf (initial-time result-subtask) initial-time
+                      (final-time result-subtask) (get-universal-time))
+                result-subtask)))
         ;; #TODO: Throw an error
         nil))))
 

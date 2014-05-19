@@ -33,18 +33,33 @@
     (system-add
      (make-instance 'running-image-planifier 
                     :name 'global-running-image-planifier 
+					:description "Running image"
                     :connection-administrator administrator)
-     (make-instance 'local-planifier 
+     (make-instance 'random-task-planifier 
                     :name 'global-local-planifier
+					:remote nil
+					:local t
+					:running-image t
+					:description "Random local"
                     :connection-administrator administrator)
-     (make-instance 'remote-planifier 
+     (make-instance 'random-task-planifier
                     :name 'global-remote-planifier
+					:remote t
+					:local nil
+					:running-image nil
+					:description "Random remote"
+                    :connection-administrator administrator)
+     (make-instance 'random-task-planifier 
+                    :name 'global-random-task-planifier 
+					:description "Random"
                     :connection-administrator administrator)
      (make-instance 'equitative-planifier
                     :name 'global-equitative-planifier
+					:description "Equitative"
                     :connection-administrator administrator)
      (make-instance 'balanced-planifier
                     :name 'global-balanced-planifier
+					:description "Balanced"
                     :connection-administrator administrator))
     ;; Extra initialization of task assignment strategies
     (initialize-equitative-planifier)
@@ -53,6 +68,7 @@
 (defun system-global-task-planifiers ()
   (list (system-get 'global-running-image-planifier)
         (system-get 'global-local-planifier)
+        (system-get 'global-random-task-planifier)
         (system-get 'global-remote-planifier)
         (system-get 'global-equitative-planifier)
         (system-get 'global-balanced-planifier)))

@@ -57,6 +57,8 @@ D: 2, 4, 1
   (let ((objetives (default-objetives 'entity-function-x)))
     (add-properties-from-values
      a
+     (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :data-type 'symbol
+      :default-value "NSGA-II" :editor 'text-editor)
      (:name 'max-generations :label "Max generations" :accessor-type 'accessor-accessor-type 
       :data-type 'integer :min-value 0 :max-value 100000 :default-value 200 :editor 'number-editor
       :object-parameter t)

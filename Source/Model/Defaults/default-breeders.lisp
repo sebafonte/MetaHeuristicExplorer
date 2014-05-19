@@ -4,10 +4,10 @@
    ;; Default breeders for evolvable algorithms
    (make-instance 'new-population-breeder
                   :name 'full-population-breeding
-                  :description 'new-population-breeder)
+                  :description "New population")
    (make-instance 'existing-population-breeder
                   :name 'partial-breeding
-                  :description 'existing-population-breeder)))
+                  :description "Existing population")))
 
 (defun default-breeders ()
   (list (system-get-subject-copy 'full-population-breeding)

@@ -182,6 +182,7 @@
             ("Load environment" :callback 'load-environment-callback)
             ("Save environment" :callback 'save-environment-callback)
             ("Reset environment" :callback 'reset-environment-callback)
+            ("Reset network" :callback 'reset-network-environment-callback)
             ("Reset interface bugs" :callback 'reset-interface-bugs-callback)
             ("Disable animation" :callback 'disable-animation-callback)
             ("Execute command" :callback 'execute-command-callback)
@@ -224,9 +225,22 @@
   ;; Run GC
   (mark-and-sweep 3))
 
+(defun reset-network-environment-callback (data interface)
+  (let ((administrator (system-get 'main-connection-administrator)))
+    (dolist (i (active-connections administrator))
+      (reset-host-connection i))))
+
+(defun reset-host-connection (c)
+  (with-open-stream       
+      (stream (comm:open-tcp-stream (ip-address c) (port c)))
+    (when stream
+      (format stream (make-tcp-message-string 'message-clean-image nil))
+      (force-output stream)
+      (read-line stream nil nil))))
+
 (defun disable-animation-callback (data interface)
   (declare (ignore data interface))
-  "Disables system animation. This includes setting the frame counter to 1 "
+  "Disables system animation. Also, set the animation frame counter to 1."
   ;; Reset mouse pointer icon
   (toggle-mouse-cursor (interface *main-pane*) nil)
   ;; Refresh screen editor panes
@@ -235,7 +249,7 @@
   (mark-and-sweep 3)
   ;; Restart interface refresh processes
   (kill-updater)
-  ;; Rset default counter
+  ;; Reset animations time counter variable
   (setf *time-variable* 1))
 
 (defun reset-interface-bugs-callback (data interface)
