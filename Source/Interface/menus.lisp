@@ -16,7 +16,7 @@
                                     (lambda (object) nil)
                                   (if (or (functionp enable-selector)
                                           (and (symbolp enable-selector) enable-selector))
-                                      (lambda (object) (funcall enable-selector pane))
+                                      (lambda (object) (declare (ignore object)) (funcall enable-selector pane))
                                     enable-selector))))
             (make-instance 'capi:menu-item 
                            :text (car item) 

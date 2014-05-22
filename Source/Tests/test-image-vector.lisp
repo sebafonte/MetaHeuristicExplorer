@@ -19,21 +19,3 @@
                 (= (y vector) 2) 
                 (= (z vector) 3)))))
 
-#|
-;; #TODO
-(defmethod test-vec-crop ((o test-image-vector))
-  "Test wether associated functions with image-vectors are working ok."
-  nil)
-
-(defmethod test-vec-abs ((o test-image-vector))
-  "Test wether associated functions with image-vectors are working ok."
-  nil)
-
-(defmethod test-image-vector-3d-basic-operation ((o test-image-vector))
-  "Test basic operations work ok with image-vector-3d instances."
-  nil)
-
-(defmethod test-image-vector-3d-equality ((o test-image-vector))
-  "Test equality with image-vector-3d objects is working ok."
-  nil)
-|#

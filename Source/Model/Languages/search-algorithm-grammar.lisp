@@ -310,6 +310,7 @@
 
 ;; Algorithm parts
 (defun MAKE-EVOLVER (population-size iterations selection-method replacement-method)
+  (declare (ignore population-size iterations selection-method replacement-method))
   (error "Subclass responsibility"))
 
 (defun MAKE-FITNESS-EVALUATOR (name)

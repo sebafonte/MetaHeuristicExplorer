@@ -77,7 +77,7 @@
          (value)
          (ixs (floor (/ width render-precision)))
          (iys (floor (/ height render-precision))))
-    (declare (special x) (special y) (render-precision integer)
+    (declare (special x) (special y) (integer render-precision)
              (number x) (number y) (number ix) (number iy) (number ajuste-x) (number ajuste-y)
              (number measure-start) (number measure-end))
     (dotimes (i ixs)
@@ -109,6 +109,7 @@
   "Answer the published actions for <o>."
   (list (list "Add as system function" 'add-system-function)))
 
+;; #TODO: 
 (defun add-system-function (entity-function)
   "Adds <o> as a system function."
   nil)

@@ -226,6 +226,7 @@
   (mark-and-sweep 3))
 
 (defun reset-network-environment-callback (data interface)
+  (declare (ignore data interface))
   (let ((administrator (system-get 'main-connection-administrator)))
     (dolist (i (active-connections administrator))
       (reset-host-connection i))))

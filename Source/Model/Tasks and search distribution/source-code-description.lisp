@@ -158,9 +158,9 @@
   "Answer whether <object> has to be discarded in the caller source descriptor."
   (let ((class (class-name (class-of object))))
     (or (is-kind-of object 'base-interface)
-        (equal class 'mp::time-event)
-        (equal class 'mp:process)
-        (equal class 'graphics-ports:image))))
+        (eql class 'mp::time-event)
+        (eql class 'mp:process)
+        (eql class 'graphics-ports:image))))
 
 (defun instanciation-source-description (object)
   "Answer the instanciation code for objects in *source-code-object-registry*.
@@ -176,6 +176,7 @@
   (list 'make-instance  
         (source-description (clos:class-name (class-of o)))))
 
+;; #OPTIMIZE
 (defmethod valid-instance-descriptor ((o grammar))
   "Answer a list with <o> instanciation source code."
   (list 'make-instance 
@@ -198,8 +199,8 @@
         :open nil
         :prepare nil
         :interface-arguments
-         (source-description
-          (list :selected-tab (capi:choice-selection (tab (interface o)))))))
+        (source-description
+         (list :selected-tab (capi:choice-selection (tab (interface o)))))))
 
 (defmethod valid-instance-descriptor ((o pane-editor-entity-explorer))
   "Answer a list with <o> instanciation source code."

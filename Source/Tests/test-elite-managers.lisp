@@ -1,5 +1,0 @@
-
-(defclass test-elite-manager ()
-  ())
-
-

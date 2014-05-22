@@ -5,8 +5,7 @@
 
 
 ;; #CHECK
-(defmethod initialize-instance :after ((p pane-graphic)  
-                                       &optional &key mdi-interface model interface-mode)
+(defmethod initialize-instance :after ((p pane-graphic) &optional &key mdi-interface model interface-mode)
   "Initialize <p>."
   (when (interface p)
     (set-model p model)))
@@ -14,10 +13,6 @@
 (defmethod interface-class ((p pane-graphic))
   "Answer <p> interface class."
   'interface-pane-graphic)
-
-(defmethod selection ((i interface-pane-graphic))
-  "Answer <i> selected object."
-  (model (pane i)))
 
 (defmethod set-model ((p pane-graphic) object)
   "Set <p> model to <object>."
@@ -27,12 +22,6 @@
 (defmethod reset-image-buffer ((p pane-graphic))
   (setf (pixmap (interface p)) nil))
 
-(defmethod set-title ((i interface-pane-graphic) object)
-  "Set title of <i> to <object>."
-  (capi:apply-in-pane-process
-   i
-   (lambda () 
-     (setf (capi:interface-title i) (format nil "~A" (name object))))))
 
 (capi:define-interface interface-pane-graphic (base-interface)
   ((pixmap :initform nil :accessor pixmap)
@@ -51,7 +40,18 @@
 
 (defmethod initialize-instance :after ((i interface-pane-graphic) &rest keys)
   (setf (owner (graphic i)) i)
-  i)      
+  i)
+
+(defmethod selection ((i interface-pane-graphic))
+  "Answer <i> selected object."
+  (model (pane i)))
+
+(defmethod set-title ((i interface-pane-graphic) object)
+  "Set title of <i> to <object>."
+  (capi:apply-in-pane-process
+   i
+   (lambda () 
+     (setf (capi:interface-title i) (format nil "~A" (name object))))))
 
 (defmethod options-menu-description-graphic ()
   "Answer menu description for pane-graphic instances."
@@ -76,7 +76,7 @@
   "Open an editor pane with <interface> pane model."
   (declare (ignore data))
   (open-editor-with interface (model (pane interface))))
-  
+
 (defmethod pane-graphic-edit-graphic (interface data)
   "Open an editor pane with <interface> graphic model."
   (declare (ignore data))

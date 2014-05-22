@@ -145,7 +145,7 @@
       (equal (name object) "name b"))))
 
 (defmethod test-marshalled-object-properties ((o test-properties))
-  "Verifies whether default properties are after marshalling an object."
+  "Verifies whether default properties are ok after marshalling <o>."
   (let* ((object (make-instance 'test-properties-test-object))
          (source (new-source-description object))
          (new-object (eval source))

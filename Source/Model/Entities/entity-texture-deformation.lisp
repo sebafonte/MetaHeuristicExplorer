@@ -17,8 +17,8 @@
   "Draws <object> in the pixmap of <pinboard> interface."
   (not-available-pixmap pinboard object pane o parent-pinboard x y))
 
-(defmethod not-available-pixmap (pinboard object pane object parent-pinboard x y)
-  "Compute a not avaiable image for <object>."
+(defmethod not-available-pixmap (pinboard object pane entity parent-pinboard x y)
+  "Compute a not avaiable image for <entity>."
   nil)
 
 ;; #TODO: Check if use (handler-case (funcall expresion) (error (function) 0.0))

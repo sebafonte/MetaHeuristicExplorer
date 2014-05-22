@@ -68,6 +68,7 @@
           ;; Initialize operation
           (setf (source-selection-function operation)
                 (lambda (subtree index arguments) 
+                  (declare (ignore arguments subtree))
                   (if (= index selected-node-index) 1 0)))
           ;; Assign new program
           (setf (program child-object)

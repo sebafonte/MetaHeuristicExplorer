@@ -13,6 +13,16 @@ del Model\Algorithms\*.ofasl
 del Model\Algorithms\*.lisp~
 del Model\Defaults\*.ofasl
 del Model\Defaults\*.lisp~
+del Model\Graphics\*.ofasl
+del Model\Graphics\*.lisp~
+del Model\Subroutines\*.ofasl
+del Model\Subroutines\*.lisp~
+del Model\Benchmark\*.ofasl
+del Model\Benchmark\*.lisp~
+del Model\Languages\*.ofasl
+del Model\Languages\*.lisp~
+del "Model\Search algorithms\*.ofasl"
+del "Model\Search algorithms\*.lisp~"
 del "Model\Genetic operators\*.ofasl"
 del "Model\Genetic operators\*.lisp~"
 del "Model\Tasks and search distribution\*.ofasl"

@@ -1,5 +1,5 @@
 ;;; Global variable for tracking pane-graphic instances
-(setf *interface-graphic-editors* nil)
+(defvar *interface-graphic-editors* nil)
 
 
 ;;; This extension can use the following 'interface-mode modes:

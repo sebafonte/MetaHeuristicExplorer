@@ -26,7 +26,6 @@
   (if (> (tree-depth program) 1)
       (let* ((point (get-compress-random-point program language))
              (tree (get-internal-subtree program point language))
-             (original-tree (copy-tree tree))
              (children-points (get-compress-children-points tree operator language))
              (children-trees (get-compress-children-trees tree children-points language))
              (argument-counter 0))

@@ -203,7 +203,6 @@
 
 (defun menu-open-subtasks-editor (interface subtasks)
   "Open subtasks editor for <interface>."
-  (declare (ignore subtasks))
   (menu-open-subtasks subtasks interface))
 
 (defmethod reset-task-planifier-settings ((pane pane-search-tasks))

@@ -18,11 +18,11 @@
   (add-properties-from-values
    o
    (:name 'functions :label "Functions" :accessor-type 'accessor-accessor-type 
-    :data-type 'list-structure :editor 'one-line-lisp-editor :subject p)
+    :data-type 'list-structure :editor 'one-line-lisp-editor :subject o)
    (:name 'variables :label "Variables" :accessor-type 'accessor-accessor-type 
-    :data-type 'list :editor 'one-line-lisp-expresion-editor :visible nil :subject p)
+    :data-type 'list :editor 'one-line-lisp-expresion-editor :visible nil :subject o)
    (:name 'terminals :label "Terminals" :accessor-type 'accessor-accessor-type 
-    :data-type 'list-structure :editor 'lisp-editor :subject p)
+    :data-type 'list-structure :editor 'lisp-editor :subject o)
    (:name 'min-size :label "Min size" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
    (:name 'max-size :label "Max size" :accessor-type 'accessor-accessor-type 

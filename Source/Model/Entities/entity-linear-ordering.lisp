@@ -35,7 +35,7 @@
 
 (defun permutate-column (matrix size source target)
   "Permutates <source> column to <target> column of <matrix>."
-  (let ((aux))
+  (let ((aux 0))
     (declare (integer aux))
     (dotimes (i size)
       (setf aux (aref matrix i target)

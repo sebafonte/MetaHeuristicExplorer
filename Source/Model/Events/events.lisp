@@ -53,7 +53,7 @@
 
 
 ;; Internal methods
-(defmethod events-count ((e events-handler))
+(defmethod events-count ((handler events-handler))
   (length (events handler)))
 
 (defmethod suscribe ((handler events-handler) object id event)
@@ -86,6 +86,7 @@
     ;; Collect candidate events
     (maphash 
      (lambda (key value) 
+       (declare (ignore value))
        (when (equals (first key) object)
          (appendf list (list (second key)))))
      (events *events-registry*))

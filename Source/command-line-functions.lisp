@@ -38,6 +38,7 @@
   (eval operation))
 
 (defmethod load-commands-from-file (file-path &optional &key tag)
+  (declare (ignore tag))
   (let ((return-list))
     (with-open-file (stream file-path)
       (do ((line (read-line stream) (read-line stream nil 'eof)))

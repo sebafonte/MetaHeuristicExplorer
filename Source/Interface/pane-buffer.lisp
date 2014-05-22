@@ -52,7 +52,7 @@
    :display-state :no-iconic))
  
 (defun make-test-menu (layout &rest args)
-  (declare (ignore (layout args)))
+  (declare (ignore layout args))
   (make-instance 'capi:menu :items (options-menu-description-subtasks 
                                     "Options" 
                                     menu-description-pane-buffer 
@@ -93,7 +93,6 @@
                  :header-args (list :print-function 'string-capitalize
                                     :selection-callback
                                     #'(lambda (interface new-sort-key)
-                                        (declare (ignore interface))
                                         (set-multi-column-list-panel-pane-buffer
                                          (make-instance 'entity)
                                          (expressions-pane interface)
@@ -163,7 +162,7 @@
 (defmethod refresh-images ((p pane-buffer))
   "Refresh <p> images."
   (refresh-interface-images p (interface p)))
-             
+
 (defmethod refresh-interface-images (p (i interface-pane-buffer))
   "Refresh <p> images."
   (remap-population-interface p) 
@@ -335,15 +334,20 @@
         (incf j)))))
 
 (defun menu-pane-buffer-clear (interface data)
+  (declare (ignore data))
   (clear-buffer (pane interface)))
 
+;; #TODO:
 (defun menu-pane-buffer-delete (interface data)
+  (declare (ignore data))
   (remove-from-buffer (pane interface) object))
 
 (defun menu-pane-buffer-add (interface data)
+  (declare (ignore data))
   (add-to-buffer (pane interface) nil))
 
 (defmethod menu-pane-buffer-set-children-size ((o interface-pane-buffer) data)
+  (declare (ignore data))
   (set-children-size (pane o) nil))
 
 (defmethod set-children-size ((o pane-buffer) object)

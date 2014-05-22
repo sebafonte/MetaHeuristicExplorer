@@ -178,14 +178,11 @@
     res))
 
 (defun polar-rotate (transform dx dy)
+  (declare (special *pointer-rotation-gain*))
   (opengl:with-matrix-pushed
     (opengl:gl-load-identity)
     (opengl:gl-rotated (float (* dx *pointer-rotation-gain*) 1.0d0) 0.0d0 0.0d0 1.0d0)
     (opengl:gl-rotated (float (* (- dy) *pointer-rotation-gain*) 1.0d0) 1.0d0 0.0d0 0.0d0)
     (opengl:gl-mult-matrixd transform)
     (opengl:gl-get-doublev opengl:*gl-modelview-matrix* transform)))
-
-
-
-
 

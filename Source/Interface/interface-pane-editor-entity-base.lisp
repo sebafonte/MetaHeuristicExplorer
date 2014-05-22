@@ -145,6 +145,7 @@
       (capi:execute-with-interface 
        i
        (lambda (&rest args)
+         (declare (ignore args))
          (capi:redraw-pinboard-layout (capi:pane-layout (pane-image i)) 0 0
                                       (capi:simple-pane-visible-width i)
                                       (capi:simple-pane-visible-height i)))))))

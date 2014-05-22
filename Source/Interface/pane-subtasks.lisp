@@ -377,20 +377,20 @@
                                     :ymax 10
                                     :valuable-x-list '(lambda (o) (generation o))
                                     :valuable-y-list '(lambda (o) (second o))
-                                    :datasource-list '(lambda (o) (fitness o)))
+                                    :datasource-list (list 'lambda '(o) (list value o)))
             :mdi-interface interface))))
 
 ;; #TODO: Look out because now when finishes it deletes all processes (?)
 (defun menu-delete-completed (interface data)
   "Delete all completed subtasks."
-  (declare (ignore interface subtask))
+  (declare (ignore data))
   (setf (elements (pane interface))
         (select (elements (pane interface))
                 (lambda (each) (not (equal (state each) 'FINISHED))))))
 
 (defun menu-delete-worser-than (interface data)
   "Delete all subtasks on <interface> pane with fitness value under a user prompted value."
-  (declare (ignore subtask interface))
+  (declare (ignore data))
   (let ((min-fitness (capi:prompt-for-number "Min fitness: ")))
     (when min-fitness
       (setf (elements (pane interface)) 

@@ -1,8 +1,9 @@
 (defvar *updater* nil)
+(defvar *drawer* nil)
 (defvar *updater-mbox* nil)
 (defvar *drawing-lock* nil)
 
-(setf *time-variable* 0)
+(defvar *time-variable* 0)
 
 
 ;; Drawing specific
@@ -33,7 +34,7 @@
   (opengl-refresh-interface interface))
 
 
-;; MODIFICACIONES
+;; #WORKING
 (defun updater-process ()
   (loop
    (mp:with-lock 
@@ -53,5 +54,4 @@
          (mp:mailbox-send *updater-mbox* interface)))
      (mp:process-wait "Wait draw" (lambda () (mp:mailbox-empty-p *updater-mbox*)))
      (sleep 0.01))))
-
 

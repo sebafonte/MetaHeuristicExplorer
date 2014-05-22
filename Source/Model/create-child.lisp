@@ -36,8 +36,7 @@
 
 (defmethod create-valid-child ((o entity-function) algorithm parents)
   "Perform <operation> to <parents>, then perform corrections and simplifications."
-  (let* ((parent-programs (mapcar (lambda (i) (program i)) parents))
-         (children (create-valid-expression o (language algorithm) parents)))
+  (let ((children (create-valid-expression o (language algorithm) parents)))
     (prepare-children-from o children algorithm)))
 
 (defmethod create-valid-child ((o search-task) algorithm parents)

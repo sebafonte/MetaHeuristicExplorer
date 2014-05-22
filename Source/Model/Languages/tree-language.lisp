@@ -150,6 +150,7 @@
       (find-if (lambda (value) (equal token (car value)))
                (functions language))))
 
+;; #TODO: Error here, see what happened
 (defmethod arity-token ((l tree-language) word)
   (arity-token (language grammar) word))
 

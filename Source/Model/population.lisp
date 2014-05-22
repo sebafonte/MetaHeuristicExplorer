@@ -6,7 +6,7 @@
    (count-individuals :initarg :count-individuals :initform *default-population-size* :accessor count-individuals)))
 
 
-(defmethod initialize-instance :after ((p population) &key count-individuals initialize-random individuals-array)
+(defmethod initialize-instance :after ((p population) &key count-individuals individuals-array)
   "Initialize <p>."
   (setf (slot-value p 'individuals-array)
         (if individuals-array 

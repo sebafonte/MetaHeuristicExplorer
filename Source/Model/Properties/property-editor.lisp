@@ -56,7 +56,7 @@
 
 (defmethod initialize-instance :after ((object list-check-editor) &key selections possible-values)
   "Initialize <object>."
-  (declare (ignore selections))
+  (declare (ignore selections possible-values))
   (let* ((pane-description (list-check-editor-checks-description object))
          (column-layout (make-instance 'capi:column-layout :description pane-description)))
     (capi:execute-with-interface
@@ -202,7 +202,7 @@
   (let ((editor (make-instance editor-class :title (label p) :text "" :subject o :callback-type :interface-data)))
     (setf (capi:button-press-callback editor) 
           (lambda (interface data) 
-            (declare (ignore data))
+            (declare (ignore data interface))
             (setf (file-path editor)
                   (capi:prompt-for-file "Load file"
                                         :filter "*.*"
@@ -232,7 +232,7 @@
 
 (defmethod value ((editor boolean-editor))
   "Answer the value with expected data type represented in <editor>."
-  (capi:button-enabled editor))
+  (capi:button-selected editor))
 
 (defmethod value ((editor button-editor))
   "Answer the value with expected data type represented in <editor>."
