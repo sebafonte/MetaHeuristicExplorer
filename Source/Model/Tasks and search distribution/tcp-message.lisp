@@ -11,6 +11,9 @@
    (make-instance 'tcp-message :name 'message-ping :content nil)
    (make-instance 'tcp-message :name 'message-pong :content nil)
    (make-instance 'tcp-message :name 'message-port-ping :content nil)
+   ;; Basic signaling
+   (make-instance 'tcp-message :name 'message-ok :content nil)
+   (make-instance 'tcp-message :name 'message-error :content nil)
    ;; Task managament messages
    (make-instance 'tcp-message :name 'message-send-subtask :content nil)
    (make-instance 'tcp-message :name 'message-send-subtask-result :content nil)
@@ -88,7 +91,10 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-clean-image)) message administrator stream)
   "Executes garbage collector and purge all known buffers and unused object."
   (setf *search-subtasks* nil)
-  (reset-environment-callback nil nil))
+  (reset-environment-callback nil nil)
+  ;(format stream (make-tcp-message-string 'message-ok))
+  ;(force-output stream)
+  )
 
 (defmethod dispatch-message-name ((message-name (eql 'message-remote-client-advisor)) message administrator stream)
   "Updates client version automatically to current version if newer."
