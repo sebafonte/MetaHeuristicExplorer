@@ -176,14 +176,12 @@
   (list 'make-instance  
         (source-description (clos:class-name (class-of o)))))
 
-;; #OPTIMIZE
 (defmethod valid-instance-descriptor ((o grammar))
   "Answer a list with <o> instanciation source code."
   (list 'make-instance 
         (source-description (clos:class-name (class-of o)))
-        :name (source-description 'serialized-valid-grammar)
-        :lexer (source-description 'lisp-math-expression-token-type-lexer)
-        :parser-initializer (source-description 'initialize-lisp-math-expression-parser)))
+        :name (source-description 'valid-grammar)
+        :parser-initializer (source-description 'initialize-null-parser)))
 
 (defmethod valid-instance-descriptor ((o base-pane))
   "Answer a list with <o> instanciation source code."

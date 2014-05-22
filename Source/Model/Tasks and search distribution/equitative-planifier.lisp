@@ -2,23 +2,17 @@
 
 
 (defclass equitative-planifier (task-planifier)
-  ((adjust-one-process-per-host :initarg :adjust-one-process-per-host :accessor adjust-one-process-per-host)))
+  ())
 
 
-(defmethod initialize-properties :after ((object equitative-planifier))
-  "Initialize <object> properties."
-  (add-properties-from-values
-   object
-   (:name 'adjust-one-process-per-host :label "Adjust one process per host" :accessor-type 'accessor-accessor-type
-    :data-type :boolean :editor 'boolean-editor :default-value t)))
-
-(defmethod connections-by-load ((p balanced-planifier))
-  (sort (active-connections (connection-administrator p)) 
-        'connection-load-comparator))
+(defmethod connections-by-load ((p equitative-planifier))
+  (sort (active-connections p) 'connection-load-comparator))
 
 (defun connection-load-comparator (a b)
-  (> (connection-load a)
-     (connection-load b)))
+  (< (connection-load a) (connection-load b)))
+
+(defun connection-load (a)
+  (current-tasks a))
 
 (defmethod select-subtask-target ((planifier equitative-planifier) task)
   "Answer a connection description to execute <task>."
@@ -26,9 +20,14 @@
   (first (connections-by-load planifier)))
 
 (defmethod execute-subtask ((planifier equitative-planifier) (task search-task))
-  (let* ((target (assign-subtask planifier task))
-         (result (if (eql (system-get 'running-image-descriptor) target)
-                     (execute-subtask-local planifier task)
-                   (execute-subtask-remote planifier task target))))
-    (signal-termination task target)
-    result))
+  (let ((target))
+    (mp:with-lock (*task-planifier-lock*)
+      (let ((task-target (select-subtask-target planifier task)))
+        (setf target task-target)))
+    (if target
+        (progn 
+          (incf (tasks-asigned target))
+          (if (is-running-image target)
+              (execute-subtask-local planifier task)
+            (execute-subtask-remote planifier task target)))
+      (error "No available remote target"))))

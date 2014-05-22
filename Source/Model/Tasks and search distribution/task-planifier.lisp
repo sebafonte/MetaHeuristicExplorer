@@ -31,6 +31,15 @@
    (:name 'remote :label "Remote hosts" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)
    (:name 'running-image :label "Running image" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)))
 
+(defmethod active-connections ((o task-planifier))
+  (let* ((local (local-active-connections (connection-administrator o)))
+         (remote (remote-active-connections (connection-administrator o)))
+         (running-image (list (system-get 'running-image-descriptor))))
+    (reduce 'union 
+            (list (if (local o) local nil)
+                  (if (remote o) remote nil)
+                  (if (running-image o) running-image nil)))))
+
 (defmethod copy ((object task-planifier))
   (let ((connection-administrator (connection-administrator object)))
     (setf (connection-administrator object) nil)
@@ -105,7 +114,6 @@
             (setf (state subtask) 'TRANSFERING)
             (write-line message-string stream)
             (force-output stream)
-            (incf (tasks-asigned target))
             (let ((initial-time (get-universal-time)))
               (setf (state subtask) 'RUNNING-REMOTE
                     (initial-time subtask) initial-time)

@@ -70,6 +70,7 @@
   (let ((new-group (load-object-from path)))
     (system-add-with-name new-group name)))
 
+;; #TODO: Complete, debug and leave as an utility more or delete and use experiment creator
 ;; Task set / iterators creation
 (defun register-group-of-range (group-name task-name setter from-value to-value step)
   (let ((tasks)

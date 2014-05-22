@@ -57,7 +57,7 @@
                 (select *target-task-assignment* (lambda (object) (equal (car object) descriptor)))))
     :data-type 'integer :editor 'number-editor :visible t)
    (:name 'tasks-asigned :label "Tasks assigned" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0)
    (:name 'finished-tasks :label "Finished assigned" :accessor-type 'accessor-accessor-type 
     :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
    (:name 'current-tasks :label "Current tasks" :accessor-type 'accessor-accessor-type :read-only t
@@ -74,7 +74,7 @@
 (defmethod send-object ((descriptor connection-descriptor) object)
   "Sends <object> through connection described by <descriptor>.
    Answer whether <object> has been sent."
-  (with-open-stream       
+  (with-open-stream
       (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor)))
     (if stream
       (progn 
@@ -85,7 +85,7 @@
 
 (defmethod check-state ((descriptor connection-descriptor))
   "Answer whether <descriptor> is still responding (like a simple ping for the application)."
-  (with-open-stream       
+  (with-open-stream
       (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor)))
     (if stream
         (progn 
@@ -113,7 +113,7 @@
 (defmethod benchmark ((c connection-descriptor))
   "Executes basic system benchmarksof hosts pointed by <c>."
   ;; Perform PING benchmark
-  (with-open-stream       
+  (with-open-stream
       (stream (comm:open-tcp-stream (ip-address c) (port c)))
     (when stream
       (let ((initial-time (get-internal-real-time)))
@@ -122,7 +122,7 @@
         (read-line stream nil nil)
         (setf (b-ping c) (- (get-internal-real-time) initial-time)))))
   ;; Perform CPU benchmark
-  (with-open-stream       
+  (with-open-stream
       (stream (comm:open-tcp-stream (ip-address c) (port c)))
     (when stream
       (format stream (make-tcp-message-string 
@@ -133,7 +133,7 @@
   (let ((message-string)
         (initial-time))
     ;; Perform TX benchmark
-    (with-open-stream       
+    (with-open-stream
         (stream (comm:open-tcp-stream (ip-address c) (port c)))
       (setf message-string (make-tcp-message-string 
                             'message-tx-performance-test 
@@ -157,5 +157,4 @@
       (setf (b-rx c)
             (round (coerce (* (/ 1000 1024)
                               (/ (length message-string) (- (get-internal-real-time) initial-time))) 'float))))))
-
 

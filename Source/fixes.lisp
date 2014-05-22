@@ -98,3 +98,8 @@
 
 (defmethod update-pane-interface ((pane t))
   t)
+
+
+;; #NOTE: Null parser. Grammars have to be initialized with a parser initializer.
+(defun initialize-null-parser (name)
+  (lambda (&rest args) (progn nil)))
