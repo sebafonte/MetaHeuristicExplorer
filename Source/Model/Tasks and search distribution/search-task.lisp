@@ -215,7 +215,7 @@
 (defmethod default-search-object-class (o)
   "Answer <o> default search class."
   (declare (ignore o))
-  'entity-function-x-y)
+  'entity-function-x)
 
 (defmethod (setf objetive-class) (value (o search-task))
   "Set <o> objetive class to <value>."

@@ -25,7 +25,6 @@ A: 1, 3, 1
 B: 8, 8, 0
 C: 2, 3, 1
 D: 2, 4, 1
-
 |#
 
 ;; #OPTIMIZATION
@@ -83,7 +82,6 @@ D: 2, 4, 1
       :data-type 'object :default-value nil :editor 'button-editor)
      (:name 'pareto-front :label "Pareto front" :accessor-type 'valuable-accessor-type :read-only t
       :data-type 'object :editor 'button-editor :getter 'pareto-front))))
-
 
 (defmethod (setf objetives) (objetives (a nsga-ii))
   (setf (slot-value a 'objetives) (normalize-operation-list objetives)))
