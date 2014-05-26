@@ -82,7 +82,6 @@
             "Model\\Search algorithms\\generational-algorithm.lisp"
             "Model\\Search algorithms\\steady-state-algorithm.lisp"
             "Model\\Search algorithms\\mu-lambda-evolutionary-strategy-algorithm.lisp"
-            "Model\\Search algorithms\\nsga.lisp"
             "Model\\Search algorithms\\nsga-ii.lisp"
             "Model\\Search algorithms\\manual-search-algorithm.lisp"
             "Model\\Search algorithms\\vrp-grasp-els-algorithm.lisp"

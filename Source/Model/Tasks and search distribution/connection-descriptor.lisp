@@ -59,7 +59,7 @@
    (:name 'tasks-asigned :label "Tasks assigned" :accessor-type 'accessor-accessor-type 
     :data-type 'number :editor 'number-editor :default-value 0)
    (:name 'finished-tasks :label "Finished assigned" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0)
    (:name 'current-tasks :label "Current tasks" :accessor-type 'accessor-accessor-type :read-only t
     :data-type 'number :editor 'number-editor :default-value 0 :read-only t)))
 

@@ -24,8 +24,7 @@
   (setf (connection-administrator (task-planifier e)) (connection-administrator e)))
 
 (defmethod default-task-planifiers ((e distributed-environment))
-  (list 
-   'task-planifier))
+  (list 'task-planifier))
 
 (defmethod add-connection ((environment distributed-environment) (descriptor connection-descriptor))
   "Add <descriptor> to <environment>."

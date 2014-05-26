@@ -6,7 +6,10 @@
 (defmethod select-subtask-target ((planifier random-task-planifier) (subtask search-task))
   "Answer a connection description to execute a <subtask>."
   (declare (ignore subtask))
-  (random-element (active-connections planifier)))
+  (let ((list (active-connections planifier)))
+    (if (null list)
+        (error "No available remote target")
+      (random-element list))))
 
 (defmethod execute-subtask ((planifier random-task-planifier) (subtask search-task))
   (let ((target (select-subtask-target planifier subtask)))

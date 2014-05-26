@@ -17,7 +17,10 @@
 (defmethod select-subtask-target ((planifier equitative-planifier) task)
   "Answer a connection description to execute <task>."
   (declare (ignore task))
-  (first (connections-by-load planifier)))
+  (let ((list (active-connections planifier)))
+    (if (null list)
+        (error "No available remote target")
+      (first (connections-by-load planifier)))))
 
 (defmethod execute-subtask ((planifier equitative-planifier) (task search-task))
   (let ((target))

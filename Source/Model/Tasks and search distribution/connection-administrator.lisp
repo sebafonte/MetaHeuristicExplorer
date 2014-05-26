@@ -23,6 +23,15 @@
    (:name 'statistics :label "Statistics" :accessor-type 'accessor-accessor-type 
     :data-type 'object :editor 'button-editor :default-value nil)))
 
+;; #NOTE: Called from commands, to ensure network environment is online
+(defmethod check-connections ((a connection-administrator))
+  (dolist (i (connections a))
+    (check-state i)))
+
+(defmethod check-not-connected-connections ((a connection-administrator))
+  (dolist (i (inactive-connections a))
+    (check-state i)))
+
 (defmethod connections ((a connection-administrator))
   "Answer all the connections of <a>."
   (append (local-connections a) (remote-connections a)))
@@ -32,11 +41,17 @@
   (refresh-local-connections a)
   (restore-default-remote-connections a))
 
+(defmethod inactive-connections ((a connection-administrator))
+  "Answer a list with the active connections of <a>."
+  (select 
+   (connections a)
+   (lambda (object) (not (eql (state object) 'connected)))))
+
 (defmethod active-connections ((a connection-administrator))
   "Answer a list with the active connections of <a>."
   (select 
    (connections a)
-   (lambda (object) (equal (state object) 'connected))))
+   (lambda (object) (eql (state object) 'connected))))
 
 (defmethod local-active-connections ((a connection-administrator))
   "Answer a list with the active connections of <a>."

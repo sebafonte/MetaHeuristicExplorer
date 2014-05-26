@@ -127,13 +127,23 @@
                  :text (format nil "~A" (list-to-string (get-value-for-property o p)))
                  :enabled (not (read-only p))))
 
+(defmethod create-editor-for-editor-class ((editor-class (eql 'text-editor)) (p property) (o base-model))
+  "Answer an editor pane for property <p> depending on it큦 data type."
+  (make-instance editor-class 
+                 :title (label p) 
+                 :text (format nil "~A" (get-value-for-property o p))
+                 :enabled (not (read-only p))))
+
 (defmethod create-editor-for-editor-class ((editor-class (eql 'lisp-editor)) (p property) (o base-model))
   "Answer an editor pane for property <p> depending on it큦 data type."
   (create-editor-for-editor-class 'one-line-lisp-editor p o))
 
 (defmethod create-editor-for-editor-class ((editor-class (eql 'symbol-editor)) (p property) (o base-model))
   "Answer an editor pane for property <p> depending on it큦 data type."
-  (create-editor-for-editor-class 'one-line-lisp-editor p o))
+  (make-instance editor-class 
+                 :title (label p) 
+                 :text (string-downcase (format nil "~A" (get-value-for-property o p)))
+                 :enabled (not (read-only p))))
 
 (defmethod create-editor-for-editor-class ((editor-class (eql 'list-editor)) (p property) (o base-model))
   "Answer an editor pane for property <p> depending on it큦 data type."
@@ -209,7 +219,8 @@
 
 (defmethod value ((editor number-editor))
   "Answer the value with expected data type represented in <editor>."
-  (read-from-string (capi:text-input-pane-text editor)))
+  (handler-case (read-from-string (capi:text-input-pane-text editor))
+    (error (function) nil)))
 
 (defmethod value ((editor one-line-lisp-editor))
   "Answer the value with expected data type represented in <editor>."
@@ -246,3 +257,7 @@
 (defmethod value ((editor list-check-editor))
   "Answer the value with expected data type represented in <editor>."
   (interface-selections editor))
+
+(defmethod value ((editor text-editor))
+  "Answer the value with expected data type represented in <editor>."
+  (capi:text-input-pane-text editor))

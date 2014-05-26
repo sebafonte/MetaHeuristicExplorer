@@ -4,15 +4,15 @@
    ;; Default algorithms
    (make-instance 'registrable-object-wrapper
                   :name 'default-generational-algorithm
-                  :subject (make-instance 'generational-algorithm)
+                  :subject (make-instance 'generational-algorithm :description "Generational")
                   :description "Generational")
    (make-instance 'registrable-object-wrapper
                   :name 'default-steady-state-algorithm
-                  :subject (make-instance 'steady-state-algorithm)
+                  :subject (make-instance 'steady-state-algorithm :description "Steady state")
                   :description "Steady state")
    (make-instance 'registrable-object-wrapper
                   :name 'default-nsga-ii-algorithm
-                  :subject (make-instance 'nsga-ii)
+                  :subject (make-instance 'nsga-ii :description "NSGA-II")
                   :description "NSGA-II")
    ;; Composite algorithms
    (make-instance 'registrable-object-wrapper
