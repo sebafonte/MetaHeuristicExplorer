@@ -4,15 +4,17 @@
 
 
 (defmethod (setf property) ((pe property-editor) value)
-  "Sets the value into the instance variable property."
+  "Set <value> into property <pe> slot."
   (setf (slot-value pe 'property) value))
 
 (defmethod update-value ((pe property-editor) (object base-model))
-  "Updates the property associated with pe into object."
-  (set-value-for-property object (property pe) (value pe)))
+  "Updates the property associated with <pe> into <object>."
+  (let ((old-value (handler-case (get-value-for-property object (property pe)) (error (function) nil))))
+    (when (not (eql (value pe) old-value))
+      (set-value-for-property object (property pe) (value pe)))))
 
 (defmethod update-value :after ((pe property-editor) (object editable-probability-object-list-wrapper))
-  "Updates the property associated with pe into object."
+  "Updates the property associated with <pe> into <object>."
   (update object))
 
 

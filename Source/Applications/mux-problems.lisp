@@ -198,6 +198,7 @@
  ;; languages for mux problems
  (make-instance 'cfg-tree-language 
                 :name '6-default-mux-language
+				:description "6 mux default"
                 :grammar (system-get-copy 'default-mux-grammar)
                 :simplification-patterns *mux-editing-patterns*
                 :functions (entity-mux-default-functions-info)
@@ -209,6 +210,7 @@
                 :operators (default-genetic-operators-probability-lisp-expression))
  (make-instance 'cfg-tree-language 
                 :name '11-default-mux-language
+                :description "11 mux default"
                 :grammar (system-get-copy 'default-mux-grammar)
                 :simplification-patterns *mux-editing-patterns*
                 :functions (entity-mux-default-functions-info)

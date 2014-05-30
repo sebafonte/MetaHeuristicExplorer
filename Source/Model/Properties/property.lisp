@@ -203,13 +203,9 @@
         (apply name (list object))
       (error "Bad property"))))
 
-;; #REFACTOR: Move to new class?
 (defmethod valid-value-p (object property)
   (let ((value (handler-case (get-value-for-property object property) (error (function) nil))))
     (valid-dependency-value (dependency property) property value)))
-
-(defmethod valid-dependency-value ((dependency (eql 'nil)) property value)
-  t)
 
 (defmethod set-default-dependent-property-values ((o base-model))
   "Set default values for <o> dependant properties of <o> properties."

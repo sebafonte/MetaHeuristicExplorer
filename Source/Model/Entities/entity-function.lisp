@@ -3,6 +3,10 @@
   ())
 
 
+(defmethod abstractp ((o (eql 'entity-function)))
+  "Answer whether <o> is abstract."
+  t)
+
 (defmethod ephemeral-properties-definition ((o entity-function))
   "Answer <o> ephemeral properties."
   (property-from-values-list
@@ -25,8 +29,7 @@
                (object o) (context o) pixmap width height (image-render-step pane)))))
   (gp:draw-image pixmap (image-buffer pane) 0 0))
 
-(defmethod compute-object-interface-pixmap-normal 
-           ((o entity-function) subtask pixmap width height)
+(defmethod compute-object-interface-pixmap-normal ((o entity-function) subtask pixmap width height)
   "Compute pixmap values into pixmap of <o>."
   (let* ((evaluator (fitness-evaluator subtask))
          (expresion (compiled-program o))
@@ -59,8 +62,7 @@
     (gp:free-image-access access)
     image))
 
-(defmethod compute-object-interface-pixmap-step 
-           ((o entity-function) subtask pixmap width height render-precision)
+(defmethod compute-object-interface-pixmap-step ((o entity-function) subtask pixmap width height render-precision)
   "Compute pixmap values into pixmap of <o>."
   (let* ((evaluator (fitness-evaluator subtask))
          (expresion (compiled-program o))
