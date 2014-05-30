@@ -1,2 +1,5 @@
-(setf *benchmark-tool* (make-instance 'benchmark-reporting-tool :column-properties '(best-fitness likelihood-of-optimality average-fitness-value likelihood-of-evolution-leap time (item algorithm population-size) evaluations)	:items (tasks-from-directory (merge-pathnames "Tasks" *command-directory*)) :result-file (concatenate 'string (format nil "~A" (merge-pathnames "Results\\result_default_benchmark" *command-directory*)) (format nil "~a" (get-universal-time)))))
-(write-report *benchmark-tool* "Default system benchmark report")
+(check-not-connected-connections (system-get 'main-connection-administrator))
+(setf *benchmark-tool* (make-instance 'benchmark-reporting-tool :column-properties '(best-fitness likelihood-of-optimality average-fitness-value likelihood-of-evolution-leap time (item algorithm population-size) evaluations) :items (tasks-from-directory (merge-pathnames "Tasks" *command-directory*)) :result-file (concatenate 'string (format nil "~A" (merge-pathnames "Results\\result_default_benchmark" *command-directory*)) (format nil "~a" (get-universal-time)))))
+;(capi:prompt-for-integer (format nil "~a" (active-connections (system-get 'main-connection-administrator))))
+;(handler-case (write-report *benchmark-tool* "Default system benchmark report") (condition (error) (capi:prompt-for-integer (format nil "~a" error))))
+(write-report *benchmark-tool* "Default system benchmark report") 
