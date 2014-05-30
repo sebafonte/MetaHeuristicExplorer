@@ -29,7 +29,7 @@
    (:name 'initialization-method :label "Initialization method" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value (system-get 'random-trees-initializer) 
     :editor 'configurable-copy-list-editor :category "Methods"
-    :dependency 'objetive-class
+    :dependency (make-possible-class-dependency 'objetive-class)
     :default-value-function (lambda (objetive-class) (first (possible-initialization-methods (make-instance objetive-class))))
     :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
    (:name 'breed-method :label "Breed method" :accessor-type 'accessor-accessor-type :data-type 'object 

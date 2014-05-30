@@ -74,7 +74,7 @@ D: 2, 4, 1
       :data-type 'list-structure :default-value objetives :possible-values (list objetives) :editor 'object-list-probability-editor)
      (:name 'initialization-method :label "Initialization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value (system-get 'random-trees-initializer) :editor 'configurable-copy-list-editor
-	  :dependency 'objetive-class
+	  :dependency (make-possible-class-dependency 'objetive-class)
       :default-value-function (lambda (objetive-class) (first (possible-initialization-methods (make-instance objetive-class))))
       :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
      (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 

@@ -117,12 +117,12 @@
      ;; Dependent properties
      (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objetive"
       :data-type 'model :editor 'configurable-copy-list-editor 
-      :dependency 'objetive-class
+      :dependency (make-eql-dependence 'objetive-class)
       :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
       :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
      (:name 'fitness-evaluator :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
       :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'model
-      :dependency 'objetive-class
+      :dependency (make-possible-class-dependency 'objetive-class)
       :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
       :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
 

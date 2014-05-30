@@ -28,12 +28,12 @@
      ;; #TODO: I think here a new event :task-language-changed should be implemented 
      (:name 'candidate-language :label "Candidate language" :accessor-type 'accessor-accessor-type 
       :data-type 'model :editor 'configurable-copy-list-editor 
-      :dependency 'candidate-object-class
+      :dependency (make-possible-class-dependency 'candidate-object-class)
       :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
       :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
      (:name 'candidate-fitness-evaluator :label "Candidate fitness evaluator" :accessor-type 'accessor-accessor-type 
       :data-type 'model :editor 'configurable-copy-list-editor 
-      :dependency 'candidate-object-class
+      :dependency (make-possible-class-dependency 'candidate-object-class)
       :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
       :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
 

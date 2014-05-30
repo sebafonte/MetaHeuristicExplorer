@@ -73,12 +73,6 @@
     (when (update-callback property)
       (apply (update-callback property) (list o property)))))
 
-(defun has-dependency-to-update (p)
-  t)
-
-(defun has-dependency (a b)
-  (equal (dependency a) (name b)))
-
 (defmethod set-default-value-for-property-named ((o object-with-properties) property-name value)
   "Sets the default value to <value> of property named <property-name> to <o> if needed."
   ;; Check for property-accessor type
