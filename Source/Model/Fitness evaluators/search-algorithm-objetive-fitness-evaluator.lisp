@@ -8,12 +8,6 @@
    (timeout :initarg :timeout :accessor timeout)))
 
 
-(defmethod initialize-instance :after ((o search-algorithm-objetive-fitness-evaluator) &rest initargs)
-  "Initialize <object>."
-  (declare (ignore initargs))
-  (reset-specific-properties o)  
-  (reset-with-valid-dependences o))
-
 (defmethod initialize-properties :after ((o search-algorithm-objetive-fitness-evaluator))
   "Initialize <o> properties."
   (let ((candidate-object-class (default-search-object-class o)))
@@ -23,50 +17,28 @@
      (:name 'candidate-object-class :label "Candidate object class" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value candidate-object-class :possible-values (possible-classes-to-search) 
       :editor 'list-editor :update-callback 'lambda-update-callback-search-algorithm-objetive-fitness-evaluator
-      :setter '(setf candidate-object-class) :subject o)
+      :setter '(setf candidate-object-class))
      (:name 'candidate-property-name :label "Candidate property" :accessor-type 'accessor-accessor-type 
-      :editor 'symbol-editor :data-type 'symbol :default-value 'fitness :subject o)
+      :editor 'symbol-editor :data-type 'symbol :default-value 'fitness)
      (:name 'samples :label "Samples" :accessor-type 'accessor-accessor-type 
-      :data-type 'integer :default-value 10 :editor 'number-editor :subject o)
+      :data-type 'integer :default-value 10 :editor 'number-editor)
      (:name 'timeout :label "Timeout" :accessor-type 'accessor-accessor-type 
-      :data-type 'integer :default-value 15 :editor 'number-editor :subject o))))
-
-(defmethod initialize-properties-for ((o t) (target search-algorithm-objetive-fitness-evaluator))
-  "Initialize <o> properties."
-  (add-properties-from-values
-   target
-   ;; Evaluation context (auxliliary in some way) parameters
-   (:name 'candidate-language :label "Candidate language" :accessor-type 'accessor-accessor-type 
-    :data-type 'object :default-value (copy (default-language (objetive-instance target))) 
-    :editor 'configurable-copy-list-editor 
-    :possible-values (copy-tree (possible-languages (objetive-instance target))) :subject o)
-   (:name 'candidate-fitness-evaluator :label "Candidate fitness evaluator" :accessor-type 'accessor-accessor-type 
-    :data-type 'object :default-value (first (default-fitness-evaluators (objetive-instance target)))
-    :editor 'configurable-copy-list-editor 
-    :possible-values (default-fitness-evaluators (objetive-instance target)) :subject o)))
-
-(defmethod (setf candidate-object-class) (value (o search-algorithm-objetive-fitness-evaluator))
-  (let ((old-value (candidate-object-class o)))
-    (setf (slot-value o 'candidate-object-class) value)
-    (when (not (equal old-value (candidate-object-class o)))
-      (reset-with-valid-dependences o))))
-
-(defmethod reinitialize-fitness-evaluator ((o search-algorithm-objetive-fitness-evaluator))
-  "Reinitialices possible fitness evaluators for <o>."
-  (let* ((property (property-named o 'candidate-fitness-evaluator))
-         (default-fitness-evaluators (default-fitness-evaluators (objetive-instance o)))
-         (default-fitness-evaluator (first default-fitness-evaluators)))
-    (setf (possible-values property) default-fitness-evaluators
-          (default-value property) default-fitness-evaluator)
-    (set-default-property-value o property)))
-
-(defmethod reset-specific-properties ((o search-algorithm-objetive-fitness-evaluator))
-  (re-initialize-properties-for (objetive-instance o) o)
-  (set-default-property-values o))
+      :data-type 'integer :default-value 15 :editor 'number-editor)
+     ;; Evaluation context (auxliliary in some way) parameters
+     ;; #TODO: I think here a new event :task-language-changed should be implemented 
+     (:name 'candidate-language :label "Candidate language" :accessor-type 'accessor-accessor-type 
+      :data-type 'model :editor 'configurable-copy-list-editor 
+      :dependency 'candidate-object-class
+      :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
+     (:name 'candidate-fitness-evaluator :label "Candidate fitness evaluator" :accessor-type 'accessor-accessor-type 
+      :data-type 'model :editor 'configurable-copy-list-editor 
+      :dependency 'candidate-object-class
+      :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
 
 (defun lambda-update-callback-search-algorithm-objetive-fitness-evaluator (object property) 
-  (declare (ignore property))
-  (reset-specific-properties object))
+  (declare (ignore property)))
 
 (defmethod default-search-task-for-algorithm ((e search-algorithm-objetive-fitness-evaluator) algorithm)
   (let ((task (make-instance 'search-task)))
@@ -76,9 +48,6 @@
           (language task) (candidate-language e)
           (fitness-evaluator task) (candidate-fitness-evaluator e))
     task))
-
-(defmethod objetive-instance ((o search-algorithm-objetive-fitness-evaluator))
-  (make-instance (candidate-object-class o)))
 
 (defmethod evaluate ((evaluator search-algorithm-objetive-fitness-evaluator) (object configurable-search-algorithm))
   "Use <evaluator> to calculate and answer <object> fitness."
@@ -110,7 +79,7 @@
     (setf (context object) task)
     (setf (fitness object) (fitness best-individual))
     (setf (fitness (gen object)) (fitness best-individual))))
-    
+
 (defmethod specialize-language ((task search-task) (evaluator search-algorithm-objetive-fitness-evaluator))
   (specialize-language-from (language task) (candidate-language evaluator)))
 

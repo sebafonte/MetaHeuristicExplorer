@@ -25,13 +25,13 @@
                        (exp (- 1 x) (* x 0.25))
                        (+ x 7 (/ x 17))))
    (:name 'samples :label "Samples" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :default-value 30 :editor 'integer-editor :subject o)
+    :data-type 'integer :default-value 30 :editor 'integer-editor)
    (:name 'measure-start :label "Measure start" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :default-value 0 :editor 'number-editor :subject o)
+    :data-type 'number :default-value 0 :editor 'number-editor)
    (:name 'measure-end :label "Measure end" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :default-value 10 :editor 'number-editor :subject o)
+    :data-type 'number :default-value 10 :editor 'number-editor)
    (:name 'fitness-vector :visible nil :accessor-type 'accessor-accessor-type
-    :data-type 'array :default-value nil :subject o)))
+    :data-type 'array :default-value nil)))
 
 (defmethod initialize-fitness-data ((evaluator entity-function-x-evaluator))
   "Initialize <o> fitness data."

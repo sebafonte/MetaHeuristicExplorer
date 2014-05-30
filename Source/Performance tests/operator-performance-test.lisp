@@ -14,10 +14,6 @@
   (let* ((algorithm (make-instance class))
          (task (make-instance 'search-task :algorithm algorithm)))
     (setf (language task) (system-get 'lisp-math-function-xy))
-    (initialize-properties algorithm)
-    (initialize-properties task)
-    (initialize-properties-for task algorithm)
-    (setf (context algorithm) task)
     (prepare-size-in-algorithm algorithm 500)
     algorithm))
 

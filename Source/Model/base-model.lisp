@@ -3,14 +3,15 @@
   ())
   
 
-(defmethod initialize-properties :before ((o base-model))
-  "Initialize <o> properties."
-  nil)
-
 (defmethod initialize-instance :before ((o base-model) &rest keys)
   "Initialize <o>."
   (initialize-properties o)
-  (set-default-property-values o))
+  (set-default-property-values o)
+  (set-default-dependent-property-values o))
+
+(defmethod initialize-properties :before ((o base-model))
+  "Initialize <o> properties."
+  nil)
 
 (defmethod initialize-properties ((o base-model))
   "Initialize <o> properties."
@@ -34,9 +35,3 @@
 (defmethod drawablep ((object t))
   "Answer whether o can be displayed on the GUI."
   nil)
-
-
-
-
-
-

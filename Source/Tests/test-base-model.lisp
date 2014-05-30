@@ -7,8 +7,4 @@
   "Answer default algorithm for <o>."
   (let* ((algorithm (make-instance class))
          (context (make-instance 'search-task :algorithm algorithm)))
-    (initialize-properties algorithm)
-    (initialize-properties context)
-    (initialize-properties-for context algorithm)
-    (setf (context algorithm) context)
     algorithm))

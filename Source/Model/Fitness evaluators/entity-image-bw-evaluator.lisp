@@ -8,7 +8,7 @@
    o
    (:name 'fitness-function :label "Fitness function" :default-value 'evaluate-squared-distance
     :possible-values (possible-fitness-functions o) :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :editor 'list-editor :subject o)))
+    :data-type 'symbol :editor 'list-editor)))
 
 (defmethod evaluate ((evaluator entity-image-bw-evaluator) (o entity-image-bw))
   "Use <evaluator> to calculate and answer <o> fitness."

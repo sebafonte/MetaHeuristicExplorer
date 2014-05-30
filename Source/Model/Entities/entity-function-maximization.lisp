@@ -3,9 +3,6 @@
   ())
 
 
-(defmethod default-language ((o entity-function-maximization))
-  (system-get 'binary-language-32))
-
 (defmethod possible-languages ((o entity-function-maximization))
   (list 
    (system-get 'binary-language-32)

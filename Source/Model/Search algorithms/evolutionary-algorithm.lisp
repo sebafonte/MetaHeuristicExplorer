@@ -28,11 +28,12 @@
     :category "Methods")
    (:name 'initialization-method :label "Initialization method" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value (system-get 'random-trees-initializer) 
-    :possible-values (system-population-initializer-methods) :editor 'configurable-copy-list-editor
-    :category "Methods")
+    :editor 'configurable-copy-list-editor :category "Methods"
+    :dependency 'objetive-class
+    :default-value-function (lambda (objetive-class) (first (possible-initialization-methods (make-instance objetive-class))))
+    :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
    (:name 'breed-method :label "Breed method" :accessor-type 'accessor-accessor-type :data-type 'object 
-    :default-value nil :possible-values (system-population-initializer-methods) :editor 'configurable-copy-list-editor
-    :category "Methods")
+    :editor 'configurable-copy-list-editor :category "Methods")
    (:name 'elite-manager :label "Elite manager" :accessor-type 'accessor-accessor-type 
     :data-type 'object :default-value (make-instance 'elite-manager) :editor 'button-editor
     :category "Methods")
@@ -56,11 +57,6 @@
 (defmethod best-individual ((a evolutionary-algorithm))
   "Anwer the best individual found by <a>."
   (best (elite-manager a)))
-
-(defmethod set-defaults-for-objetive ((a evolutionary-algorithm))
-  "Set genetic operators of <a> from a default instance in it's context."
-  (setf (initialization-method a) 
-        (default-population-initializer (objetive-instance (context a)))))
 
 (defmethod select-genetic-operation ((a evolutionary-algorithm))
   "Answer a genetic operation for <a>."

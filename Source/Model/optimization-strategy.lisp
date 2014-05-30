@@ -27,7 +27,7 @@
     :data-type 'object :default-value nil :editor 'list-editor :possible-values (optimization-methods))))
 
 (defmethod copy ((p optimization-strategy))
-  "NOTE: Redefined to avoid circular-graph recursion."
+  "#NOTE: Redefined to avoid circular-graph recursion."
   (let ((subject-backup (subject p)))
     (setf (subject p) nil)
     (let ((c (copy-instance p))) 

@@ -39,9 +39,6 @@
             t))
       nil)))
 
-(defmethod default-language ((o entity-function-x-y))
-  (system-get 'lisp-math-function-xy))
-
 (defmethod possible-languages ((o entity-function-x-y))
   (list 
    (system-get 'lisp-math-function-xy)

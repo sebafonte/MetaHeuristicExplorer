@@ -7,9 +7,6 @@
   (list 
    (system-get 'rgb-color-images-separate)))
 
-(defmethod default-language ((o entity-texture-deformation-enclosure))
-  (system-get 'rgb-color-images-separate))
-
 
 (defparameter *texture-deformation-enclosure-expression-tokens*
   '(;; 1 argument operators

@@ -28,24 +28,11 @@
 (defmethod initialize-instance :after ((object search-task) &rest initargs)
   "Initialize <object>."
   (declare (ignore initargs))
-  (reset-specific-properties object)  
-  (reset-with-valid-dependences object)
-  (initialize-default-planifier object)
-  (initialize-default-iterator object)
   (initialize-default-algorithm object))
-
-(defmethod initialize-default-planifier ((object search-task))
-  "Initialize <object> default planifier."
-  (setf (task-planifier object) (system-get 'global-running-image-planifier)))
-
-(defmethod initialize-default-iterator ((object search-task))
-  "Initialize <object> default iterator."
-  (setf (task-builder object) (make-instance 'n-runs-task-builder)))
 
 (defmethod initialize-default-algorithm ((object search-task))
   "Initialize <object> default algorithm."
-  (setf (context (algorithm object)) object)
-  (set-defaults-for-objetive (algorithm object)))
+  (setf (context (algorithm object)) object))
 
 (defmethod initialize-properties :after ((task search-task))
   "Initialize <task> properties."
@@ -72,15 +59,15 @@
      (:name 'task-planifier :label "Planifier" :accessor-type 'accessor-accessor-type 
       :editor 'configurable-copy-list-editor :data-type 'object
       :default-value (default-local-only-task-planifier) :possible-values (system-global-task-planifiers))
-     (:name 'task-builder :label "Builder" :accessor-type 'accessor-accessor-type :editor 'button-editor)
+     (:name 'task-builder :label "Builder" :accessor-type 'accessor-accessor-type :editor 'button-editor 
+      :default-value (make-instance 'n-runs-task-builder))
      (:name 'result :label "Result" :accessor-type 'accessor-accessor-type :editor 'button-editor :category "Result")
      ;; Objetive
      (:name 'objetive-class :label "Objetive class" :accessor-type 'accessor-accessor-type
       :data-type 'symbol :default-value objetive-class :possible-values (possible-classes-to-search) 
-      :editor 'list-editor :update-callback 'lambda-update-callback-search-task :category "Objetive"
-      :setter '(setf objetive-class))
+      :editor 'list-editor :category "Objetive")
      (:name 'algorithm :label "Search algorithm" :accessor-type 'accessor-accessor-type 
-      :data-type 'object :possible-values default-algorithms :default-value (first default-algorithms)
+      :data-type 'model :possible-values default-algorithms :default-value (first default-algorithms)
       :editor 'configurable-copy-list-editor)
      ;; Children
      (:name 'children :label "Children" :accessor-type 'accessor-accessor-type :editor 'list-editor :visible nil)
@@ -125,24 +112,21 @@
                        (reduce 'max (mapcar 'final-time not-nulls)))))
       :data-type 'integer :editor 'number-editor :visible nil :read-only t :category "Result")
      (:name 'running-time :label "Time" :accessor-type 'valuable-accessor-type 
-      :getter '(lambda (object) (max (search-task-running-time object) 0))
-      :read-only t :data-type 'integer :category "Result"))))
+      :getter '(lambda (object) (max (task-running-time object) 0))
+      :read-only t :data-type 'integer :category "Result")
+     ;; Dependent properties
+     (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objetive"
+      :data-type 'model :editor 'configurable-copy-list-editor 
+      :dependency 'objetive-class
+      :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
+     (:name 'fitness-evaluator :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
+      :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'model
+      :dependency 'objetive-class
+      :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
 
-(defmethod initialize-properties-for ((o t) (target search-task))
-  "Initialize properties for <o> in <target>."
-  (add-properties-from-values
-   target 
-   (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objetive"
-    :default-value (copy (default-language (objetive-instance target)))
-    :data-type 'object :possible-values (copy-tree (possible-languages (objetive-instance target)))
-    :editor 'configurable-copy-list-editor :subject o)
-   (:name 'fitness-evaluator :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
-    :default-value (first (default-fitness-evaluators (objetive-instance target)))
-    :possible-values (default-fitness-evaluators (objetive-instance target))
-    :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'object
-    :subject o)))
-
-(defun search-task-running-time (task)
+(defun task-running-time (task)
   "Answer the running time for <task>."
   (let* ((initial-time (get-value-for-property-named task 'initial-time))
          (final-time (get-value-for-property-named task 'final-time)))
@@ -217,41 +201,6 @@
   (declare (ignore o))
   'entity-function-x)
 
-(defmethod (setf objetive-class) (value (o search-task))
-  "Set <o> objetive class to <value>."
-  (let ((old-value (objetive-class o)))
-    (setf (slot-value o 'objetive-class) value)
-    (when (not (equal old-value (objetive-class o)))
-      (reset-with-valid-dependences o))))
-
-(defmethod reset-with-valid-dependences (object)
-  (reset-language-properties-for object)
-  (re-initialize-properties-for (list 'objetive-class-dependent object) object)
-  (reinitialize-fitness-evaluator object))
-
-;; #TODO: Check why fitness-evaluator is here
-(defmethod reset-language-properties-for (target)
-  "Reset language properties of <target>."
-  (make-property-unbound target 'language)
-  (make-property-unbound target 'fitness-evaluator))
-
-(defmethod reinitialize-fitness-evaluator ((o search-task))
-  "Reinitialices possible fitness evaluators for <o>."
-  (let* ((property (property-named o 'fitness-evaluator))
-         (default-fitness-evaluators (default-fitness-evaluators (objetive-instance o)))
-         (default-fitness-evaluator (first default-fitness-evaluators)))
-    (setf (possible-values property) default-fitness-evaluators
-          (default-value property) default-fitness-evaluator)
-    (set-default-property-value o property)))
-
-(defmethod objetive-instance ((task search-task))
-  (make-instance (objetive-class task)))
-
-(defmethod reset-specific-properties ((task search-task))
-  (re-initialize-properties-for (objetive-instance task) task)
-  (if (algorithm task) (re-initialize-properties-for task (algorithm task)))
-  (set-default-property-values task))
-
 (defmethod possible-languages ((o search-task))
   (list 
    (system-get 'search-task-default-language)))
@@ -261,9 +210,10 @@
   (declare (ignore algorithm))
   (setf (program o) children))
 
+;; #DEPENDENCY HOOK
 (defun lambda-update-callback-search-task (object property) 
   (declare (ignore property))
-  (reset-specific-properties object))
+  nil)
 
 (defmethod ejecutar-wait ((task search-task))
   "Stop <task>."
@@ -274,7 +224,7 @@
   "Signal <task>."
   (mp:process-unstop (process task))
   (setf (state task) 'RUNNING))
-  
+
 (defmethod kill-task ((task search-task))
   "Kills <task>."
   ;; Kill task mp:process 
@@ -283,26 +233,27 @@
   ;; Kill subtasks mp:process
   (dolist (subtask (children task))
     (kill-task subtask)))
-	
+
 (defmethod resetear ((task search-task))
   "Reset <task>."
   (resetear (algorithm task))
   (mp:process-reset (process task)))
-  
+
 (defmethod is-completed ((task search-task))
   "Answer whether <task> as been executed."
   (equal 'FINISHED (state task)))
 
+;; #TODO: Refactor to some kind of copy ?
 (defmethod set-task-values-into ((o search-task) (p search-task))
   (setf (slot-value p 'fitness-evaluator) (copy (fitness-evaluator o))
         (slot-value p 'objetive-class) (objetive-class o)
         (slot-value p 'language) (language o)))
-  
+
 ;; #TODO: Completed subtasks progress if it has. If not, task progress (for example)
 (defmethod progress-indicator ((o search-task))
   "Answer the value for <task> progress indicator."
   0)
-  
+
 (defmethod extract-process-output-data ((o search-task))
   "Process running results of <task>."
   nil)
@@ -353,7 +304,7 @@
             (setf best-individual best-individual-subtask
                   owner-subtask subtask))))
       (values best-individual owner-subtask)))
-                         
+
 (defmethod best-individuals ((task search-task) n)
   "Answer <n> best individuals of <task>."
   (let ((population (make-instance 'population))
@@ -379,7 +330,7 @@
         (appendf elites (individuals subtask))))
     (setf (individuals-array population) (to-array elites))
     population))
-                
+
 (defmethod max-size ((task search-task))
   "Answer <task> max size."
   (if (children task)

@@ -12,11 +12,6 @@
   "Initialize <o>."
   (setf (gen o) (make-instance 'genotype :expresion expresion)))
 
-(defmethod initialize-properties-for ((o t) (target base-model))
-  "Initialize properties for <o> in <target>.
-   #NOTE: This does nothing by default."
-  nil)
-
 (defmethod ephemeral-properties-definition ((o entity))
   "Answer <o> ephemeral properties."
   (property-from-values-list
@@ -58,7 +53,7 @@
 
 (defmethod possible-classes-to-search ()
   "Answer the possible classes to search."
-  (concrete-subclasses 'entity))
+  (sort (concrete-subclasses 'entity) 'string<))
 
 (defmethod evolvablep ((o entity))
   "Answer whether <o> can be evolved."

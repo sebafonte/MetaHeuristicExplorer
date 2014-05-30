@@ -10,9 +10,6 @@
                     (declare (special x))
                     ,(program o)))))
 
-(defmethod default-language ((o entity-function-x))
-  (system-get 'lisp-math-function-x))
-
 (defmethod possible-languages ((o entity-function-x))
   (list 
    (system-get 'lisp-math-function-x)

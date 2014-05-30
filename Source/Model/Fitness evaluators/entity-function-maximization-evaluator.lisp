@@ -17,11 +17,11 @@
                        (+ 1 (* x (sin (* 10 pi x))))))
    (:name 'decode-function :label "Decode function" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value 'decode-to-double :editor 'list-editor 
-    :possible-values '(decode-to-double) :subject o)
+    :possible-values '(decode-to-double))
    (:name 'measure-start :label "Measure start" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :default-value 0 :editor 'number-editor :subject o)
+    :data-type 'number :default-value 0 :editor 'number-editor)
    (:name 'measure-end :label "Measure end" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :default-value 10 :editor 'number-editor :subject o)))
+    :data-type 'number :default-value 10 :editor 'number-editor)))
 
 (defmethod initialize-fitness-data ((e entity-function-maximization-evaluator))
   "Initialize <o> fitness data."

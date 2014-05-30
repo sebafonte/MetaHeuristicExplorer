@@ -9,9 +9,9 @@
   (add-properties-from-values
    o
    (:name 'candidate-property-name :label "Candidate property" :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :default-value 'fitness :editor 'integer-editor :subject o)
+    :data-type 'symbol :default-value 'fitness :editor 'integer-editor)
    (:name 'number-of-samples :label "Samples" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :default-value 10 :editor 'number-editor :subject o)))
+    :data-type 'integer :default-value 10 :editor 'number-editor)))
 
 (defmethod evaluate ((evaluator search-task-objetive-fitness-evaluator) (object search-task))
   "Use <evaluator> to calculate and answer <object> fitness."
@@ -23,7 +23,7 @@
     (setf (fitness object) (fitness (best-individual task-object)))))
 
 
-;;; PRUEBAS PARA EVALUACION DE TASK DESCRIPTION
+;;; #TODO: Tests for task description evaluation
 (defmethod node-result (node-best-object)
   nil)
 

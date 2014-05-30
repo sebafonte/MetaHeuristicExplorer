@@ -21,7 +21,8 @@
    (image-buffer :initarg :image-buffer :initform nil :accessor image-buffer)
    (image-render-step :initarg :image-render-step :initform 4 :accessor image-render-step)
    (animate :initarg :animate :initform nil :accessor animate)
-   (selected-tab :initarg :selected-tab :initform nil :accessor selected-tab)))
+   (selected-tab :initarg :selected-tab :initform nil :accessor selected-tab)
+   (selected-property-tab :initarg :selected-property-tab :initform nil :accessor selected-property-tab)))
 
 
 (defmethod initialize-properties :after ((p pane-editor-entity))
@@ -163,12 +164,31 @@
                       node)))
          (node value))))))
 
+(defun save-interface-tab-indexes (interface)
+  (let ((pane (pane interface)))
+    (setf (selected-tab pane) (capi:choice-selection (tab interface)))
+    ;; #TODO: Unharcode 3!
+    (when (= (selected-tab pane) 3)
+      (setf (selected-property-tab pane) (capi:choice-selection (capi:pane-layout (second (capi:choice-selected-item (tab interface)))))))))
+
+(defun load-interface-tab-indexes (interface)
+  (capi:execute-with-interface 
+   interface
+   (lambda (&rest args)
+     (declare (ignore args))
+     (let ((pane (pane interface)))
+       (setf (capi:choice-selection (tab interface)) (selected-tab pane))
+       (when (= (selected-tab pane) 3)
+         (setf (capi:choice-selection (capi:pane-layout (second (capi:choice-selected-item (tab interface))))) 
+               (selected-property-tab pane)))))))
+
 ;; #TODO: Move from here
 (defun apply-editor-changes (interface data)
   "Apply <interface> model changes."
   (declare (ignore data))
   (let* ((pane (pane interface))
          (object (model pane)))
+    (save-interface-tab-indexes interface)
     (if (null object) 
         (set-model pane object)
       (progn 
@@ -180,8 +200,10 @@
         (apply-property-values pane)
         (apply-changes object)
         (apply-property-values pane)))
+    (ensure-valid-model-properties object)
     (set-model interface object)
-    (trigger pane :model-changed)))
+    (trigger pane :model-changed)
+    (load-interface-tab-indexes interface)))
 
 (defmethod apply-property-values ((p pane-editor-entity))
   "Apply <p> property values changes to it´s model."

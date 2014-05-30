@@ -19,8 +19,6 @@
     (/- :2-ary-operator)
     (perlin-x-y :2-ary-operator)))
 
-(defmethod default-language ((o entity-texture-deformation-separate))
-  (system-get 'rgb-color-images-separate))
 
 (defmethod possible-languages ((o entity-texture-deformation-separate))
   (list 

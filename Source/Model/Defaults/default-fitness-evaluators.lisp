@@ -109,12 +109,12 @@
                   :name 'entity-linear-ordering-evaluator
                   :description "LOP evaluator")
    ;; Evaluators for VRP sample problem
-   (make-instance 'entity-sample-vrp-evaluator
-                  :name 'sample-vrp-evaluator
-                  :description "VRP sample evaluator")
    (make-instance 'entity-vrp-evaluator
                   :name 'default-vrp-evaluator
                   :description "VRP default evaluator")
+   (make-instance 'entity-sample-vrp-evaluator
+                  :name 'sample-vrp-evaluator
+                  :description "VRP sample evaluator")
    (make-instance 'entity-dvrp-evaluator
                   :name 'default-dvrp-evaluator
                   :description "DVRP default evaluator"))

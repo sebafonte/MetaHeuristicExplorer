@@ -368,9 +368,8 @@
           (show-error p "Can't prepare operations for objects of different classes or with different languages.")
           nil)
       (progn
-        (setf (objetive-class (context algorithm)) (class-name (class-of (object (car parents))))
-              (language (context algorithm)) (language (algorithm (context (car parents)))))
-        (set-defaults-for-objetive algorithm)
+        (set-value-for-property-named (context algorithm) 'objetive-class (class-name (class-of (object (car parents)))))
+        (setf (language (context algorithm)) (language (algorithm (context (car parents)))))
         (update-interface-operations p)
         t))))
 

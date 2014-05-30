@@ -38,9 +38,9 @@
     :data-type 'number :min-value 0 :max-value 1 :default-value 0.95 :editor 'number-editor)
    (:name 'fitness-function :label "Fitness function" :default-value 'execute-simulation-mixed 
     :possible-values (possible-fitness-functions object) :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :editor 'list-editor :subject object)
+    :data-type 'symbol :editor 'list-editor)
    (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
-    :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor :subject object)))
+    :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor)))
 
 (defmethod possible-fitness-functions ((o entity-sample-vrp-evaluator))
   "Answer <o> possible fitness-functions."

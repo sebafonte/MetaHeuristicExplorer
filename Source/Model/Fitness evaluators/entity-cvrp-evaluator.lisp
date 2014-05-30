@@ -37,9 +37,9 @@
    (:name 'max-fitness :label "Min. fitness" :accessor-type 'accessor-accessor-type
     :data-type 'number :min-value 0 :max-value 1000000 :default-value 200 :editor 'number-editor)
    (:name 'max-capacity :label "Max. capacity" :accessor-type 'accessor-accessor-type
-    :data-type 'number :min-value 0 :max-value 1000000 :default-value 20 :editor 'number-editor)
+    :data-type 'number :min-value 0 :max-value 1000000 :default-value 1600 :editor 'number-editor)
    (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
-    :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor :subject object)))
+    :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor)))
 
 (defmethod (setf load-vrp-description-from-file) (file (o entity-vrp-evaluator))
   "Sets the initial <file> string in initial-matrix-file slot of <o>."
@@ -163,8 +163,3 @@
     (<= (+ (route-capacity evaluator first-route)
            (route-capacity evaluator second-route))
         (max-capacity evaluator))))
-
-
-
-
-

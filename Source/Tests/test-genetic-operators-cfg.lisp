@@ -6,22 +6,14 @@
   (let* ((algorithm (make-instance class))
          (subtask (make-instance 'search-task :algorithm algorithm)))
     (setf (language subtask) (system-get 'lisp-math-function-xy))
-    (initialize-properties algorithm)
-    (initialize-properties subtask)
-    (initialize-properties-for subtask algorithm)
-    (setf (context algorithm) subtask)
     algorithm))
 
 (defmethod default-algorithm-2 ((o test-genetic-operators-cfg) &optional &key (class 'generational-algorithm))
   "Answer default algorithm for <o>."
   (let* ((algorithm (make-instance class))
          (task (make-instance 'search-task :algorithm algorithm)))
-    (setf (language task) (system-get 'polynomial-xy))
-    (setf (max-size (language task)) 18)
-    (initialize-properties algorithm)
-    (initialize-properties task)
-    (initialize-properties-for task algorithm)
-    (setf (context algorithm) task)
+    (setf (language task) (system-get 'polynomial-xy)
+		  (max-size (language task)) 18)
     algorithm))
 
 (defmethod test-crossover-cfg-execution ((o test-genetic-operators-cfg))
@@ -118,7 +110,7 @@
             '(:expresion))
       (test (common-tokens algorithm 
                            '(:1-ary-operator :var :expresion) 
-                           '(:1-ary-operator :2-ary-operator :var :expresion))   
+                           '(:1-ary-operator :2-ary-operator :var :expresion)) 
             '(:1-ary-operator :expresion)))))
 
 (defmethod test-select-indexes-execution-lisp-math-expresion ((o test-genetic-operators-cfg))

@@ -10,8 +10,3 @@
          (child (make-instance (objetive-class (context a)) :expresion simplified-exp)))
     (when evaluate (evaluate a child))
     child))
-
-(defmethod set-defaults-for-objetive ((a random-tree-creation-strategy))
-  "Set genetic operators of <a> from a default instance in it's context."
-  (let ((instance (objetive-instance (context a))))
-    (setf (initialization-method a) (default-population-initializer instance))))

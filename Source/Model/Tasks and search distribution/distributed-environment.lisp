@@ -18,8 +18,7 @@
    (:name 'connection-administrator :label "Connections administrator" :accessor-type 'accessor-accessor-type
     :data-type 'object :editor 'button-editor :default-value (system-get 'main-connection-administrator))))
 
-(defmethod initialize-instance :after ((e distributed-environment) 
-                                       &key connection-administrator task-planifier-class task-planifier)
+(defmethod initialize-instance :after ((e distributed-environment) &key connection-administrator task-planifier-class task-planifier)
   "Initialize <e>."
   (setf (connection-administrator (task-planifier e)) (connection-administrator e)))
 
@@ -42,23 +41,22 @@
   "Check connection state for connections of <environment>."
   (check-connections-state (connection-administrator environment)))
 
+;; #TODO: 
 (defun lambda-reset-task-planifier-class (object property)
-  (declare (ignore property))
-  (reset-specific-properties object))
-
-;; #TODO: Check reset of task planifier property
-(defmethod reset-specific-properties ((o distributed-environment))
+  (declare (ignore object property))
   nil)
 
-;; #TODO: 
 (defmethod scan-neighbor ((environment distributed-environment))
   "Scan for possible neighbor on <environment>."
+  (declare (ignore environment))
   nil)
 
 (defmethod connect-to ((environment distributed-environment) (descriptor connection-descriptor))
   "Perform actions for keep connected to <descriptor>."
+  (declare (ignore environment descriptor))
   nil)
 
 (defmethod disconnect-from ((environment distributed-environment) (descriptor connection-descriptor))
   "Perform actions for disconnect from <descriptor>."
+  (declare (ignore environment descriptor))
   nil)

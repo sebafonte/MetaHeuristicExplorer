@@ -644,11 +644,11 @@
 (defun initialize-default-population-generators ()
   (system-add
    (make-instance 'random-binary-generator 
-                  :name 'random-binary-initializer 
-                  :description "Random binary 32")
+                  :name 'random-binary-initializer
+                  :description "Random binary")
    (make-instance 'random-trees-generator 
-                  :name 'random-trees-initializer 
-                  :description "Random binary 64")
+                  :name 'random-trees-initializer
+                  :description "Random trees")
    (make-instance 'random-trees-generator-with-operator
                   :name 'random-trees-cfg-initializer
                   :description "Random trees using"
@@ -681,16 +681,35 @@
                   :name 'task-best-objects-initializer
                   :description "Task best objects")))
 
-(defun system-population-initializer-methods ()
+
+(defmethod possible-initialization-methods ((o t))
+  (append
+   (possible-initialization-methods-for o)
+   (common-initialization-methods)))
+
+(defmethod common-initialization-methods ()
   (list 
-   (system-get 'random-binary-initializer)
+   (system-get 'fixed-expressions-initializer)
+   (system-get 'task-best-objects-initializer)))
+
+(defmethod possible-initialization-methods-for ((o entity-function-maximization))
+  (list 
+   (system-get 'random-binary-initializer)))
+
+(defmethod possible-initialization-methods-for ((o entity-sample-vrp))
+  (list 
+   (system-get 'sample-vrp-initializer)))
+
+(defmethod possible-initialization-methods-for ((o entity-linear-ordering))
+  (list 
+   (system-get 'sample-lop-initializer)))
+
+(defmethod possible-initialization-methods-for ((o entity-function))
+  (list 
+   ;; Common, #TODO: 
    (system-get 'random-trees-initializer)
    (system-get 'random-trees-cfg-initializer)
-   (system-get 'fixed-expressions-initializer)
    (system-get 'ramped-half-and-half-initializer)
-   (system-get 'sample-lop-initializer)
-   (system-get 'sample-random-polynomial-generator)
-   (system-get 'sample-vrp-initializer)
-   (system-get 'sample-search-task-generator)
-   (system-get 'evolutive-algorithm-sample-generator)
-   (system-get 'task-best-objects-initializer)))
+   (system-get 'sample-random-polynomial-generator)))
+
+

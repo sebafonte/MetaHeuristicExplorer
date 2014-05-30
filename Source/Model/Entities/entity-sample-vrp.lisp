@@ -6,8 +6,8 @@
 (defmethod default-fitness-evaluators ((object entity-sample-vrp))
   "Answer the default classes that can evaluate <object> fitness."
   (list 
-   (system-get 'sample-vrp-evaluator)
    (system-get 'default-vrp-evaluator)
+   (system-get 'sample-vrp-evaluator)
    (system-get 'default-dvrp-evaluator)))
 
 (defmethod default-population-initializer ((object entity-sample-vrp))
@@ -113,7 +113,6 @@
 (defmethod possible-languages ((o entity-sample-vrp))
   (list 
    (system-get 'vrp-default-language)))
-
 
 (defmethod draw-cities-in-pixmap ((o entity-sample-vrp) subtask pixmap width heigth bgra)
   "Draw cities description in <pixmap> for <subtask>."

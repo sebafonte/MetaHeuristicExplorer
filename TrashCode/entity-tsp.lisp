@@ -6,18 +6,18 @@
   "Initialize <o>."
   (setf (gen o) (make-instance 'genotype :expresion expresion)))
 
-(defmethod initialize-properties-for ((o entity-tsp) (target search-task))
+(defmethod initialize-properties ((o entity-tsp))
   "Initialize properties for <o> in target."
   (add-properties-from-values
    target
    (:name 'samples :label "Measures" :accessor-type 'property-accessor-type 
-    :data-type 'integer :default-value 30 :editor 'integer-editor :subject o)
+    :data-type 'integer :default-value 30 :editor 'integer-editor :dependency :task-problem-changed)
    (:name 'measure-start :label "Measure start" :accessor-type 'property-accessor-type 
-    :data-type 'number :default-value 0 :editor 'number-editor :subject o)
+    :data-type 'number :default-value 0 :editor 'number-editor :dependency :task-problem-changed
    (:name 'measure-end :label "Measure end" :accessor-type 'property-accessor-type 
-    :data-type 'number :default-value 10 :editor 'number-editor :subject o)
+    :data-type 'number :default-value 10 :editor 'number-editor :dependency :task-problem-changed)
    (:name 'fitness-vector :visible nil :accessor-type 'property-accessor-type
-    :data-type 'array :default-value nil :subject o)))
+    :data-type 'array :default-value nil :dependency :task-problem-changed)))
 
 (defmethod possible-fitness-functions ((o entity-tsp))
   "Answer <o> possible fitness functions."

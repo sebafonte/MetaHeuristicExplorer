@@ -85,9 +85,6 @@
   (list 
    (system-get 'entity-rgb-evaluator)))
 
-(defmethod default-language ((o entity-image-rgb))
-  (system-get 'rgb-color-images))
-
 (defmethod possible-languages ((o entity-image-rgb))
   (list 
    (system-get 'rgb-color-images)

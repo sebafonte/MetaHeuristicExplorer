@@ -272,7 +272,7 @@
 (defun default-object-in-search (object &optional language)
   "Answer a default object-in-search instance for <object>."
   (let ((task (make-instance 'search-task)))
-    (setf (objetive-class task) (class-name (class-of object)))
+    (set-value-for-property-named task 'objetive-class (class-name (class-of object)))
     (when language (setf (language task) language))
     (prepare-to-search task)
     (make-instance 'object-in-search :object object :context task)))

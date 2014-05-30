@@ -7,7 +7,7 @@
   (add-properties-from-values
    o
     (:name 'samples :label "Samples" :accessor-type 'accessor-accessor-type 
-     :data-type 'integer :default-value 32 :editor 'integer-editor :subject o)))
+     :data-type 'integer :default-value 32 :editor 'integer-editor)))
 
 (defmethod compiled-program ((o entity-function-x-y))
   "Answer the compiled function that representing <o> genotype."

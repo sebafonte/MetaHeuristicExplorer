@@ -102,11 +102,6 @@
   (list 
    (system-get 'default-composite-algorithm-evaluator-1)))
 
-;; #TODO: 
-(defmethod set-defaults-for-objetive ((a configurable-search-algorithm))
-  "Set genetic operators of <a> from a default instance in it's associated context."
-  nil)
-
 (defmethod register-run-data ((a configurable-search-algorithm))
   "Register run data into <a>."
   nil)

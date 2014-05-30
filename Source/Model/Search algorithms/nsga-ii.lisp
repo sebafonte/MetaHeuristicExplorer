@@ -73,8 +73,10 @@ D: 2, 4, 1
      (:name 'objetives :label "Objetives" :accessor-type 'accessor-accessor-type :setter '(setf objetives)
       :data-type 'list-structure :default-value objetives :possible-values (list objetives) :editor 'object-list-probability-editor)
      (:name 'initialization-method :label "Initialization" :accessor-type 'accessor-accessor-type 
-      :data-type 'symbol :default-value (system-get 'random-trees-initializer)
-      :possible-values (system-population-initializer-methods) :editor 'configurable-copy-list-editor)
+      :data-type 'symbol :default-value (system-get 'random-trees-initializer) :editor 'configurable-copy-list-editor
+	  :dependency 'objetive-class
+      :default-value-function (lambda (objetive-class) (first (possible-initialization-methods (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
      (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value nil :possible-values (optimization-strategies) 
       :editor 'configurable-copy-list-editor)
@@ -126,11 +128,6 @@ D: 2, 4, 1
                      (< 
                       (weighted-sum-objetives a x) 
                       (weighted-sum-objetives a y)))))))
-
-(defmethod set-defaults-for-objetive ((a nsga-ii))
-  "Set genetic operators of <a> from a default instance in it's context."
-  (setf (initialization-method a) 
-        (default-population-initializer (objetive-instance (context a)))))
 
 (defmethod generate-initial-population ((a nsga-ii))
   "Generate <a> initial population."

@@ -52,7 +52,7 @@
   (let ((value (get-value-for-property o p)))
     (make-instance editor-class 
                    :label (label p) 
-                   :items (possible-values p) 
+                   :items (append (list value) (possible-values p))
                    :selected-item value
                    :enabled (not (read-only p))
-                   :subject (copy-cyclic-including value o o))))
+                   :subject value)))

@@ -7,7 +7,7 @@
   (add-properties-from-values
    o
    (:name 'ponderation :label "Weight" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :default-value 1 :editor 'number-editor :subject o)))
+    :data-type 'number :default-value 1 :editor 'number-editor)))
 
 (defmethod possible-fitness-functions ((o entity-function-x-y-ponderated-evaluator))
   "Answer <o> possible fitness functions."

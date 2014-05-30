@@ -49,6 +49,7 @@
             "OpenCL\\ocl-utility.lisp"
             ;; Properties
             "Model\\Properties\\object-with-properties.lisp"
+            "Model\\Properties\\dependence.lisp"
             "Model\\Properties\\property.lisp"
             ;; Model
             "Model\\base-model.lisp"
@@ -77,7 +78,6 @@
             "Model\\Entities\\entity-linear-ordering-list.lisp"
             "Model\\Entities\\entity-sample-vrp.lisp"
             "Model\\Languages\\entity-language.lisp"
-            "Model\\Languages\\entity-language-free-functions.lisp"
             ;; Search algorithms
             "Model\\Search algorithms\\search-algorithm.lisp"
             "Model\\Search algorithms\\random-tree-creation-strategy.lisp"

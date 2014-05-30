@@ -9,12 +9,6 @@
   (setf (properties-definition o) nil
         (properties-values o) (make-hash-table)))
 
-(defmethod re-initialize-properties-for ((o t) (target object-with-properties))
-  "Re-initialize <o> properties."
-  (remove-all-specific-properties-of o target)
-  (initialize-properties-for o target)
-  (set-default-property-values target))
-
 (defmethod properties ((o t))
   "Answer <o> properties."
   (append (class-properties-definition o)
@@ -25,14 +19,6 @@
   (append (class-properties-definition o)
           (properties-definition o)
           (ephemeral-properties-definition o)))
-
-(defmethod class-properties-definition ((o t))
-  "Answer <o> class defined properties."
-  nil)    
-
-(defmethod ephemeral-properties-definition ((o t))
-  "Answer <o> ephemeral properties."
-  nil)
 
 ;; #TODO: Refactor on accesor type object eql methods
 (defmethod get-value-for-property-named ((o base-model) name)
@@ -79,10 +65,19 @@
       ;; Register property value
       (if (equal (accessor-type property) 'property-accessor-type)
           (setf (gethash property-name (properties-values o)) value)))
+    ;; Process update dependency event
+    ;; #TODO: OPTIMIZE, has-dependency depends on property instance
+    (when (and property (has-dependency-to-update property))
+      (set-default-dependent-property-values-recursive o o (list property)))
     ;; When necessary, call update-callback
-    (when property
-      (if (update-callback property) 
-          (apply (update-callback property) (list o property))))))
+    (when (update-callback property)
+      (apply (update-callback property) (list o property)))))
+
+(defun has-dependency-to-update (p)
+  t)
+
+(defun has-dependency (a b)
+  (equal (dependency a) (name b)))
 
 (defmethod set-default-value-for-property-named ((o object-with-properties) property-name value)
   "Sets the default value to <value> of property named <property-name> to <o> if needed."
@@ -103,48 +98,20 @@
   "Answers a list with the <o> property names."
   (mapcar 'name (properties o)))
 
-(defmethod remove-all-specific-properties ((o object-with-properties))
-  "Remove <o> properties that are specific (their subject is not <o>)."
-  ;; Filter all the properties with subject not equal to <o>
-  (setf (properties-definition o)
-        (remove-if (lambda (property) (not (equal o (subject property))))
-                   (properties-definition o))) 
-  ;; Rebuild properties definition and properties values container
-  (let ((new-properties (make-hash-table)))
-    (dolist (property (properties-definition o))
-      (setf (gethash (name property) new-properties)  
-            (gethash (name property) (properties-values o))))
-    (setf (properties-values o) new-properties)))
-    
-(defmethod remove-all-specific-properties-of ((to-remove t) (o object-with-properties))
-  "Remove all properties from an object that are specific (their subject is not <o>)."
-  ;; Filter all the properties with subject not equal to <o>.
-  (setf (properties-definition o)
-        (remove-if (lambda (property) (equal to-remove (subject property)))
-                   (properties-definition o))) 
-  ;; Rebuild properties definition and properties values container
-  (let ((new-properties (make-hash-table)))
-    (dolist (property (properties-definition o))
-      (setf (gethash (name property) new-properties)  
-            (gethash (name property) (properties-values o))))
-    (setf (properties-values o) new-properties)))
-
-(defmethod make-property-unbound ((object object-with-properties) property-name)
-  "Reset property named <property-name> value of <object>.
-   #NOTE: It could be used to re-initialize dependent properties."
-  (let ((property (property-named object property-name)))
-    (if property
-        (let ((property-name (name property)))
-          (ecase (accessor-type property)
-            ('accessor-accessor-type (slot-makunbound object property-name))
-            ('property-accessor-type (remhash (properties-values object) property-name)))))))
-
 (defmethod copy ((object object-with-properties))
   (let ((copy (copy-instance object)))
     (dolist (p (properties-definition copy))
       (if (equal (subject p) object)
           (setf (subject p) copy)))
     copy))
+
+(defmethod class-properties-definition ((o t))
+  "Answer <o> class defined properties."
+  nil)
+
+(defmethod ephemeral-properties-definition ((o t))
+  "Answer <o> ephemeral properties."
+  nil)
 
 (defmethod apply-changes ((o object-with-properties))
   "Updates <o> for any possible change."
