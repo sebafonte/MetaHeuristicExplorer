@@ -1,13 +1,17 @@
 
 (defclass base-model ()
   ())
-  
+
+
+(defmethod clos:class-extra-initargs ((x base-model))
+  '(:forget-defaults))
 
 (defmethod initialize-instance :before ((o base-model) &rest keys)
   "Initialize <o>."
   (initialize-properties o)
-  (set-default-property-values o)
-  (set-default-dependent-property-values o))
+  (unless (find :forget-defaults keys)
+    (set-default-property-values o)
+    (set-default-dependent-property-values o)))
 
 (defmethod initialize-properties :before ((o base-model))
   "Initialize <o> properties."

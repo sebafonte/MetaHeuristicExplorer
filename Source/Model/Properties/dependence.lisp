@@ -32,3 +32,20 @@
 
 (defun make-eql-dependence (property)
   (make-instance 'eql-dependence :property property))
+
+
+(defclass eql-language-dependence (property-dependence)
+  ())
+
+(defmethod valid-dependency-value ((o eql-language-dependence) property value)
+  (and value 
+       (not (null (find-if 
+                   (lambda (object) (compatible-language object value)) 
+                   (possible-values property))))))
+
+(defmethod compatible-language (a b)
+  (eql (class-of a) (class-of b)))
+
+(defun make-eql-language-dependence (property)
+  (make-instance 'eql-language-dependence :property property))
+

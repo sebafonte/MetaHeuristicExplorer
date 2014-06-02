@@ -24,13 +24,17 @@
    (task-builder :initarg :task-builder :accessor task-builder)
    (task-planifier :initarg :task-planifier :accessor task-planifier)))
 
-
 (defmethod initialize-instance :after ((object search-task) &rest initargs)
   "Initialize <object>."
   (declare (ignore initargs))
-  (initialize-default-algorithm object))
+  (unless (find :forget-defaults initargs)
+    (initialize-algorithm object)))
 
-(defmethod initialize-default-algorithm ((object search-task))
+(defmethod (setf algorithm) (value (object search-task))
+  (setf (slot-value object 'algorithm) value)
+  (initialize-algorithm object))
+
+(defmethod initialize-algorithm ((object search-task))
   "Initialize <object> default algorithm."
   (setf (context (algorithm object)) object))
 
@@ -67,8 +71,8 @@
       :data-type 'symbol :default-value objetive-class :possible-values (possible-classes-to-search) 
       :editor 'list-editor :category "Objetive")
      (:name 'algorithm :label "Search algorithm" :accessor-type 'accessor-accessor-type 
-      :data-type 'model :possible-values default-algorithms :default-value (first default-algorithms)
-      :editor 'configurable-copy-list-editor)
+      :data-type 'model :possible-values default-algorithms :default-value (copy-cyclic (first default-algorithms))
+      :editor 'configurable-copy-list-editor :setter '(setf algorithm))
      ;; Children
      (:name 'children :label "Children" :accessor-type 'accessor-accessor-type :editor 'list-editor :visible nil)
      ;; Execution information
@@ -117,13 +121,13 @@
      ;; Dependent properties
      (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objetive"
       :data-type 'model :editor 'configurable-copy-list-editor 
-      :dependency (make-eql-dependence 'objetive-class)
-      :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
-      :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
+      :dependency (make-eql-language-dependence 'objetive-class)
+      :default-value-function (lambda (objetive-class) (copy-cyclic (default-language (make-instance objetive-class))))
+      :possible-values-function (lambda (objetive-class) (possible-languages (make-instance objetive-class))))
      (:name 'fitness-evaluator :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
       :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'model
       :dependency (make-possible-class-dependency 'objetive-class)
-      :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
+      :default-value-function (lambda (objetive-class) (copy-cyclic (first (default-fitness-evaluators (make-instance objetive-class)))))
       :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
 
 (defun task-running-time (task)
@@ -344,3 +348,7 @@
                   (select 
                    (children task)
                    (lambda (o) (not (null o)))))))
+
+(defmethod possible-initialization-methods-for ((o search-task))
+  (list 
+   (system-get 'random-trees-cfg-initializer)))

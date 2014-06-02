@@ -596,7 +596,7 @@
   (let* ((population-size (population-size a))
          (population (make-array population-size))
          (max-attempts (max-unique-iterations a))
-         (attempts 0))		 
+         (attempts 0))
     (do ((i 0))
         ((>= i population-size))
       (let ((child (create-with-random-operation p a)))
@@ -692,6 +692,9 @@
    (system-get 'fixed-expressions-initializer)
    (system-get 'task-best-objects-initializer)))
 
+(defmethod possible-initialization-methods-for ((o t))
+  nil)
+
 (defmethod possible-initialization-methods-for ((o entity-function-maximization))
   (list 
    (system-get 'random-binary-initializer)))
@@ -712,4 +715,7 @@
    (system-get 'ramped-half-and-half-initializer)
    (system-get 'sample-random-polynomial-generator)))
 
+(defmethod possible-initialization-methods-for ((o entity-pattern))
+  (list 
+   (system-get 'random-trees-cfg-initializer)))
 

@@ -33,12 +33,12 @@
                   :description "Iterational 4")))
 
 (defun default-search-algorithms ()
-  (list (system-get-subject-copy 'default-generational-algorithm)
-        (system-get-subject-copy 'default-steady-state-algorithm)
-        (system-get-subject-copy 'default-nsga-ii-algorithm)
-        (system-get-subject-copy 'default-iterational-algorithm-1)
-        (system-get-subject-copy 'default-iterational-algorithm-2)
-        (system-get-subject-copy 'default-iterational-algorithm-3)))
+  (list (system-get-subject 'default-generational-algorithm)
+        (system-get-subject 'default-steady-state-algorithm)
+        (system-get-subject 'default-nsga-ii-algorithm)
+        (system-get-subject 'default-iterational-algorithm-1)
+        (system-get-subject 'default-iterational-algorithm-2)
+        (system-get-subject 'default-iterational-algorithm-3)))
 
 (defun make-sample-composite-algorithm (code)
   (let* ((language (system-get 'evolutive-algorithm-language-x-y))

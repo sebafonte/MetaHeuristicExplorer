@@ -65,3 +65,6 @@
       (parse (grammar language) program)
     (not result)))
 
+(defmethod compatible-language ((a cfg-tree-language) (b cfg-tree-language))
+  (and (equals (variables a) (variables b))
+       (equals (tokens a) (tokens b))))

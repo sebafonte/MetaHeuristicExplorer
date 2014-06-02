@@ -30,7 +30,8 @@
 
 (defun update-value-callback (interface data)
   "Update <interface> model when selection updated."
-  (setf (subject interface) data))
+  (setf (subject interface) (copy-cyclic data))
+  (apply-property-values (pane (capi:element-interface (capi:element-interface interface)))))
 
 
 (defclass configurable-copy-list-editor (option-editable-pane property-editor)

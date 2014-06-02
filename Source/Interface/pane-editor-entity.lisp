@@ -192,14 +192,12 @@
     (if (null object) 
         (set-model pane object)
       (progn 
-        ;; #TODO: This should be a :program property
+        ;; #TODO: This should be a :program property, refactor
         (if (evolvablep object)
             (setf (program object)
                   (read-from-string (capi:editor-pane-text (pane-editor interface)))))
-        ;; #TODO: Refactor
         (apply-property-values pane)
-        (apply-changes object)
-        (apply-property-values pane)))
+        (apply-changes object)))
     (ensure-valid-model-properties object)
     (set-model interface object)
     (trigger pane :model-changed)

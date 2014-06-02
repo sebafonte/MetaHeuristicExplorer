@@ -21,4 +21,4 @@
 
 (defmethod default-fitness-evaluators ((o entity-image-bw-seamless))
   "Answer the default classes that can evaluate <o> fitness."
-  (system-get 'entity-function-imagen-seamless-evaluator))
+  (system-get 'entity-seamless-basic))

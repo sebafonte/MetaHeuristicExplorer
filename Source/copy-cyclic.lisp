@@ -5,6 +5,9 @@
 (defmethod pre-copy ((i standard-object))
   (make-instance (class-name (class-of i))))
 
+(defmethod pre-copy ((i base-model))
+  (make-instance (class-name (class-of i)) :forget-defaults t))
+
 ;; COPY CYCLIC
 (defmethod copy-cyclic ((i t) &optional table new-object)
   (copy i))
@@ -20,10 +23,7 @@
   (if (gethash i table)
       (return-from copy-cyclic (gethash i table)))
   ;; Copy instance method
-  (copy-instance-cyclic 
-   i
-   table
-   (pre-copy i)))
+  (copy-instance-cyclic i table (pre-copy i)))
 
 ;; COPY INSTANCE
 (defun copy-instance-cyclic (instance &optional table new-object)
