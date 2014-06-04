@@ -531,6 +531,7 @@
 (system-add
  (make-instance 'cfg-tree-language 
                 :name 'opengl-free-drawing-default-language
+				:description "Free drawing language"
                 :grammar (system-get-copy 'default-opengl-free-drawing-grammar-2d)
                 :simplification-patterns *opengl-free-drawing-editing-patterns-2d*
                 :functions (entity-opengl-free-drawing-default-functions-info-2d)

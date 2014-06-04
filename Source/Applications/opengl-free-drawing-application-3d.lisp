@@ -265,6 +265,7 @@
  ;; languages for OpenGL free drawing problems
  (make-instance 'cfg-tree-language 
                 :name 'opengl-free-drawing-default-language
+				:description "Free drawing language"
                 :grammar (system-get-copy 'default-opengl-free-drawing-grammar)
                 :simplification-patterns *opengl-free-drawing-editing-patterns*
                 :functions (entity-opengl-free-drawing-default-functions-info-3d)
@@ -276,7 +277,7 @@
 
 
 #|
-;; Bola con rombo al rededor
+;; Circle sorrounded by a romboid
 (gl-app-draw 
  (gl-app-sphere 1)
  (gl-app-translate 0 2)

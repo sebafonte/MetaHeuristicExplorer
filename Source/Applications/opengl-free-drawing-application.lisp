@@ -329,6 +329,7 @@
  ;; languages for OpenGL free drawing problems
  (make-instance 'cfg-tree-language 
                 :name 'opengl-free-drawing-default-language
+				:description "Free drawing language"
                 :grammar (system-get-copy 'default-opengl-free-drawing-grammar)
                 :simplification-patterns *opengl-free-drawing-editing-patterns*
                 :functions (entity-opengl-free-drawing-default-functions-info)

@@ -715,6 +715,10 @@
    (system-get 'ramped-half-and-half-initializer)
    (system-get 'sample-random-polynomial-generator)))
 
+(defmethod possible-initialization-methods-for ((o configurable-search-algorithm))
+  (list 
+   (system-get 'random-trees-cfg-initializer)))
+
 (defmethod possible-initialization-methods-for ((o entity-pattern))
   (list 
    (system-get 'random-trees-cfg-initializer)))

@@ -349,6 +349,7 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
 (system-add
  (make-instance 'cfg-tree-language 
                 :name 'opengl-fragment-drawing-default-language
+                :description "Fragment drawing language"
                 :grammar (system-get-copy 'opengl-fragment-drawing-default-grammar)
                 :simplification-patterns *opengl-fragment-drawing-editing-patterns*
                 :functions (entity-opengl-fragment-drawing-default-functions-info)
