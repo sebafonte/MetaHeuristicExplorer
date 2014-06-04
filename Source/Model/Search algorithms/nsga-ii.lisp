@@ -162,7 +162,7 @@ D: 2, 4, 1
       (register-best-individual a p)
       (block nil
         (dotimes (i (max-generations a))
-          (when (test-termination-best-individual a)
+          (when (test-termination-nsga a)
             (return-from nil))
           (setf (generation a) i)
           (let* ((parents (select-pareto-parents a p children))
@@ -177,6 +177,17 @@ D: 2, 4, 1
   "Answer whether the steady state search has to finish."
   (>= (fitness (best-individual a)) 
       (solution-fitness (fitness-evaluator a))))
+
+(defmethod test-termination-nsga ((a nsga-ii))
+  "Answer whether the steady state search has to finish."
+  (let ((best-individual (best-individual a))
+        (solution-fitness (solution-fitness (fitness-evaluator a))))
+    (or (and solution-fitness
+             (or (better-than-fitness-value best-individual solution-fitness)
+                 (= (fitness best-individual) solution-fitness)))
+        (and (max-evaluations a)
+             (>= (evaluations (fitness-evaluator a))
+                 (max-evaluations a))))))
 
 (defmethod select-pareto-parents (algorithm population children)
   (let* ((union (to-array (append (individuals population) children)))

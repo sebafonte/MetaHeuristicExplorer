@@ -158,3 +158,6 @@
             (round (coerce (* (/ 1000 1024)
                               (/ (length message-string) (- (get-internal-real-time) initial-time))) 'float))))))
 
+(defmethod clear-status ((o connection-descriptor))
+  (setf (tasks-asigned o) 0
+        (finished-tasks o) 0))

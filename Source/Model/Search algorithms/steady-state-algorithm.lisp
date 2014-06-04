@@ -65,13 +65,15 @@
 
 (defmethod test-termination ((a steady-state-algorithm) iteration)
   "Answer whether the steady state search has to finish."
-  (or (> iteration (max-iterations a))
-      (and (solution-fitness (fitness-evaluator a))
-           (>= (fitness (best-individual a)) 
-               (solution-fitness (fitness-evaluator a))))
-      (and (max-evaluations a)
-           (>= (evaluations (fitness-evaluator a))
-               (max-evaluations a)))))
+  (let ((best-individual (best-individual a))
+        (solution-fitness (solution-fitness (fitness-evaluator a))))
+    (or (> iteration (max-iterations a))
+        (and solution-fitness
+             (or (better-than-fitness-value best-individual solution-fitness)
+                 (= (fitness best-individual) solution-fitness)))
+        (and (max-evaluations a)
+             (>= (evaluations (fitness-evaluator a))
+                 (max-evaluations a))))))
 
 (defmethod population-replacement-strategies ((a steady-state-algorithm))
   "Answer possible individual replacement method for <a>."

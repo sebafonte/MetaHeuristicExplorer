@@ -320,15 +320,15 @@
   (add-properties-from-values
    object
    (:name 'generation-method :label "Generation method" :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :default-value 'random-tour-variable-vehicles :editor 'list-editor
+    :data-type 'symbol :default-value (first (possible-generation-methods object)) :editor 'list-editor
     :possible-values (possible-generation-methods object))))
 
 (defmethod possible-generation-methods ((object sample-vrp-population-generator))
-  '(radial-scan-generation-method
-    one-vehicle-per-city-method
+  '(clark-and-wright-generation
+	random-tour-variable-vehicles
     random-tour-fixed-vehicles
-    random-tour-variable-vehicles
-    clark-and-wright-generation))
+	radial-scan-generation-method
+    one-vehicle-per-city-method))
 
 (defmethod generate-population ((object sample-vrp-population-generator) (algorithm search-algorithm))
   "Generate population for search on <algorithm>."

@@ -3,6 +3,9 @@
    (content :initarg :content :accessor content)))
 
 
+(defmethod error-message-p ((o tcp-message)) 
+  (eql (name o) 'message-error))
+
 (defun initialize-default-tcp-messages ()
   (system-add
    ;; Connection hand-shaking / status messages
@@ -83,10 +86,18 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-send-subtask)) message administrator stream)
   (let ((subtask (content message)))
     (appendf *search-subtasks* (list subtask))
-    (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
-    ;(execute-search subtask)
-    (format stream (make-tcp-message-string 'message-send-subtask-result (simplified-copy subtask)))
-    (force-output stream)))
+    ;; #TODO: Add a "incoming tasks planifier" to accept all tasks or delegate on other locally known hosts
+    (let ((error))
+      (handler-case (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
+        (error (function) (setf error function) nil))
+      (format stream 
+              (if error
+                  (make-tcp-message-string 'message-error (error-description error))
+                (make-tcp-message-string 'message-send-subtask-result (simplified-copy subtask))))
+      (force-output stream))))
+
+(defun error-description (error)
+  (format nil "~a" error))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-clean-image)) message administrator stream)
   "Executes garbage collector and purge all known buffers and unused object."
@@ -112,6 +123,7 @@
                                                        :descriptor-machine-instance machine-instance
                                                        :is-remote t))))))
 
+;; #TODO:
 (defmethod dispatch-message-name ((message-name (eql 'message-update-version)) message administrator stream)
   "Updates client version automatically to current version if newer."
   nil)

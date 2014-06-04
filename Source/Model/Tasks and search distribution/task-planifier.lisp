@@ -101,9 +101,7 @@
   (execute-subtask-loop subtask)
   subtask)
 
-(defmethod execute-subtask-remote ((planifier task-planifier) 
-                                   (subtask search-task) 
-                                   (target connection-descriptor))
+(defmethod execute-subtask-remote ((planifier task-planifier) (subtask search-task) (target connection-descriptor))
   "Executes <subtask> on a remote image."
   (let* ((new-subtask (simplified-copy subtask))
          (message-string (make-tcp-message-string 'message-send-subtask new-subtask)))
@@ -117,14 +115,20 @@
             (let ((initial-time (get-universal-time)))
               (setf (state subtask) 'RUNNING-REMOTE
                     (initial-time subtask) initial-time)
-              (let ((result-subtask (content (eval (read-from-string (read-line stream nil nil))))))
-                (update-transfered-subtask result-subtask subtask)
+              (let* ((result (eval (read-from-string (read-line stream nil nil))))
+                     (content (content result)))
+                (when (error-message-p result)
+                  (signal-error-on planifier target subtask content))
+                (update-transfered-subtask content subtask)
                 (incf (finished-tasks target))
-                (setf (initial-time result-subtask) initial-time
-                      (final-time result-subtask) (get-universal-time))
-                result-subtask)))
+                (setf (initial-time content) initial-time
+                      (final-time content) (get-universal-time))
+                content)))
         ;; #TODO: Throw an error
-        nil))))
+        (signal-error-on planifier target subtask "Closed connection")))))
+
+(defmethod signal-error-on (planifier target task error)
+  (error (format nil "Error on <~a> with <~a>: ~a" target task error)))
 
 (defun update-transfered-subtask (new-task task)
   "Update redundant information deleted to transfer <new-task>."

@@ -104,7 +104,10 @@
                                 :selection-callback 'save-defaults-callback)
                  (make-instance 'capi:toolbar-button :image 8 :selected-image 8
                                 :help-key "Configure planifier"
-                                :selection-callback 'configure-task-planifier))
+                                :selection-callback 'configure-task-planifier)
+                 (make-instance 'capi:toolbar-button :image 15 :selected-image 15
+                                :help-key "Clear status"
+                                :selection-callback 'clear-stats-task-planifier))
            :selection nil))
     :callback-type :data-interface
     :title ""
@@ -238,6 +241,11 @@
 (defmethod configure-task-planifier (data interface)
   (declare (ignore data))
   (open-editor-with interface (system-get 'local-distributed-environment)))
+
+(defmethod clear-stats-task-planifier (data interface)
+  (declare (ignore data))
+  (dolist (i (connections (connection-administrator (model (pane interface)))))
+    (clear-status i)))
 
 (defun scan-for-connections-callback (data interface)
   (declare (ignore data))

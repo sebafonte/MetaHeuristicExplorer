@@ -9,6 +9,7 @@
   ((name :initarg :name :accessor name)
    ;; Network
    (compact-tcp-messages :initarg :compact-tcp-messages :accessor compact-tcp-messages)
+   (main-server :initarg :main-server :accessor main-server)
    ;; GUI
    (animation-enabled :initarg :animation-enabled :accessor animation-enabled)
    (panes-history-level :initarg :panes-history-level :accessor panes-history-level)
@@ -56,6 +57,9 @@
    (:name 'compact-tcp-messages :label "Compact tcp messages" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value nil :editor 'boolean-editor :update-callback 'save-property-state
     :category "Network")
+   (:name 'main-server :label "Main server" :accessor-type 'accessor-accessor-type :data-type 'string 
+    :default-value "geneticexplorer.mine.nu" :editor 'string-editor :update-callback 'save-property-state 
+    :category "Network")
    (:name 'animation-enabled :label "Animation" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value nil :editor 'boolean-editor :update-callback 'save-property-state
     :category "Graphics")
@@ -98,12 +102,12 @@
    ;; OpenCL
    (:name 'opencl-platform :label "Platform" :accessor-type 'accessor-accessor-type :category "OpenCL"
     :data-type 'list :default-value *default-cl-platform* :possible-values (available-opencl-platforms)
-    :update-callback 'reset-opencl-device-for-platfor :editor 'list-editor)
+    :update-callback 'reset-opencl-device-for-platform :editor 'list-editor)
    (:name 'opencl-device :label "Device" :accessor-type 'accessor-accessor-type :category "OpenCL"
     :data-type 'list :default-value *default-cl-device* :possible-values (available-opencl-devices *default-cl-platform*)
     :editor 'list-editor :update-callback 'save-property-state)
    (:name 'opencl-compile-options :label "Compiler options" :accessor-type 'accessor-accessor-type :category "OpenCL"
-    :data-type 'string :default-value "" :update-callback 'save-property-state)
+    :data-type 'string :editor 'text-editor :default-value "" :update-callback 'save-property-state)
    ;; OpenCL info properties
    (:name 'max-compute-units :label "Max compute units" :accessor-type 'accessor-accessor-type :category "OpenCL"
     :data-type 'int :default-value (system-configuration-device-max-compute-units) :read-only t)
