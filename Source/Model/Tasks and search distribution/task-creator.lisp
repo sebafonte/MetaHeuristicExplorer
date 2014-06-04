@@ -132,6 +132,21 @@
       (if (probe-file file-name) (delete-file file-name))
       (save-source-description i file-name))))
 
+(defun open-and-execute-tasks (creator tasks)
+  (declare (ignore creator))
+  (let ((pane (make-instance 'pane-search-tasks :mdi-interface (interface *main-pane*))))
+    (add-tasks pane tasks))
+  (planify-elements tasks))
+
+;; #TODO: Move to experiment new class
+(defmethod planify-elements (tasks)
+  ;; #LOG: Prepare for benchmarking
+  (dolist (i tasks)
+    (prepare-benchmark (make-instance 'task-benchmark) i))
+  ;; Execute task with task planifier
+  (dolist (i tasks)
+    (execute-task (task-planifier i) i)))
+
 
 #|
 ;; Population size test

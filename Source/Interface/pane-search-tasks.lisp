@@ -153,6 +153,18 @@
   "Answer a copy of <pane> model."
   (copy-cyclic (model pane)))
 
+(defmethod add-tasks ((pane pane-search-tasks) tasks)
+  "Answer a copy of <pane> model."
+  (let ((interface (interface pane)))
+    ;; Add task to global tasks list
+    (appendf (elements pane) tasks)
+    ;; Update interface
+    (capi:apply-in-pane-process
+     (subtasks interface) 
+     #'(setf capi:collection-items) 
+     tasks 
+     (subtasks interface))))
+
 (defun menu-create-task (interface data)
   "Create and register a new task on <interface>."
   (declare (ignore data))

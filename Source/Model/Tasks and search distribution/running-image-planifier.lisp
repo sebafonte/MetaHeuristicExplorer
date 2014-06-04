@@ -3,7 +3,7 @@
   ())
 
 
-(defmethod initialize-properties :after ((object task-planifier))
+(defmethod initialize-properties :after ((object running-image-planifier))
   "Initialize <object> properties."
   (add-properties-from-values
    object

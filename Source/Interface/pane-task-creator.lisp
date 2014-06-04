@@ -107,10 +107,12 @@
   (let ((path (capi:prompt-for-directory "Select result path")))
     (when path
       (setf (path (model (pane interface))) path)
-      (update-creator-path interface path)))
-  ;(setf (capi:simple-pane-enabled (third (items (toolbar interface)))) 
-  ;      (not (null path)))
-  )
+      (update-creator-path interface path))))
+
+;; #TODO: 
+;(defmethod update-buttons-enable-state ((p pane-task-creator))
+;  (setf (capi:simple-pane-enabled (third (items (toolbar interface)))) 
+;        (not (null path))))
 
 (defun update-creator-path (interface path)
   (setf (capi:title-pane-text (text-path interface)) 
@@ -144,10 +146,12 @@
          (creator (make-instance 'task-creator :variations-description (mapcar 'read-from-string (variations model)))))
     (save-task-on creator (create-tasks-on creator (task model)) (path model))))
 
-;; #TODO: 
 (defun execute-variations-callback (interface data)
   (declare (ignore data))
-  nil)
+  (let* ((model (model (pane interface)))
+         (creator (make-instance 'task-creator :variations-description (mapcar 'read-from-string (variations model))))
+         (tasks (create-tasks-on creator (task model))))
+    (open-and-execute-tasks creator tasks)))
 
 (defun delete-variation-callback (interface data)
   "Add a new connection configured by the user to the model of <p>."
