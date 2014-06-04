@@ -26,7 +26,7 @@
    (:name 'connection-administrator :label "Connections administrator" :accessor-type 'accessor-accessor-type
     :data-type 'string :editor 'button-editor :default-value nil)
    (:name 'max-simultaneous-processes :label "Max simoultaneous processes" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 1 :min-value 1 :max-value 8 :object-parameter t)
+    :data-type 'number :editor 'lisp-editor :default-value nil :object-parameter t)
    (:name 'local :label "Local hosts" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)
    (:name 'remote :label "Remote hosts" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)
    (:name 'running-image :label "Running image" :accessor-type 'accessor-accessor-type :editor 'boolean-editor :default-value t :data-type 'boolean)))
@@ -177,4 +177,5 @@
                    n))))))
 
 (defmethod real-max-simultaneous-processes ((planifier task-planifier))
-  (max-simultaneous-processes planifier))
+  (or (max-simultaneous-processes planifier)
+      (length (active-connections planifier))))
