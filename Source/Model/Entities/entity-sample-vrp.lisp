@@ -45,26 +45,22 @@
 (defun minimum-vrp-x (o evaluator)
   "Answer minimum x coordinate for <evaluator>."
   (declare (ignore o))
-  (reduce 'min (mapcar (lambda (x) (car x)) 
-                      (cities-description evaluator))))
+  (reduce 'min (mapcar (lambda (x) (car x)) (cities-description evaluator))))
 
 (defun minimum-vrp-y (o evaluator)
   "Answer minimum y coordinate for <evaluator>."
   (declare (ignore o))
-  (reduce 'min (mapcar (lambda (x) (cadr x)) 
-                       (cities-description evaluator))))
+  (reduce 'min (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
 
 (defun maximum-vrp-x (o evaluator)
   "Answer maximum x coordinate for <evaluator>."
   (declare (ignore o))
-  (reduce 'max (mapcar (lambda (x) (car x)) 
-                       (cities-description evaluator))))
+  (reduce 'max (mapcar (lambda (x) (car x)) (cities-description evaluator))))
 
 (defun maximum-vrp-y (o evaluator)
   "Answer maximum y coordinate for <evaluator>."
   (declare (ignore o))
-  (reduce 'max (mapcar (lambda (x) (cadr x)) 
-                       (cities-description evaluator))))
+  (reduce 'max (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
 
 (defun route-color-for-index (index)
   "Answer a rgb-color instance for <index>."
@@ -77,7 +73,7 @@
    ((= index 5) (color:make-rgb 0.0 1.0 1.0))
    ((= index 6) (color:make-rgb 1.0 0.0 1.0))
    (t (color:make-rgb 0.5 0.5 0.5))))
- 
+
 (defmethod draw-depot-in-pixmap ((o entity-sample-vrp) subtask pixmap width heigth bgra)
   "Draw depot for <o> in <pixmap>."
   (let* ((evaluator (fitness-evaluator subtask))

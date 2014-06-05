@@ -17,11 +17,6 @@
   (declare (ignore data))
   (make-instance 'pane-search-tasks :mdi-interface interface :subtasks *search-tasks*))
 
-(defun open-pane-subtasks (interface data)
-  "Open a 'pane-subtasks on <interface>."
-  (declare (ignore data))
-  (make-instance 'pane-subtasks :mdi-interface interface :subtasks *search-subtasks*))
-
 (defun open-pane-editor-entity (interface data)
    "Open a 'pane-editor-entity on <interface>."
    (declare (ignore data))
@@ -217,7 +212,8 @@
   (declare (ignore data interface))
   "Perform actions to reset system."
   ;; Delete all tasks
-  (setf *search-tasks* nil)
+  (setf *search-tasks* nil
+        *search-subtasks* nil)
   ;; Reset task planifier
   (reset-task-environment-settings)
   ;; #TODO: Ver: Again?!

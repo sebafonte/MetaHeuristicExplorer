@@ -5,13 +5,13 @@
    (measure-start :initarg :measure-start :accessor measure-start)
    (measure-end :initarg :measure-end :accessor measure-end)))
 
-#|
+
 ;; Intent of re-initialize when requested
 (defmethod fitness-vector ((o entity-function-x-evaluator))
-  (if (slot-value o 'fitness-vector)
-      (fitness-vector o)
-    (progn (initialize-fitness-data o) (fitness-vector o))))
-|#
+  (mp:with-lock (*auxiliar-lock*)
+    (when (null (slot-value o 'fitness-vector))
+      (initialize-fitness-data o))
+    (slot-value o 'fitness-vector)))
 
 (defmethod initialize-properties :after ((o entity-function-x-evaluator))
   "Initialize <o> properties."
@@ -122,13 +122,20 @@
   'entity-function-x)
 
 (defmethod samples-xmin ((e entity-function-x-evaluator))
-  (apply 'min (mapcar 'car (to-list (fitness-vector e)))))
+  (samples-function (fitness-vector e) (samples e) 'min 0))
 
 (defmethod samples-xmax ((e entity-function-x-evaluator))
-  (apply 'max (mapcar 'car (to-list (fitness-vector e)))))
+  (samples-function (fitness-vector e) (samples e) 'max 0))
 
 (defmethod samples-ymin ((e entity-function-x-evaluator))
-  (apply 'min (mapcar 'cadr (to-list (fitness-vector e)))))
+  (samples-function (fitness-vector e) (samples e) 'min 1))
 
 (defmethod samples-ymax ((e entity-function-x-evaluator))
-  (apply 'max (mapcar 'cadr (to-list (fitness-vector e)))))
+  (samples-function (fitness-vector e) (samples e) 'max 1))
+
+(defun samples-function (vector samples function index)
+  (let ((result))
+    (dotimes (i samples)
+      (let ((value (aref vector i index)))
+        (setf result (if result (funcall function result value) value))))
+    result))

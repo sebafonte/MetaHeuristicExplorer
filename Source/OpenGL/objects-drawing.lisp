@@ -17,7 +17,7 @@
                    1.d0)
   (opengl:gl-matrix-mode opengl:*GL-MODELVIEW*)
   (opengl:gl-load-identity))
-  
+
 #|
 ;; #TODO: Refactor into something like a visualization strategy
 ;; #NOTE: Height map clamped to [0, 1]
@@ -64,7 +64,7 @@
          (dx (/ width cx))
          (dy (/ height cy)))
     (opengl:rendering-on (canvas)
-      (initialize-ortho-2d 0.d0 width height 0.d0)      
+      (initialize-ortho-2d 0.d0 width height 0.d0)
       (dotimes (j (1+ cy))
         (opengl:gl-begin opengl:*gl-quad-strip*)
         (dotimes (i (1+ cx))
@@ -92,7 +92,8 @@
          (xmax (samples-xmax evaluator))
          (ymin (samples-ymin evaluator))
          (ymax (samples-ymax evaluator))
-         (samples (to-list (fitness-vector evaluator)))
+         (width (- xmax xmin))
+         (height (- ymax ymin))
          (points)
          (x 0))
     (declare (special x))
@@ -100,14 +101,13 @@
       (initialize-ortho-2d xmin (- xmax xmin) (- ymax ymin) ymin)
       (opengl:gl-clear opengl:*GL-COLOR-BUFFER-BIT*)
       ;; Draw object points
-      (opengl:gl-color3-f (coerce 1 'single-float) (coerce 1 'single-float) (coerce 1 'single-float))
-      (dolist (i samples)
-        (setf x (first i))
-        (appendf points (list (list x (funcall expression)))))
-      (draw-lines-with-points-gl points ymax)
-      ;; Draw sample points
-      (opengl:gl-color3-f (coerce 1 'single-float) (coerce 0 'single-float) (coerce 1 'single-float))
-      ;(draw-lines-with-points-gl samples ymax)
+      (initialize-ortho-2d 0.0 (coerce width 'single-float) (coerce height 'single-float) 0.0)
+      (opengl:gl-color3-f 1.0 1.0 1.0)
+      (when (fitness-vector evaluator)
+        (dotimes (i (samples evaluator))
+          (setf x (aref (fitness-vector evaluator) i 0))
+          (appendf points (list (list x (funcall expression)))))
+        (draw-lines-with-points-gl points ymax))
       (opengl:swap-buffers canvas))))
 
 ;; Min between 128 and pixels count
@@ -194,22 +194,51 @@
     (opengl:swap-buffers canvas)))
 
 (defmethod draw-opengl-on ((o graphic-function-r-r) canvas viewer)
-  "Compute pixmap values into <o> pixmap."
+  "Draws OpenGL scene <o> on <canvas>."
   (let* ((compiled-valuable (compiled-valuable o))
+         (points (draw-data-gl o))
          (xmin (xmin o))
          (xmax (xmax o))
          (ymin (ymin o))
          (ymax (ymax o))
+         (width (- xmax xmin))
+         (height (- ymax ymin))
+         (xmed (coerce (/ height 2) 'double-float))
          (x 0) 
          (y 0)
-         (points (draw-data-gl o)))
+         (pane (pane (capi:element-interface canvas))))
     (declare (special x) (special y))
     (opengl:rendering-on (canvas)
+      ;; Points
       (initialize-ortho-2d xmin (- xmax xmin) (- ymax ymin) ymin)
       (opengl:gl-clear opengl:*GL-COLOR-BUFFER-BIT*)
-      (opengl:gl-color3-f (coerce 1 'single-float) (coerce 1 'single-float) (coerce 1 'single-float))
+      (opengl:gl-color3-f 1.0 1.0 1.0)
       (draw-lines-gl points ymax)
-      (opengl:swap-buffers canvas))))
+      ;; Fonts
+      (let* ((width 50)
+             (height 15)
+             (xmed (coerce (/ height 2) 'double-float)))
+        (initialize-ortho-2d 0.0 (coerce width 'single-float) (coerce height 'single-float) 0.0)
+        (ensure-set-up-gl-fonts canvas)
+        (opengl:gl-color3-f 1.0 0.0 0.0)
+        (draw-positioned-3d-text pane
+                                 (format nil "~A" xmin) 
+                                 0d0 xmed 0d0 0d0 180d0 0d0 1d0)
+        (draw-positioned-3d-text pane
+                                 (format nil "~A" xmax)
+                                 (coerce (- width (* 4 (length (format nil "~A" xmax)))) 'double-float)
+                                 xmed 0d0 0d0 180d0 0d0 1d0)
+        (draw-positioned-3d-text pane
+                                 (format nil "~A" ymin) 
+                                 0d0 
+                                 (coerce (- height 0.2) 'double-float) 
+                                 0d0 0d0 180d0 0d0 1d0)
+        (draw-positioned-3d-text pane
+                                 (format nil "~A" ymax) 
+                                 0d0 
+                                 1d0
+                                 0d0 0d0 180d0 0d0 1d0)
+        (opengl:swap-buffers canvas)))))
 
 (defun draw-lines-with-points-gl (point-list ymax)
   "Draws points from point-list."

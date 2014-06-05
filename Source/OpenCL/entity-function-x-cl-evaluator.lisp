@@ -15,7 +15,11 @@
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
     :data-type 'string :editor 'text-editor :default-value "Function X CL evaluator")
    (:name 'description :label "Description" :accessor-type 'accessor-accessor-type 
-    :data-type 'string :editor 'text-editor :default-value "Function X CL evaluator")))
+    :data-type 'string :editor 'text-editor :default-value "Function X CL evaluator")
+   (:name 'target-program :label "Target program" :accessor-type 'accessor-accessor-type 
+    :data-type 'list :editor 'lisp-editor
+    :default-value '(cos (/- (+ (* x x) (* 2 y y)) 4)) 
+    :possible-values '(cos (/- (+ (* x x) (* 2 y y)) 4)))))
 
 (defmethod initialize-buffers ((o entity-function-x-cl-evaluator))
   "Initialize <o> buffers."

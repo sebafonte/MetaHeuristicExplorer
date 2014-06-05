@@ -7,7 +7,11 @@
   (add-properties-from-values
    o
     (:name 'samples :label "Samples" :accessor-type 'accessor-accessor-type 
-     :data-type 'integer :default-value 32 :editor 'integer-editor)))
+     :data-type 'integer :default-value 32 :editor 'integer-editor)
+    (:name 'target-program :label "Target program" :accessor-type 'accessor-accessor-type 
+     :data-type 'list :editor 'lisp-editor
+     :default-value '(cos (/- (+ (* x x) (* 2 y y)) 4)) 
+     :possible-values '(cos (/- (+ (* x x) (* 2 y y)) 4)))))
 
 (defmethod compiled-program ((o entity-function-x-y))
   "Answer the compiled function that representing <o> genotype."

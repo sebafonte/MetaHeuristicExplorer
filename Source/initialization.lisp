@@ -2,6 +2,7 @@
 (defun initialize-system ()
   "Execute all necessary functions to initialize system."
   (register-capi-button-icons)
+  (initialize-locks)
   (initialize-event-handlers)
   (initialize-default-pane-positioners)
   (initialize-opencl)
@@ -87,6 +88,9 @@
 (defun load-default-panes () 
   "Load default pane configuration on main interface."
   nil)
+
+(defun initialize-locks ()
+  (setf *auxiliar-lock* (mp:make-lock :name "auxiliar-lock")))
 
 (defun initialize-auxiliar-objects ()
   (setf *default-instance-search-task* (make-instance 'search-task))

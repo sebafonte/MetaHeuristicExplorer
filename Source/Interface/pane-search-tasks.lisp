@@ -153,11 +153,11 @@
   "Answer a copy of <pane> model."
   (copy-cyclic (model pane)))
 
-(defmethod add-tasks ((pane pane-search-tasks) tasks)
+(defmethod set-tasks ((pane pane-search-tasks) tasks)
   "Answer a copy of <pane> model."
   (let ((interface (interface pane)))
     ;; Add task to global tasks list
-    (appendf (elements pane) tasks)
+    (setf (elements pane) tasks)
     ;; Update interface
     (capi:apply-in-pane-process
      (subtasks interface) 

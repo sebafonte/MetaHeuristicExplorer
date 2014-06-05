@@ -1,4 +1,6 @@
 (defparameter *task-planifier-lock* nil)
+(defparameter *task-planifier-task-lock* (mp:make-lock :name "task-planifier-task-lock"))
+(defparameter *auxiliar-lock* nil)
 (defparameter *simultaneous-processes* 0)
 
 
@@ -93,8 +95,7 @@
             (write-line (transportable-code-description message) stream)
             (force-output stream)
             (content (eval (read-from-string (read-line stream nil nil)))))
-        ;; #TODO: Throw an error
-        nil))))
+        (signal-error-on planifier target task "Closed connection")))))
 
 (defmethod execute-subtask-local ((planifier task-planifier) (subtask search-task))
   "Executes <subtask> on running image."
@@ -115,7 +116,14 @@
             (let ((initial-time (get-universal-time)))
               (setf (state subtask) 'RUNNING-REMOTE
                     (initial-time subtask) initial-time)
-              (let* ((result (eval (read-from-string (read-line stream nil nil))))
+              (let* ((result (eval (read-from-string 
+                                    (handler-case (read-line stream nil nil) 
+                                      (error (error) 
+                                        (signal-error-on planifier target subtask error)
+                                        (incf (finished-tasks target))
+                                        (setf (initial-time subtask) initial-time
+                                              (final-time subtask) (get-universal-time))
+                                        (return-from execute-subtask-remote subtask))))))
                      (content (content result)))
                 (when (error-message-p result)
                   (signal-error-on planifier target subtask content))
@@ -124,11 +132,12 @@
                 (setf (initial-time content) initial-time
                       (final-time content) (get-universal-time))
                 content)))
-        ;; #TODO: Throw an error
         (signal-error-on planifier target subtask "Closed connection")))))
 
 (defmethod signal-error-on (planifier target task error)
-  (error (format nil "Error on <~a> with <~a>: ~a" target task error)))
+  (setf (state task) 'error)
+  ;(error (format nil "Error on <~a> with <~a>: ~a" target task error))
+  )
 
 (defun update-transfered-subtask (new-task task)
   "Update redundant information deleted to transfer <new-task>."
@@ -154,27 +163,30 @@
 
 (defmethod execute-task-subtasks ((planifier task-planifier) (task search-task))
   "Executes subtasks of <task> with <planifier>."
-  (let ((i (length (children task))))
-    (loop as n = (decf i)
-          while (>= n 0)
-          do 
-          (progn 
-            (mp:process-wait "Waiting for process completion."
-                             (lambda () (< *simultaneous-processes* (real-max-simultaneous-processes planifier))))
-            (mp:with-lock (*task-planifier-lock*)
-              (incf *simultaneous-processes*))
-            (setf (process task) 
-                  (mp:process-run-function
-                   "Process task"
-                   (list :priority (priority task))
-                   (lambda (children-number) 
-                     (let ((result-task (execute-subtask
-                                         planifier 
-                                         (nth children-number (children task)))))
-                       (mp:with-lock (*task-planifier-lock*)
-                         (decf *simultaneous-processes*))
-                       (setf (nth children-number (children task)) result-task)))
-                   n))))))
+  (mp:with-lock (*task-planifier-task-lock*)
+    (let ((i (length (children task))))
+      (loop as n = (decf i)
+            while (>= n 0)
+            do 
+            (progn 
+              (mp:process-wait "Waiting for process completion."
+                             (lambda () 
+                               (mp:with-lock (*task-planifier-lock*)
+                                 (< *simultaneous-processes* (real-max-simultaneous-processes planifier)))))
+              (mp:with-lock (*task-planifier-lock*)
+                (incf *simultaneous-processes*))
+              (setf (process task) 
+                    (mp:process-run-function
+                     "Process task"
+                     (list :priority (priority task))
+                     (lambda (children-number) 
+                       (let ((result-task (execute-subtask
+                                           planifier 
+                                           (nth children-number (children task)))))
+                         (mp:with-lock (*task-planifier-lock*)
+                           (decf *simultaneous-processes*))
+                         (setf (nth children-number (children task)) result-task)))
+                     n)))))))
 
 (defmethod real-max-simultaneous-processes ((planifier task-planifier))
   (or (max-simultaneous-processes planifier)

@@ -135,7 +135,7 @@
 (defun open-and-execute-tasks (creator tasks)
   (declare (ignore creator))
   (let ((pane (make-instance 'pane-search-tasks :mdi-interface (interface *main-pane*))))
-    (add-tasks pane tasks))
+    (set-tasks pane tasks))
   (planify-elements tasks))
 
 ;; #TODO: Move to experiment new class

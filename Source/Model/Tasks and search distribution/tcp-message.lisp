@@ -101,7 +101,6 @@
 
 (defmethod dispatch-message-name ((message-name (eql 'message-clean-image)) message administrator stream)
   "Executes garbage collector and purge all known buffers and unused object."
-  (setf *search-subtasks* nil)
   (reset-environment-callback nil nil)
   ;(format stream (make-tcp-message-string 'message-ok))
   ;(force-output stream)
