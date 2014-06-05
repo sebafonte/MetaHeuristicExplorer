@@ -1,20 +1,4 @@
 
-
-(defmethod refresh-editors ((o opengl-with-capi))
-  (purgue-invisible-editors)
-  (dolist (editor *interface-editors*)
-    (when (graphic-part editor)  
-      (redisplay-canvas (graphic-part editor))))
-  (dolist (editor *interface-graphic-editors*)
-    (when (graphic-part editor)
-      (redisplay-canvas (graphic-part editor)))))
-
-(defun purgue-invisible-editors ()
-  (setf *interface-editors* 
-        (select 
-         *interface-editors*
-         (lambda (editor) (capi-internals:representation editor)))))
-
 #|
 (defmacro make-entity-explorer-pane-position (x y &rest args)
   "Default mutation-pane constructor macro with <args>."
@@ -62,5 +46,4 @@
       (+ 1 2))
 
 (sys:object-address x)
-
 |#

@@ -22,14 +22,6 @@
        :ok-check (lambda (pane) (declare (ignore pane)) t))
     (values action (read-from-string result))))
 
-(defmacro protect-interface-creation (args)
-  `(restart-case
-       (handler-bind ((error #'(lambda (c)
-                                 (declare (ignore c))
-                                 (invoke-restart 'my-restart nil))))
-         (progn ,@args))
-     (my-restart (&optional v) v)))
-
 (defun absolute-geometry-values (interface)
   "Answer the values for <interface> with respect to main top level interface."
   (if (capi:top-level-interface-p interface)

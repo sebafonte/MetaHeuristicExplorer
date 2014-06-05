@@ -1,4 +1,4 @@
-;; Compress 1
+;; Compress 1: Working on an update to avoid recursion
 (defun compress-1 (program language operator)
   "Apply compress subroutine mutation on <program>."
   (declare (ignore operator))
@@ -19,8 +19,7 @@
            (not (has-subroutine-call list)))
       1 0))
 
-
-;; Compress 2
+;; Compress 2: Working on an update to avoid recursion
 (defun compress-2 (program language operator)
   "Apply compress subroutine mutation on <program>."
   (if (> (tree-depth program) 1)
@@ -36,31 +35,6 @@
           (replace-internal-subtree program (append (list function-id) children-trees) point language)))
     program))
 
-(defun get-compress-random-point (program language)
-  (1+ (get-random-subtree-index-with-arguments 
-       program 
-       'lambda-subtree-extraction-weight-function-1 
-       language)))
-
-(defun get-compress-children-points (tree operator language)
-  (mapcar 
-   (lambda (x) (1+ x))
-   (get-random-subtree-indexes-with-arguments 
-    tree
-    (lambda (list position value)
-      (lambda-subtree-extraction-weight-function-2 list position value (max-depth operator)))
-    language
-    (max-arguments operator))))
-
-(defun get-compress-children-trees (tree children-points language)
-  (mapcar (lambda (children-point)
-            (get-internal-subtree tree children-point language))
-          children-points))
-
-(defun lambda-subtree-extraction-weight-function-1 (list position value)
-  (declare (ignore position) (ignore value))
-  (if (> (tree-depth list) 1) 1 0))
-
 (defun lambda-subtree-extraction-weight-function-2 (list position value max-depth)
   (declare (ignore position))
   (if (and 
@@ -68,7 +42,6 @@
        (> (tree-depth list) 1)
        (not (has-subroutine-call list)))
       1 0))
-
 
 ;; #NOTE: With arguments function version
 (defun safe-weight-nodes-with-arguments (expresion function language
@@ -104,8 +77,7 @@
        (nreverse selection-indexes)
        nil))))
 
-(defun get-random-subtree-index-with-arguments 
-       (expresion function language &optional (include-functions nil) (arguments nil))
+(defun get-random-subtree-index-with-arguments (expresion function language &optional (include-functions nil) (arguments nil))
   "Answer the index of a random subtree of <expresion>."
   (block nil
     (let ((value (park-miller-randomizer))

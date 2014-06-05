@@ -356,7 +356,6 @@
             "Tests\\default-test-suites.lisp"
             ;; WORKING STUFF
             "NO-RECURSION.lisp"
-            "working-interfaces.lisp"
             ;; Fixes
             "fixes.lisp"
             "OpenGL\\3d-text-new.lisp")

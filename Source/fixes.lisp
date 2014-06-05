@@ -103,3 +103,20 @@
 ;; #NOTE: Null parser. Grammars have to be initialized with a parser initializer.
 (defun initialize-null-parser (name)
   (lambda (&rest args) (progn nil)))
+
+
+;; #NOTE: Closed editors cleaning? Comes from working-interfaces.lisp, it could be implemented using events
+(defmethod refresh-editors ((o opengl-with-capi))
+  (purgue-invisible-editors)
+  (dolist (editor *interface-editors*)
+    (when (graphic-part editor)  
+      (redisplay-canvas (graphic-part editor))))
+  (dolist (editor *interface-graphic-editors*)
+    (when (graphic-part editor)
+      (redisplay-canvas (graphic-part editor)))))
+
+(defun purgue-invisible-editors ()
+  (setf *interface-editors* 
+        (select 
+         *interface-editors*
+         (lambda (editor) (capi-internals:representation editor)))))
