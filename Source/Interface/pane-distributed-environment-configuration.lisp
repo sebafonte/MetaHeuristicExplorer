@@ -256,11 +256,11 @@
 
 (defun save-defaults-callback (data interface)
   (declare (ignore data))
-  (save-default-remote-connections (connection-administrator (model (pane interface)))))
+  (prompt-for-save-remote-connections (connection-administrator (model (pane interface)))))
 
 (defun restore-defaults-callback (data interface)
   (declare (ignore data))
-  (restore-default-remote-connections (connection-administrator (model (pane interface))))
+  (prompt-for-load-remote-connections (connection-administrator (model (pane interface))))
   (update-interface interface))
 
 (defmethod create-new-user-connection ((p pane-distributed-environment-configuration))

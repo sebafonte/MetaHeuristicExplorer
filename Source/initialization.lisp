@@ -49,11 +49,14 @@
         *default-configuration-path-pane-explorer*
         (application-relative-pathname "Configurations\\default-pane-explorer.crossover-pane")
         *default-configuration-path-possible-remote-hosts*
-        (application-relative-pathname "Configurations\\possible-remote-hosts.explorer") 
+        (application-relative-pathname (environment-file))
         *default-pane-subtasks-default-model*
         (application-relative-pathname "Configurations\\default-search-subtask.subtask") 
         *default-pane-tasks-default-model*
         (application-relative-pathname "Configurations\\default-search-task.task")))
+
+(defun environment-file ()
+  (format nil "Configurations\\~a" (or (network-environment-from-command-line) "possible-remote-hosts.environment")))
 
 (defun initialize-network-connections () 
   "Initialize network related objects."

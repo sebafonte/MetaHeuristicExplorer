@@ -121,21 +121,47 @@
                     (force-output stream)))))))
     (append candidate-ports (list running-image-descriptor))))
 
+(defmethod prompt-for-load-remote-connections ((a connection-administrator))
+  "Restore the remote connection list of <a> to the default."
+  (let ((file (capi:prompt-for-file 
+               "Select file to load"
+               :filter "*.environment"
+               :operation :open
+               :filters `("Environment files" "*.environment"))))
+    (restore-remote-connections a file)))
+
+(defmethod prompt-for-save-remote-connections ((a connection-administrator))
+  "Saves the remote connections list of <a> as the default."
+  (let ((file (capi:prompt-for-file 
+               "Select file to save"
+               :filter "*.environment"
+               :operation :save
+               :filters `("Environment files" "*.environment"))))
+    (save-remote-connections a file)))
+
 (defmethod restore-default-remote-connections ((a connection-administrator))
   "Restore the remote connection list of <a> to the default."
-  (if (probe-file *default-configuration-path-possible-remote-hosts*)
-      (setf (remote-connections a)
-            (eval (read-from-string 
-                   (car (load-from-file *default-configuration-path-possible-remote-hosts*)))))))
+  (restore-remote-connections a *default-configuration-path-possible-remote-hosts*))
 
 (defmethod save-default-remote-connections ((a connection-administrator))
   "Saves the remote connections list of <a> as the default."
-  (if (probe-file *default-configuration-path-possible-remote-hosts*)
-      (delete-file *default-configuration-path-possible-remote-hosts*))
-  (let ((hosts-list (mapcar (lambda (object) (copy object)) (remote-connections a))))
-    (dolist (i hosts-list)
-      (setf (state i) nil))
-    (save-source-description hosts-list *default-configuration-path-possible-remote-hosts*)))
+  (save-remote-connections a *default-configuration-path-possible-remote-hosts*))
+
+(defmethod restore-remote-connections ((a connection-administrator) file)
+  (when file 
+      (if (probe-file file)
+          (setf (remote-connections a)
+                (eval (read-from-string 
+                       (car (load-from-file file))))))))
+
+(defmethod save-remote-connections ((a connection-administrator) file)
+  (when file
+      (if (probe-file file)
+          (delete-file file))
+      (let ((hosts-list (mapcar (lambda (object) (copy object)) (remote-connections a))))
+        (dolist (i hosts-list)
+          (setf (state i) nil))
+        (save-source-description hosts-list file))))
 
 (defmethod connection-named ((a connection-administrator) name)
   "Answer the connection of <a> named <name>."

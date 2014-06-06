@@ -30,25 +30,21 @@
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type
     :data-type 'symbol :default-value nil :editor 'symbol-editor)
    (:name 'ip-address :label "IP Address" :accessor-type 'accessor-accessor-type
-    :data-type 'string :default-value "localhost" :editor 'string-editor)
+    :data-type 'string :default-value "localhost" :editor 'text-editor)
    (:name 'port :label "Port" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :editor 'number-editor :default-value nil)
+    :data-type 'integer :editor 'lisp-editor :default-value nil)
    (:name 'state :label "State" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :editor 'symbol-editor :default-value nil)
    (:name 'descriptor-machine-instance :label "Machine" :accessor-type 'accessor-accessor-type 
-    :data-type 'string :editor 'string-editor :default-value "Default PC")
+    :data-type 'string :editor 'text-editor :default-value "Default PC")
    (:name 'b-cpu :label "B.CPU" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0
-    :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
    (:name 'b-ping :label "Ping" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0
-    :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
    (:name 'b-tx :label "Tx" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0
-    :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
    (:name 'b-rx :label "Rx" :accessor-type 'accessor-accessor-type 
-    :data-type 'number :editor 'number-editor :default-value 0
-    :read-only t)
+    :data-type 'number :editor 'number-editor :default-value 0 :read-only t)
    (:name 'is-remote :label "Remote" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :editor 'lisp-editor)
    (:name 'tasks-processing :label "Tasks processing" :accessor-type 'valuable-accessor-type 

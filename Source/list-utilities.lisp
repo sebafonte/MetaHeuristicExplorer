@@ -247,7 +247,7 @@
     list))
 
 (defun argument-from-key (list key position)
-  (let ((index (position key list)))
+  (let ((index (position key list :test 'equal)))
     (if index (nth (+ index position) list))))
 
 (defun argument-from-key-equal (list key position)
