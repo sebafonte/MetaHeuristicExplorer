@@ -125,18 +125,18 @@
   "Restore the remote connection list of <a> to the default."
   (let ((file (capi:prompt-for-file 
                "Select file to load"
-               :filter "*.environment"
+               :filter "*.hosts"
                :operation :open
-               :filters `("Environment files" "*.environment"))))
+               :filters `("Hosts files" "*.hosts"))))
     (restore-remote-connections a file)))
 
 (defmethod prompt-for-save-remote-connections ((a connection-administrator))
   "Saves the remote connections list of <a> as the default."
   (let ((file (capi:prompt-for-file 
                "Select file to save"
-               :filter "*.environment"
+               :filter "*.hosts"
                :operation :save
-               :filters `("Environment files" "*.environment"))))
+               :filters `("Hosts files" "*.hosts"))))
     (save-remote-connections a file)))
 
 (defmethod restore-default-remote-connections ((a connection-administrator))

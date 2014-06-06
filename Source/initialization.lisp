@@ -56,7 +56,7 @@
         (application-relative-pathname "Configurations\\default-search-task.task")))
 
 (defun environment-file ()
-  (format nil "Configurations\\~a" (or (network-environment-from-command-line) "possible-remote-hosts.environment")))
+  (format nil "Configurations\\~a" (or (network-environment-from-command-line) "possible-remote-hosts.hosts")))
 
 (defun initialize-network-connections () 
   "Initialize network related objects."
