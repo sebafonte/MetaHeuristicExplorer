@@ -1,5 +1,5 @@
 
-(defparameter *list-argument-size-limit* 2047)
+(defparameter *list-argument-size-limit* 1024)
 (defvar *source-code-object-registry* nil)
 
 
@@ -65,15 +65,25 @@
   "Answer <o> source code description."
   (let ((dimensions (array-dimensions o)))
     (append (list 'make-array-from-data (cons 'list dimensions))
-            (list (cons 'list (get-array-data o))))))
+            (list (cons 'append (get-array-data o))))))
 
 (defun get-array-data (array)
   "Answer a list with <array> data as major row elements."
   (let* ((dimensions (array-dimensions array))
          (max-value (apply '* dimensions))
-         (result))
+         (count 0)
+         (result)
+         (part '(list)))
     (dotimes (i max-value)
-      (appendf result (list (source-description (row-major-aref array i)))))
+      (appendf part (list (source-description (row-major-aref array i))))
+      (if (>= count *list-argument-size-limit*)
+          (progn 
+            (appendf result (list part))
+            (setf part '(list)
+                  count 0))
+        (incf count)))
+    (when (> (length part) 1)
+      (appendf result (list part)))
     result))
 
 (defun set-array-from-data (array data)
@@ -285,7 +295,7 @@
     ;; Others
     (when (>= (length dimensions) 3)
         (setf elements (append (list 'make-array-from-data (cons 'list dimensions))
-                               (list (cons 'list (get-array-data o))))))
+                               (list (cons 'append (get-array-data o))))))
     ;; Answer result
     elements))
 
@@ -302,10 +312,10 @@
     (list code)))
 
 ;;; Test performance
-(let ((grande))
+(let ((list))
   (dotimes (i 10000)
-    (appendf grande (list i)))
-  (setf gg (make-array (length grande) :initial-contents grande)))
+    (appendf list (list i)))
+  (setf gg (make-array (length list) :initial-contents list)))
 
 (time (progn (source-description gg) nil))
 |#
