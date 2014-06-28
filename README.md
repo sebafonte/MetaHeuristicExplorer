@@ -13,7 +13,9 @@ QuickStart
 1. For the code, copy sources to a directory, load system.lisp.
 2. Execute the runtime versión found in /Runtime, there are two version of runtimes:
      GUI: Can run experiments passing them as parameter
-     Console: Graphical user interface for creating / editing experiments and objects
+     Console: Graphical user interface for creating / editing experiments and objects.
+
+Runtime files can be found in https://drive.google.com/#folders/0B3fmUSADoOSJaXdZSngzaW1mdGc
 
 Description
 -----------
