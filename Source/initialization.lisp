@@ -2,6 +2,7 @@
 (defun initialize-system ()
   "Execute all necessary functions to initialize system."
   (register-capi-button-icons)
+  (initialize-default-logger)
   (initialize-locks)
   (initialize-event-handlers)
   (initialize-default-pane-positioners)

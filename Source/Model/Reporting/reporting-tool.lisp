@@ -6,6 +6,7 @@
    (graphics :initarg :graphics :accessor graphics)
    (items :initarg :items :accessor items)))
 
+
 (defun default-reporting-headers ()
   '(objetive-class 
     task-planifier
@@ -13,7 +14,7 @@
     fitness-evaluator 
     algorithm 
     (algorithm selection-method)
-    (fitness-evaluator samples) (fitness-evaluator fitness-function) (fitness-evaluator precision)))
+    (fitness-evaluator samples) (fitness-evaluator fitness-function) (fitness-evaluator precision) (fitness-evaluator target-program)))
 
 
 (defclass benchmark-reporting-tool (tabbed-text-reporting-tool)
@@ -33,7 +34,7 @@
       (let ((item (first (items o))))
         (dolist (i (header-properties o))
           (format ostream (concatenate 'string "~a: ~a~%") 
-                  (string-downcase (format nil "~a" i)) ;(label (property-named item i))
+                  (string-downcase (format nil "~a" i))
                   (get-value-for-property-named item i))))
       (format ostream (space-string o))
       (format ostream "~%RESULTS~%" name)

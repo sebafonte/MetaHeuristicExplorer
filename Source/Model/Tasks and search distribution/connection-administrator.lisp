@@ -1,4 +1,6 @@
 (defparameter *default-configuration-path-possible-remote-hosts* nil)
+(defparameter *base-port* 20000)
+(defparameter *max-ports* 8)
 
 
 (defclass connection-administrator (object-with-properties)
@@ -83,7 +85,7 @@
                              '()
                              'message-dispatch-function
                              stream
-                             administrator)))
+                             administrator))) 
 
 (defun message-dispatch-function (stream administrator)
   "Executes actions for message on <stream> with <administrator>."
@@ -99,14 +101,14 @@
   (setf (local-connections a) (possible-local-hosts a)))
 
 (defmethod possible-local-hosts ((a connection-administrator))
-  "Answer the possible local hosts looking for connections from port 20000 to 20010."
+  "Answer the possible local hosts looking for connections from *base-port* to *base-port* + *max-ports*."
   (let* ((candidate-ports)
          (running-image-descriptor (system-get 'running-image-descriptor))
          (local-server-port (port running-image-descriptor)))
-    (dotimes (i 10)
-      (let ((candidate-port (+ 20000 i)))
+    (dotimes (i *max-ports*)
+      (let ((candidate-port (+ *base-port* i)))
         (if (not (= candidate-port local-server-port))
-            (with-open-stream       
+            (with-open-stream
                 (stream (comm:open-tcp-stream "127.0.0.1" candidate-port))
               (if stream
                   (progn
@@ -202,4 +204,7 @@
         (setf (state connection) nil))))
 
 (defmethod dispatch-message ((a connection-administrator) message stream)
-  (dispatch-message-name (name message) message a stream))
+  (handler-case 
+      (dispatch-message-name (name message) message a stream)
+    (error (error) (handle-transfer-error error))))
+

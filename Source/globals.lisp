@@ -13,6 +13,9 @@
 (defparameter *default-search-task-max-process-priority* 1000000)
 (defparameter *default-updater-process-priority* -500000)
 
+;; Logger
+(defvar *logger*)
+
 ;; Other 
 (defparameter *open-gui-on-startup* t)
 
