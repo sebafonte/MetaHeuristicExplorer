@@ -222,7 +222,7 @@
     (gl-app-vertex-2d 2)
     (gl-app-rotate-2d 1)
     (gl-app-translate-2d 2)
-    (gl-app-scale-2d 3)
+    (gl-app-scale-2d 2)
     ;; Expression to vertex conversion
     (gl-app-cvec2 2)
     ;; Control

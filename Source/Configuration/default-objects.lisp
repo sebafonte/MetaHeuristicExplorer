@@ -242,6 +242,34 @@
     :subject 
     (default-object-in-search
      (make-instance 'entity-image-rgb :expresion '(vec-sin x))))
+   (make-instance 
+    'registrable-object-wrapper 
+    :name 'rgb-default-2
+    :description "RGB Image 2"
+    :subject 
+    (default-object-in-search
+     (make-instance 'entity-image-rgb :expresion '(COLOR-MAP-3 (VEC-/- 0.24419174 (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (COLOR-MAP-3 (VEC-/- 0.24419174 (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (VEC-/- (VEC-INOISE-X-Y X X) (COLOR-MAP-1 X 0.70072377)) (VEC-SIN (COLOR-MAP-1 Y 0.69074375))) (VEC-+ (VEC-+ Y 0.8535191) (VEC-COS Y))))))
+   (make-instance 
+    'registrable-object-wrapper 
+    :name 'rgb-default-3
+    :description "RGB Image 3"
+    :subject 
+    (default-object-in-search
+     (make-instance 'entity-image-rgb :expresion '(COLOR-MAP-3 (VEC-/- 0.24419174 (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (VEC-/- (VEC-INOISE-X-Y X X) (VEC-* (COLOR-MAP-1 X 0.27842534) (VEC-+ X Y))) (VEC-+ (VEC-+ Y 0.8535191) (VEC-COS Y))))))
+   (make-instance 
+    'registrable-object-wrapper 
+    :name 'rgb-default-4
+    :description "RGB Image 4"
+    :subject 
+    (default-object-in-search
+     (make-instance 'entity-image-rgb :expresion '(COLOR-MAP-3 (VEC-/- (VEC-PERLIN-X-Y Y 0.32249382) (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (VEC-/- (VEC-INOISE-X-Y X X) (VEC-* (VEC-+ Y X) (COLOR-MAP-1 0.5710345 X))) (VEC-+ (VEC-/- (VEC-PERLIN-X-Y Y 0.32249382) (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (VEC-COS Y))))))
+   (make-instance 
+    'registrable-object-wrapper 
+    :name 'rgb-default-5
+    :description "RGB Image 5"
+    :subject 
+    (default-object-in-search
+     (make-instance 'entity-image-rgb :expresion '(COLOR-MAP-3 (VEC-/- 0.24419174 (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X)) (VEC-/- (VEC-INOISE-X-Y Y (VEC-/- 0.24419174 (COLOR-MAP-3 (COLOR-MAP-3 0.25484648 Y Y) Y X))) (VEC-* (COLOR-MAP-1 X 0.27842534) (VEC-+ X Y))) (VEC-+ (VEC-+ Y 0.8535191)  (VEC-COS Y))))))
    ;; Color rgb image objects (with SRT language)
    (make-instance 'registrable-object-wrapper
                   :name 'rgb-srt-default-1

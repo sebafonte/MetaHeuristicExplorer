@@ -23,7 +23,7 @@
   (opengl:make-gl-vector :float size))
 
 ;;; Vertex can be pass through to 'C'
-;;; vertexes list of gl-vertexes (not passed to 'C'
+;;; vertexes list of gl-vertexes (not passed to 'C')
 
 (declaim (inline gl-vertex gl-vertexes))
 (defun gl-vertex (x y z w)

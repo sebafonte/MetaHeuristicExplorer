@@ -187,7 +187,7 @@
     (gl-app-vertex-2d 2)
     (gl-app-rotate-2d 1)
     (gl-app-translate-2d 2)
-    (gl-app-scale-2d 3)
+    (gl-app-scale-2d 2)
     ;; Expression to vertex conversion
     (gl-app-cvec2 2)
     ;; Control
@@ -514,7 +514,7 @@
 (system-add
  (make-instance 'opengl-free-drawing-evaluator
                 :name 'opengl-free-drawing-default-evaluator
-                :description "OpenGL free drawing default evaluator"
+                :description "OpenGL free draw default evaluator"
                 :fitness-function 'evaluate-opengl-free-drawing
                 :min-fitness 0
                 :max-fitness 10
@@ -524,7 +524,7 @@
  ;; Some lines
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-1
-                :description "OpenGL Free drawing 1"
+                :description "OpenGL free draw 1"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LINE-WIDTH 15) (GL-APP-COLOR 0.3 0 1) (GL-APP-TRANSLATE-2D 0 0) (GL-APP-LINE-2D 0 0 100 100) (GL-APP-LINE-2D 100 0 0 0) (GL-APP-COLOR 0.3 1 1) (GL-APP-LINE-2D 0 100 0 0) (GL-APP-LINE-2D 0 100 100 0) (GL-APP-LINE-2D 100 100 100 0) (GL-APP-LINE-2D 0 100 100 100)))))
@@ -532,7 +532,7 @@
  ;; Some quads 1
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-2
-                :description "OpenGL Free drawing 2"
+                :description "OpenGL free draw 2"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW 
@@ -541,15 +541,7 @@
  ;; Some quads 2
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-3
-                :description "OpenGL Free drawing 3"
-                :subject (default-object-in-search
-                          (make-instance 'entity-opengl-free-drawing-2d
-                                         :expresion '(GL-APP-DRAW (gl-app-point-2d 20 20) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-scale-2d 0.5 0.5) (gl-app-color 1 0.5 1) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-color 1 0.5 0.2) (gl-app-quad-2d 0 0 0 100 10 100 100 0) (gl-app-scale-2d 0.5 0.5) (gl-app-color 0.5 0.5 1.0) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-color 0.5 0.5 1.0) (gl-app-quad-2d 0 0 0 100 100 100 100 0)))))
-
- ;; Some quads 3
- (make-instance 'registrable-object-wrapper 
-                :name 'opengl-free-draw-4
-                :description "OpenGL Free drawing 4"
+                :description "OpenGL free draw 3"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (gl-app-point-2d 20 20) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-scale-2d 0.5 0.5) (gl-app-color 1 0.5 1) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-color 1 0.5 0.2) (gl-app-quad-2d 0 0 0 100 10 100 100 0) (gl-app-scale-2d 0.5 0.5) (gl-app-color 0.5 0.5 1.0) (gl-app-quad-2d 0 0 0 100 100 100 100 0) (gl-app-color 0.5 0.5 1.0) (gl-app-quad-2d 0 0 0 100 100 100 100 0)))))
@@ -557,7 +549,7 @@
  ;; Some gl-begin lists
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-5
-                :description "OpenGL Free drawing 5"
+                :description "OpenGL free draw 4"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (gl-app-begin-lines-2d (gl-app-rotate-2d 90) (gl-app-vertex-2d 0 100) (gl-app-rotate-2d 90) (gl-app-vertex-2d 100 0) (gl-app-rotate-2d 90) (gl-app-vertex-2d 0 100) (gl-app-rotate-2d 90) (gl-app-vertex-2d 50 0))))))
@@ -565,49 +557,49 @@
  ;; Some iterators
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-circle-of-points-1
-                :description "OpenGL Free drawing circle of points"
+                :description "OpenGL free draw 5"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (gl-app-translate-2d 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D 24) (GL-APP-POINT-2D 10 0))))))
  ;; Sample 6
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-6
-                :description "OpenGL Free drawing 6"
+                :description "OpenGL free draw 6"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (COS *TIME-VARIABLE*)) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (* (SIN *TIME-VARIABLE*) 0.04927234)) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) (* 0.09536409 *TIME-VARIABLE*)) (GL-APP-ROTATE-2D 24) (GL-APP-ROTATE-2D 24) (GL-APP-SET-VAR *TIME-VARIABLE* (SIN 0.32022417)))))))))    
  ;; Sample 7
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-7
-                :description "OpenGL Free drawing 7"
+                :description "OpenGL free draw 7"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 (SIN (* *TIME-VARIABLE* *TIME-VARIABLE*))) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (/- (SIN *TIME-VARIABLE*) (/- (SIN *TIME-VARIABLE*) 0.04927234))) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) 100) (GL-APP-ROTATE-2D 24) (GL-APP-POINT-2D *TIME-VARIABLE* (/- (ASIN 0.9205345) *TIME-VARIABLE*)) (GL-APP-PUSH-MATRIX) (GL-APP-QUAD-2D *TIME-VARIABLE* (/- 0.4227604 (+ *TIME-VARIABLE* 0.33399898)) *TIME-VARIABLE* (+ (* (/- *TIME-VARIABLE* (/- *TIME-VARIABLE* 0.520836)) (ASIN (ABS *TIME-VARIABLE*))) (+ (ASIN (SIN (COS *TIME-VARIABLE*))) (/- (/- 0.69073987 *TIME-VARIABLE*) 0.26547912))) (COS (COS (+ (+ *TIME-VARIABLE* 0.907313) 0.20923718))) 0.64904637 (ABS 0.5225463) (/- *TIME-VARIABLE* 0.43514717)) (GL-APP-PUSH-MATRIX))))))) 
  ;; Sample 8
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-8
-                :description "OpenGL Free drawing 8"
+                :description "OpenGL free draw 8"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 (SIN (* *TIME-VARIABLE* *TIME-VARIABLE*))) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-COLOR 0.5 *TIME-VARIABLE* 0.9) (GL-APP-LINE-WIDTH (COS 0.64345044)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (/- (SIN *TIME-VARIABLE*) (/- (SIN *TIME-VARIABLE*) 0.04927234))) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) 100) (GL-APP-ROTATE-2D 24) (GL-APP-ROTATE-2D 24) (GL-APP-SET-VAR *TIME-VARIABLE* (SIN 0.32022417))))))))
  ;; Sample 9
   (make-instance 'registrable-object-wrapper 
                  :name 'opengl-free-draw-9
-                 :description "OpenGL Free drawing 9"
+                 :description "OpenGL free draw 9"
                  :subject (default-object-in-search
                            (make-instance 'entity-opengl-free-drawing-2d
                                           :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (COS *TIME-VARIABLE*)) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (* (SIN *TIME-VARIABLE*) 0.04927234)) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) (* 0.09536409 *TIME-VARIABLE*)) (GL-APP-ROTATE-2D 24) (GL-APP-POINT-SIZE 2) (GL-APP-SET-VAR *TIME-VARIABLE* (SIN 0.32022417))))))))) 
  ;; Sample 10
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-10
-                :description "OpenGL Free drawing 10"
+                :description "OpenGL free draw 10"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 (SIN (* *TIME-VARIABLE* *TIME-VARIABLE*))) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS (/- (SIN *TIME-VARIABLE*) (/- (SIN *TIME-VARIABLE*) 0.04927234)))) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-COLOR 0.5 *TIME-VARIABLE* 0.9) (GL-APP-LINE-WIDTH (COS 0.64345044)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (/- (SIN *TIME-VARIABLE*) (/- (SIN *TIME-VARIABLE*) 0.04927234))) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) 100) (GL-APP-ROTATE-2D 24) (GL-APP-ROTATE-2D 24) (GL-APP-SET-VAR *TIME-VARIABLE* (SIN 0.32022417))))))))
  ;; Sample 6
  (make-instance 'registrable-object-wrapper 
                 :name 'opengl-free-draw-11
-                :description "OpenGL Free drawing 11"
+                :description "OpenGL free draw 11"
                 :subject (default-object-in-search
                           (make-instance 'entity-opengl-free-drawing-2d
                                          :expresion '(GL-APP-DRAW (GL-APP-LOAD-IDENTITY) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-TRANSLATE-2D 50 50) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N 100 (GL-APP-ROTATE-2D (COS *TIME-VARIABLE*)) (GL-APP-TRANSLATE-2D 50 (ABS *TIME-VARIABLE*)) (GL-APP-POINT-SIZE 2) (GL-APP-REPEAT-N *TIME-VARIABLE* (GL-APP-ROTATE-2D (ABS 24)) (GL-APP-POINT-2D (SIN *TIME-VARIABLE*) (COS (/- (SIN *TIME-VARIABLE*) 0.04927234))) (GL-APP-QUAD-2D 0.12020743 (- (- (+ (* (SIN (- *TIME-VARIABLE* 0.32623553)) 0.040468615) (* (SIN *TIME-VARIABLE*) 0.04927234)) (/- (ASIN (* *TIME-VARIABLE* (/- (* *TIME-VARIABLE* (- 0.15597373 0.45042896)) *TIME-VARIABLE*))) (COS *TIME-VARIABLE*))) *TIME-VARIABLE*) 50 0.5629076 *TIME-VARIABLE* 0.7879724 (SIN (+ 0.45167845 (COS 0.35967723))) (* 0.09536409 *TIME-VARIABLE*)) (GL-APP-ROTATE-2D 24) (GL-APP-POINT-SIZE 2) (GL-APP-SET-VAR *TIME-VARIABLE* (SIN 0.32022417))))))))))

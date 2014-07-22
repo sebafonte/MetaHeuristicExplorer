@@ -108,3 +108,11 @@
   (when (pane-parameters i)
     (setf (pane (pane-parameters i)) (pane i))
     (create-property-editors (pane-parameters i))))
+
+(defmethod set-editor-tab-to ((i INTERFACE-PANE-EDITOR-ENTITY-EXPLORER-OPENGL) number)
+  "Set tab numbered <number> on <i>."
+  nil)
+
+(defmethod tab ((i INTERFACE-PANE-EDITOR-ENTITY-EXPLORER-OPENGL))
+  "Answer <i> tab."
+  nil)

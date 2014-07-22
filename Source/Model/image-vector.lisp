@@ -27,9 +27,9 @@
 
 (defmethod vec-abs ((v image-vector-3d))
   "Answer <v> absolute value."
-  (sqrt (+ (sqr (x v)) 
-           (sqr (y v)) 
-           (sqr (z v)))))
+  (sqrt (+ (sqr (vec-abs (x v)))
+           (sqr (vec-abs (y v)))
+           (sqr (vec-abs (z v))))))
 
 (defmethod vec-crop ((min number) (max number) (value number))
   "Answer <value> cropped to <min>, <max>."
@@ -83,21 +83,21 @@
   `(progn 
      (defmethod ,name ((a ,type) (b ,type))
        (make-instance 'image-vector-3d 
-                      :x (,operation (x a) (x b))
-                      :y (,operation (y a) (y b))
-                      :z (,operation (z a) (z b))))
+                      :x (,operation (vec-abs a) (vec-abs b))
+                      :y (,operation (vec-abs a) (vec-abs b))
+                      :z (,operation (vec-abs a) (vec-abs b))))
      (defmethod ,name ((a number) (b number))
        (values (,operation a a)))
      (defmethod ,name ((a ,type) (b number))
        (make-instance 'image-vector-3d 
-                      :x (,operation (x a) b)
-                      :y (,operation (y a) b)
-                      :z (,operation (z a) b)))
+                      :x (,operation (vec-abs a) b)
+                      :y (,operation (vec-abs a) b)
+                      :z (,operation (vec-abs a) b)))
      (defmethod ,name ((a number) (b ,type))
        (make-instance 'image-vector-3d 
-                      :x (,operation a (x b))
-                      :y (,operation a (y b))
-                      :z (,operation a (z b))))))
+                      :x (,operation a (vec-abs b))
+                      :y (,operation a (vec-abs b))
+                      :z (,operation a (vec-abs b))))))
 
 (defun define-enclosure-functions-image-vector ()
   "Define special vector functions for some image related DSL."
@@ -123,6 +123,4 @@
 (defun initialize-image-vector-functions ()
   "Initialize special vector functions for some image related DSL."
   (define-enclosure-functions-image-vector))
-
-
 

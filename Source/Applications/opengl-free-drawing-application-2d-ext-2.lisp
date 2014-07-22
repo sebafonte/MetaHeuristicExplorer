@@ -238,7 +238,7 @@
     (gl-app-vertex-2d 2)
     (gl-app-rotate-2d 1)
     (gl-app-translate-2d 2)
-    (gl-app-scale-2d 3)
+    (gl-app-scale-2d 2)
     ;(gl-app-tex-coord-2d 2)
     ;; Expression to vertex conversion
     (gl-app-cvec2 2)
@@ -742,12 +742,11 @@
                        :lexer 'lisp-math-expression-lexer
                        :parser-initializer 'initialize-opengl-free-drawing-expression-parser-2d
                        :productions (opengl-free-drawing-grammar-productions)
-                       :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
-                                           :vertex-expression :expression)))
+                       :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator :vertex-expression :expression)))
   (setf ll
         (make-instance 'cfg-tree-language 
                        :name 'opengl-free-drawing-default-language
-					   :description "Free drawing language"
+                       :description "Free drawing language"
                        :grammar gg
                        :simplification-patterns *opengl-free-drawing-editing-patterns-2d*
                        :functions (entity-opengl-free-drawing-default-functions-info-2d)
@@ -769,16 +768,16 @@
                                         (GL-APP-LINE-2D 33 10 10 10))))
 
 (setf pe '(GL-APP-DRAW 
-             (gl-app-point-2d 20 20)
-             (gl-app-quad-2d 0 0 0 100 100 100 100 0)
-             (gl-app-scale-2d 0.5 0.5)
-             (gl-app-color 1 0.5 1)
-             (gl-app-quad-2d 0 0 0 100 100 100 100 0)
-             (gl-app-color 1 0.5 0.2)
-             (gl-app-quad-2d 0 0 0 100 10 100 100 0)
-             (gl-app-scale-2d 0.5 0.5)
-             (gl-app-color 0.5 0.5 1.0)
-             (gl-app-quad-2d 0 0 0 100 100 100 100 0)
-             (gl-app-color 0.5 0.5 1.0)
-             (gl-app-quad-2d 0 0 0 100 100 100 100 0)))
+           (gl-app-point-2d 20 20)
+           (gl-app-quad-2d 0 0 0 100 100 100 100 0)
+           (gl-app-scale-2d 0.5 0.5)
+           (gl-app-color 1 0.5 1)
+           (gl-app-quad-2d 0 0 0 100 100 100 100 0)
+           (gl-app-color 1 0.5 0.2)
+           (gl-app-quad-2d 0 0 0 100 10 100 100 0)
+           (gl-app-scale-2d 0.5 0.5)
+           (gl-app-color 0.5 0.5 1.0)
+           (gl-app-quad-2d 0 0 0 100 100 100 100 0)
+           (gl-app-color 0.5 0.5 1.0)
+           (gl-app-quad-2d 0 0 0 100 100 100 100 0)))
 |#

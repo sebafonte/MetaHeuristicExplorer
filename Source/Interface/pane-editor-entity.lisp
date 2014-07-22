@@ -512,5 +512,8 @@
 
 (defmethod source-description :before ((p pane-editor-entity))
   "Answer <p> source code description."
-  (let ((interface (interface p)))
-    (setf (selected-tab p) (editor-label interface (capi:choice-selection (tab interface))))))
+  (let* ((interface (interface p))
+         (tab (tab interface)))
+    (when tab
+      (setf (selected-tab p) (editor-label interface (capi:choice-selection tab))))))
+

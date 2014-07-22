@@ -30,6 +30,8 @@
             ;; Utilities
             "list-utilities.lisp"
             "utilities.lisp"
+            "logger.lisp"
+            "object-pool.lisp"
             "compression-utilities.lisp" 
             "perlin-noise.lisp"
             "dft-and-fft.lisp"
