@@ -14,8 +14,9 @@ QuickStart
 2. Execute the runtime versión found in /Runtime, there are two version of runtimes:
      GUI: Can run experiments passing them as parameter
      Console: Graphical user interface for creating / editing experiments and objects.
-
-Runtime files can be found in https://drive.google.com/#folders/0B3fmUSADoOSJaXdZSngzaW1mdGc
+3. Reference:
+	- Runtime files can be found in https://drive.google.com/#folders/0B3fmUSADoOSJaXdZSngzaW1mdGc
+	- Video tutorials (soon, working) in https://www.youtube.com/channel/UC6xpDhdAoGs4xtK81-ZQsvg/videos
 
 Description
 -----------
@@ -45,6 +46,7 @@ Features
 - Some interfaces for mixing objects and test operators
 - Environment could be serialized and loaded later
 - Objects for representing color images and texture deformation
+- OpenGL language for writing primitives (see evolved examples here https://drive.google.com/folderview?id=0B3fmUSADoOSJenlvVzE5NmQxSlE&usp=sharing)
 
 Development features
 --------------------
