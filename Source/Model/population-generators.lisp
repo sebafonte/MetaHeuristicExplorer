@@ -14,11 +14,11 @@
 (defmethod print-object ((o population-generator) seq)
   (format seq "~A" (description o)))
 
-(defmethod generate-population ((generator population-generator) (algorithm search-algorithm))
+(defmethod generate-population ((o population-generator) (a search-algorithm))
   "Generate population for search on <algorithm>."
   (error "Subclass responsibility."))
 
-(defmethod generate-individual ((generator population-generator) algorithm)
+(defmethod generate-individual ((o population-generator) algorithm)
   "Generate individual for search on <algorithm>."
   (error "Subclass responsibility."))
 
@@ -204,8 +204,7 @@
 
 (defclass ramped-half-and-half-generator (population-generator)
   ((min-value :initarg :min-value :accessor min-value)
-   (max-value :initarg :max-value :accessor max-value)
-   (distribution :initarg :distribution :accessor distribution)))
+   (max-value :initarg :max-value :accessor max-value)))
 
 
 (defmethod initialize-properties :after ((object ramped-half-and-half-generator))
@@ -214,17 +213,29 @@
    object
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value 'ramped-half-and-half-generator :editor 'symbol-editor)
-   (:name 'min-value :label "Min size" :accessor-type 'accessor-accessor-type 
+   (:name 'min-value :label "Min depth" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
-   (:name 'max-value :label "Max size" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
-   (:name 'distribution :label "Distribution" :accessor-type 'accessor-accessor-type 
-    :data-type 'list :default-value '(lambda (value) 1) :editor 'lisp-editor)))
+   (:name 'max-value :label "Max depth" :accessor-type 'accessor-accessor-type 
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)))
    
 (defmethod generate-population ((p ramped-half-and-half-generator) (a search-algorithm))
   "Generate population for search on <algorithm>."
-  (error "Not implemented yet."))
+  (let* ((population-size (population-size algorithm))
+         (population (make-array population-size)))
+    (dotimes (i population-size)
+      (let ((tree (if (< (random-real 0 1) 0.5)
+                      (generate-individual-grow p 0)
+                    (generate-individual-full p 0))))
+        (setf (aref population i) (make-instance (objetive-class algorithm) :expresion tree))))
+    (evaluate algorithm population)
+    (make-instance 'population :count-individuals population-size :individuals-array population)))
 
+(defmethod generate-individual-grow ((p ramped-half-and-half-generator))
+  nil)
+
+(defmethod generate-individual-full ((p ramped-half-and-half-generator))
+  nil)
+  
 ; -----------------------------------------------------------------------------
 
 (defclass fixed-solutions-generator (population-generator)
