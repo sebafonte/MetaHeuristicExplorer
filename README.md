@@ -17,7 +17,7 @@ QuickStart
 3. Reference:
 	- Runtime files can be found in https://drive.google.com/#folders/0B3fmUSADoOSJaXdZSngzaW1mdGc
 	- Video tutorials (soon, working) in https://www.youtube.com/channel/UC6xpDhdAoGs4xtK81-ZQsvg/videos
-	- General screenshots in https://drive.google.com/folderview?id=0B3fmUSADoOSJZG5sdHVfOWpxWTg&usp
+	- General screenshots in https://drive.google.com/folderview?id=0B3fmUSADoOSJZG5sdHVfOWpxWTg
 	
 Description
 -----------
