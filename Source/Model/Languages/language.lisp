@@ -47,7 +47,7 @@
 (defmethod copy ((o language))
   (let ((copy (copy-instance o))
         (new-operators (funcall (ttrav #'cons (lambda (x) (copy x))) (operators o))))
-    (setf (operators copy) new-operators)
+    (setf (slot-value copy 'operators) new-operators)
     copy))
 
 (defmethod update-language ((o language))

@@ -11,10 +11,11 @@
    (process :initarg :process :initform nil :accessor process)
    (priority :initarg :priority :accessor priority)
    (random-seed :initarg :random-seed :accessor random-seed)
-   (log-data :initarg :log-data :accessor log-data)
+   (seed :initarg :seed :initform nil :accessor seed)
+   ;; Benchmark
+   (benchmarker :initarg :benchmarker :accessor benchmarker)
    (initial-time :initarg :initial-time :initform nil :accessor initial-time)
    (final-time :initform nil :accessor final-time)
-   (seed :initarg :seed :initform nil :accessor seed)
    ;; Objetive properties
    (objetive-class :initarg :objetive-class :accessor objetive-class)
    (fitness-evaluator :initarg :fitness-evaluator :accessor fitness-evaluator)
@@ -24,11 +25,14 @@
    (task-builder :initarg :task-builder :accessor task-builder)
    (task-planifier :initarg :task-planifier :accessor task-planifier)))
 
+
 (defmethod initialize-instance :after ((object search-task) &rest initargs)
   "Initialize <object>."
-  (declare (ignore initargs))
   (unless (find :forget-defaults initargs)
     (initialize-algorithm object)))
+
+(defmethod log-data ((o search-task))
+  (log-data (benchmarker o)))
 
 (defmethod (setf algorithm) (value (object search-task))
   (setf (slot-value object 'algorithm) value)
@@ -76,7 +80,7 @@
      ;; Children
      (:name 'children :label "Children" :accessor-type 'accessor-accessor-type :editor 'list-editor :visible nil)
      ;; Execution information
-     (:name 'log-data :label "Log data" :accessor-type 'accessor-accessor-type :editor 'button-editor :category "Result")
+     (:name 'benchmarker :label "Log data" :accessor-type 'accessor-accessor-type :editor 'button-editor :category "Result")
      (:name 'best-fitness :label "Fitness" :accessor-type 'valuable-accessor-type :read-only t
       :getter '(lambda (task) 
                  (if (best-individual task)

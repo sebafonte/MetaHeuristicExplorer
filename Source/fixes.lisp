@@ -120,3 +120,8 @@
         (select 
          *interface-editors*
          (lambda (editor) (capi-internals:representation editor)))))
+
+(defmethod min-function-args ((o tree-language))
+  (when (or (not (slot-boundp o 'tree-language))
+            (null min-function-args))
+    (setf (min-function-args o) (min-language-function-with-args (functions o)))))

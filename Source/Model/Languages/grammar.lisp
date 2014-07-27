@@ -52,7 +52,8 @@
 
 (defmethod generate-parser ((g grammar))
   "Create parser for <g>"
-  (funcall (parser-initializer g) (name g)))
+  (when (slot-boundp g 'parser-initializer)
+    (funcall (parser-initializer g) (name g))))
 
 (defmethod parse ((g grammar) expression)
   "Answer parsing expression for <expression> parsed with <g>."
@@ -120,7 +121,7 @@
 (defun structural-symbol (symbol)
   (or (eql symbol :open)
       (eql symbol :close)))
-      
+
 (defun minimum-production-size (grammar all-productions production)
   (if (keywordp production)
       (if (structural-symbol production) 0 1)

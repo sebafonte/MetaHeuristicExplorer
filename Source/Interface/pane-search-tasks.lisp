@@ -42,7 +42,8 @@
   '(("Execution"
      ("Pause" menu-stop-selection lambda-has-selection)
      ("Continue" menu-resume-selection lambda-has-selection)
-     ("Delete" menu-delete-selection lambda-has-selection))
+     ("Delete" menu-delete-selection lambda-has-selection)
+     ("Reports" menu-pane-task-report lambda-has-selection))
     ("Task"
      ("Edit" menu-edit-selection lambda-has-selection)
      ("See processes" menu-open-subtasks-editor lambda-has-selection)
@@ -193,8 +194,9 @@
   "Open subtasks for selected task on <interface>."
   (let ((selected-task (capi:choice-selected-item (subtasks interface))))
     (when selected-task
-      (make-instance 'pane-subtasks 
+      (make-instance 'pane-subtasks
                      :mdi-interface interface
+                     :model selected-task
                      :subtasks (append (list nil) (children selected-task))))))
 
 ;; #TODO: Move this responsibility to pane

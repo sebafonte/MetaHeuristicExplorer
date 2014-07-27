@@ -14,11 +14,11 @@
   (initialize-grammar o))
 
 (defmethod initialize-grammar ((o cfg-tree-language))
-  (when (grammar o) 
+  (when (and (slot-boundp o 'grammar) (grammar o))
     (set-grammar-tokens o)
     (set-grammar-productions o)
     (calculate-minimum-production-size (grammar o))))
- 
+
 (defmethod set-grammar-tokens ((o cfg-tree-language))
   (setf (tokens (grammar o))
         (append (variable-tokens o)
@@ -54,7 +54,7 @@
 (defmethod create-random-token ((language cfg-tree-language) (token (eql :string)))
   "Answer a random value for <token>."
   (symbol-name (gensym)))
-  
+
 (defmethod create-random-token ((language cfg-tree-language) (token (eql :symbol)))
   "Answer a random value for <token>."
   (gensym))

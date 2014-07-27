@@ -45,23 +45,7 @@
 (defmethod prepare-benchmark ((o base-benchmark) task)
   "Connect <task> events and initialize <task> data dictionary."
   (initialize-log-inspectors o)
-  (setf (log-data task) (log-data o)))
-
-
-
-
-
-
-
-
-
-(defmethod save-log-data-set ((o search-task) &rest args)
-  "Save log-data descripted by <args> in <o>."
-  (let ((arguments))
-    (do ((i args (cddr i)))
-        ((null i))
-      (push (list (car i) (cadr i)) arguments))
-    (add-value (log-data o) (make-instance 'log-data :data arguments))))
+  (setf (benchmarker task) o))
 
 
 #| 

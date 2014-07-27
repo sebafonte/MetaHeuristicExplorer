@@ -1,47 +1,42 @@
 
+;; Default tree creation function
 (defun create-expresion (language tree-max-size max-depth top full)
   "Answer a randomly generated expression for <language> with parameters."
-  (declare (special max-size))
-  (let ((max-size tree-max-size))
-    (declare (special max-size))
-    (decf max-size)
-    (create-expresion-recursive language max-depth top full)))
+  (let ((max-size (list tree-max-size)))
+    (decf (first max-size))
+    (create-expresion-recursive language max-depth max-size top full)))
 
-(defun create-expresion-recursive (language max-depth top full)
+(defun create-expresion-recursive (language max-depth max-size top full)
   "Answer a randomly generated expression for <language> with parameters."
-  (declare (special max-size))
   (cond 
-   ;; If we are at the end (max-size = 1) create a terminal
-   ((or (<= max-depth 1) (<= max-size 1)) 
+   ;; Check max-depth and max-size
+   ((or (<= max-depth 1) (< (first max-size) 1)) 
     (create-terminal language))
-   ;; full creation mode? If so, create a function
-   ((or top full)
-    ;; Select a function depending on available arguments 
-    (let* ((function (get-function-with-max-arguments (functions language) max-size))
+   ;; When full creation mode and not exceding max-size, create a function
+   ((and (or top full) (<= (1+ (min-language-function-with-args (functions language))) (first max-size)))
+    ;; Select a function depending on available arguments and decrement size
+    (let* ((function (get-function-with-max-arguments (functions language) (first max-size)))
            (arguments (cadr function)) 
            (function (car function)))
-      ;; Decrement max-size because we created a function node
-      (decf max-size arguments)
-      (cons function (create-function-arguments language arguments (- max-depth 1) full))))
-   ;; Select : Function or terminal?
-   (t (let ((type (case (random 2) (0 'TERMINAL) (1 'FUNCTION))))
-        ;; When creating a function
-        (if (equal type 'FUNCTION)
-            ;; #TODO: Select from (functions language) checking max-size
-            (let* ((function (random-element (functions language)))
-                   (arguments (cadr function))
-                   (function (car function)))
-              (decf max-size arguments)
-              (cons function (create-function-arguments language arguments (- max-depth 1) full)))
-          ;; When creating a terminal: 'CONSTANT or 'VARIABLE
-          (create-terminal language))))))
+      (decf (first max-size) arguments)
+      (cons function (create-function-arguments language arguments (1- max-depth) max-size top full))))
+   ;; 
+   (t (if (zerop (random 2))
+          ;; Function
+          (let* ((function (get-function-with-max-arguments (functions language) (first max-size)))
+                 (arguments (cadr function))
+                 (function (car function)))
+            (decf (first max-size) arguments)
+            (cons function (create-function-arguments language arguments (1- max-depth) max-size top full)))
+        ;; Terminal
+        (create-terminal language)))))
 
-(defun create-function-arguments (language arguments max-depth full)
+(defun create-function-arguments (language arguments max-depth max-size top full)
   "Answer a function for an expression in <language>."
   (if (= arguments 0)
       nil
-    (cons (create-expresion-recursive language max-depth nil full) 
-          (create-function-arguments language (- arguments 1) max-depth full))))
+    (cons (create-expresion-recursive language max-depth max-size nil full) 
+          (create-function-arguments language (1- arguments) max-depth max-size nil full))))
 
 (defun create-terminal (language)
   "Answer a terminal element for an expression in <language>."
@@ -49,3 +44,34 @@
     (if (eq terminal :constant)
         (create-constant (constants-strategy language))
       terminal)))
+
+
+#|
+;; Full function with no size control
+(defun create-expresion-full (language max-depth)
+  "Answer a randomly generated expression for <language> with parameters."
+  (if (<= max-depth 1) 
+      (create-terminal language)
+    (let* ((function (get-function-with-max-arguments-default (functions language)))
+           (arguments (cadr function)) 
+           (function (car function)))
+      (cons function (create-function-arguments language arguments (1- max-depth) full)))))
+
+;; Grow function with no size control
+(defun create-expresion-grow (language max-depth)
+  "Answer a randomly generated expression for <language> with parameters."
+  (if (or (<= max-depth 1) (< (random-real 0 1) 0.5))
+      (create-terminal language)
+    (let* ((function (get-function-with-max-arguments-default (functions language)))
+           (arguments (cadr function))
+           (function (car function)))
+      (cons function (create-function-arguments language arguments (1- max-depth) grow)))))
+
+
+(defun get-function-with-max-arguments-default (list max-arguments)
+  "Answer a random function description <list> which <max-arguments> as a constraint."
+  (let ((new-list))
+    (dolist (i list)
+      (appendf new-list (list i)))
+    (nth (random (list-length new-list)) new-list)))
+|#

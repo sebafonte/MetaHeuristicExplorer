@@ -18,10 +18,6 @@
   "Generate population for search on <algorithm>."
   (error "Subclass responsibility."))
 
-(defmethod generate-individual ((o population-generator) algorithm)
-  "Generate individual for search on <algorithm>."
-  (error "Subclass responsibility."))
-
 (defmethod operate ((generator population-generator) algorithm expressions)
   "Operate on <generator> to obtain a new object for search on <algorithm>."
   (declare (ignore expressions))
@@ -55,17 +51,18 @@
     (do ((i 0))
         ((>= i population-size))
       (let ((value (generate-individual-value p (language a))))
-        (cond ;; 1 - New and not into registry
-              ((not (gethash value (registry a)))
-               (setf (aref population i) (make-instance (objetive-class a) :expresion value))
-               (evaluate a (aref population i))
-               (setf (gethash value (registry a)) t
-                     attempts 0)
+        (cond 
+         ;; New and not into registry
+         ((not (gethash value (registry a)))
+          (setf (aref population i) (make-instance (objetive-class a) :expresion value))
+          (evaluate a (aref population i))
+          (setf (gethash value (registry a)) t
+                attempts 0)
                (incf i))
-              ;; 2 - New and into registry: max retries reached
-              ((> attempts max-attempts))
-              ;; 3 - Found, did not reach max attempts #LOG
-              (t (incf attempts)))))
+         ;; New and into registry: max retries reached
+         ((> attempts max-attempts))
+         ;; Found, did not reach max attempts #LOG
+         (t (incf attempts)))))
     ;; #TODO: this should be moved to algorithm calling function
     (clrhash (registry a))
     (make-instance 'population :count-individuals population-size :individuals-array population)))
@@ -101,6 +98,8 @@
    (max-size :initarg :max-size :accessor max-size)
    (min-depth :initarg :min-depth :accessor min-depth)
    (max-depth :initarg :max-depth :accessor max-depth)
+   (use-top :initarg :use-top :accessor use-top)
+   (use-full :initarg :use-full :accessor use-full)
    (repeat-control :initarg :repeat-control :accessor repeat-control)))
 
 
@@ -116,6 +115,10 @@
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
    (:name 'max-depth :label "Max depth" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
+   (:name 'use-top :label "Use top" :accessor-type 'accessor-accessor-type 
+    :data-type 'boolean :default-value t :editor 'boolean-editor)
+   (:name 'use-full :label "Use full" :accessor-type 'accessor-accessor-type 
+    :data-type 'boolean :default-value nil :editor 'boolean-editor)
    (:name 'repeat-control :label "Repeat control" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value nil :editor 'boolean-editor)))
 
@@ -135,23 +138,24 @@
     (do ((i 0))
         ((>= i population-size))
       (let ((program (generate-program-tree p (language a))))
-        (cond ;; 1 - New and not into registry
-              ((not (gethash program (registry a)))
-               (setf (aref population i) (make-instance (objetive-class a) :expresion program))
-               (evaluate a (aref population i))
-               (setf (gethash program (registry a)) t
-                     attempts 0)
-               (incf i))
-              ;; 2 - New and into registry: max retries reached
-              ((> attempts max-attempts)
-               (incf min-tree-depth))
-              ;; 3 - Found, did not reach max attempts #LOG
-              (t (incf attempts)))))
+        (cond 
+         ;; New and not into registry
+         ((not (gethash program (registry a)))
+          (setf (aref population i) (make-instance (objetive-class a) :expresion program))
+          (evaluate a (aref population i))
+          (setf (gethash program (registry a)) t
+                attempts 0)
+          (incf i))
+         ;; New and into registry: max retries reached
+         ((> attempts max-attempts)
+          (incf min-tree-depth))
+         ;; Found, did not reach max attempts #LOG
+         (t (incf attempts)))))
     ;; #TODO: this should be moved to algorith calling function
     (clrhash (registry a))
     (make-instance 'population :count-individuals population-size :individuals-array population)))
 
-(defmethod generate-population-no-control ((p random-trees-generator) (a search-algorithm))
+(defmethod generate-population-no-control ((o random-trees-generator) (a search-algorithm))
   "Generate population for search on <algorithm>.
   #NOTE: Fill population with new random invididuals."
   (let* ((population-size (population-size a))
@@ -159,7 +163,7 @@
     ;; Populate with random programs with no repeat control
     (do ((i 0))
         ((>= i population-size))
-      (let ((program (generate-program-tree p (language a))))
+      (let ((program (generate-program-tree o (language a))))
         (setf (aref population i) (make-instance (objetive-class a) :expresion program))
         (incf i)))
     ;; Answer population object
@@ -167,13 +171,13 @@
       (evaluate a new-population)
       new-population)))
 
-(defmethod generate-program-tree ((generator random-trees-generator) language)
+(defmethod generate-program-tree ((o random-trees-generator) language)
   "Answer a new generated program tree on <language> using <generator>."
   (let ((max-size (max-size-new-individuals language))
         (max-depth (max-depth-new-individuals language)))
-    (simplify language (create-expresion language max-size max-depth t t)))) 
+    (simplify language (create-expresion language max-size max-depth (use-top o) (use-full o))))) 
 
-(defmethod generate-individual ((generator random-trees-generator) algorithm)
+(defmethod generate-individual ((o random-trees-generator) algorithm)
   "Answer a new generated object on <language> using <generator>."
   (make-instance (objetive-class algorithm) 
                  :expresion (generate-program-tree generator (language algorithm))))
@@ -203,8 +207,8 @@
 ; -----------------------------------------------------------------------------
 
 (defclass ramped-half-and-half-generator (population-generator)
-  ((min-value :initarg :min-value :accessor min-value)
-   (max-value :initarg :max-value :accessor max-value)))
+  ((max-depth :initarg :max-depth :accessor max-depth)
+   (use-top :initarg :use-top :accessor use-top)))
 
 
 (defmethod initialize-properties :after ((object ramped-half-and-half-generator))
@@ -213,28 +217,35 @@
    object
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value 'ramped-half-and-half-generator :editor 'symbol-editor)
-   (:name 'min-value :label "Min depth" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
-   (:name 'max-value :label "Max depth" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)))
-   
-(defmethod generate-population ((p ramped-half-and-half-generator) (a search-algorithm))
+   (:name 'max-depth :label "Max depth" :accessor-type 'accessor-accessor-type 
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
+   (:name 'use-top :label "Use top" :accessor-type 'accessor-accessor-type 
+    :data-type 'boolean :default-value t :editor 'boolean-editor)))
+
+(defmethod generate-population ((o ramped-half-and-half-generator) (a search-algorithm))
   "Generate population for search on <algorithm>."
-  (let* ((population-size (population-size algorithm))
+  (let* ((population-size (population-size a))
          (population (make-array population-size)))
     (dotimes (i population-size)
       (let ((tree (if (< (random-real 0 1) 0.5)
-                      (generate-individual-grow p 0)
-                    (generate-individual-full p 0))))
-        (setf (aref population i) (make-instance (objetive-class algorithm) :expresion tree))))
-    (evaluate algorithm population)
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+                      (generate-individual-grow o a)
+                    (generate-individual-full o a))))
+        (setf (aref population i) (make-instance (objetive-class a) :expresion tree))))
+    (let ((new-population (make-instance 'population :count-individuals population-size :individuals-array population)))
+      (evaluate a new-population)
+      new-population)))
 
-(defmethod generate-individual-grow ((p ramped-half-and-half-generator))
-  nil)
+;; These functions has size check which differs from original Koza implementation:
+;;  - If size wants to be avoided for shape reasons, needs to be setted with a high value
+;;  - Top option to avoid creating single terminal trees
 
-(defmethod generate-individual-full ((p ramped-half-and-half-generator))
-  nil)
+(defmethod generate-individual-grow ((p ramped-half-and-half-generator) a)
+  (let ((language (language a)))
+    (create-expresion language (max-size language) (max-depth p) t nil)))
+
+(defmethod generate-individual-full ((p ramped-half-and-half-generator) a)
+  (let ((language (language a)))
+    (create-expresion language (max-size language) (max-depth p) t t)))
   
 ; -----------------------------------------------------------------------------
 

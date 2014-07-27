@@ -13,7 +13,8 @@
    (functions :initarg :functions :initform nil :accessor functions)
    (variables :initarg :variables :initform nil :accessor variables)
    (terminals :initarg :terminals :initform nil :accessor terminals)
-   (tokens :initarg :tokens :initform nil :accessor tokens)))
+   (tokens :initarg :tokens :initform nil :accessor tokens)
+   (min-function-args :initarg :min-function-args :accessor min-function-args)))
 
 
 (defmethod initialize-properties :after ((o tree-language))
@@ -178,3 +179,9 @@
 
 (defmethod prepare-children-language ((l tree-language) exp)
   (simplify l exp))
+
+(defun min-language-function-with-args (x)
+  (reduce 'min (mapcar 'cadr x)))
+
+(defmethod (setf functions) (tree (o tree-language))
+  (setf (min-function-args o) (min-language-function-with-args (functions o))))

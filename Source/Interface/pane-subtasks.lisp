@@ -67,7 +67,8 @@
     ("Execution"
      ("Pause" menu-stop-selection lambda-has-selection)
      ("Continue" menu-resume-selection lambda-has-selection)
-     ("Delete" menu-delete-selection lambda-has-selection))
+     ("Delete" menu-delete-selection lambda-has-selection)
+     ("Reports" menu-pane-task-report lambda-has-selection))
      ;; Tasks
      ("Edit"
       ("Save task" menu-save-selection))
@@ -207,6 +208,11 @@
   "Open an editor with <interface> properties."
   (declare (ignore data))
   (open-editor-with interface interface))
+
+(defun menu-pane-task-report (interface data)
+  "Open an editor with <interface> properties."
+  (declare (ignore data))
+  (open-editor-with interface (benchmarker (model (pane interface)))))
 
 (defun menu-inspect-best-individuals (interface data)
   "Open a new pane-buffer with best N individuals of <subtask>, where N asked to user on GUI."

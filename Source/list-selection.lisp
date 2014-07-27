@@ -9,11 +9,11 @@
       (if (<= n sum) (return-from get-random-element operation))
       (setf operation (car i))
       (incf sum (cadr i)))
-    operation)) 
+    operation))
 
 (defun get-function-with-max-arguments (list max-arguments)
   "Answer a random function description <list> which <max-arguments> as a constraint."
   (let ((new-list))
     (dolist (i list)
-      (setf new-list (append new-list (if (<= (cadr i) max-arguments) (list i)))))
+      (appendf new-list (if (<= (cadr i) max-arguments) (list i))))
     (nth (random (list-length new-list)) new-list)))

@@ -9,12 +9,12 @@
     (setf (log-inspectors o) nil)
     (initialize-log-inspectors o i)
     (inspect-object o)
-    (setf (log-data i) (log-data o))))
+    (setf (benchmarker i) o)))
 
 (defmethod prepare-benchmark ((o task-benchmark) subject)
   "Connect <task> events and initialize <task> data dictionary."
   (when-send-to subject :task-initialized 'prepare-benchmark-task-callback o subject)
-  (setf (log-data subject) (log-data o)))
+  (setf (benchmarker subject) o))
 
 (defmethod initialize-properties :after ((o task-benchmark))
   "Initialize <object> properties.
@@ -81,3 +81,4 @@
                       (log-data-for-criteria (log-data benchmark) :best-individual)))))
     (/ (reduce '+ (mapcar 'fitness all))
        (length (children object)))))
+

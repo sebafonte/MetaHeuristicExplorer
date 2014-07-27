@@ -45,7 +45,7 @@
   "Connect <task> events and initialize <task> data dictionary."
   (initialize-log-inspectors o subject)
   (inspect-object o)
-  (setf (log-data subject) (log-data o)))
+  (setf (benchmarker subject) o))
 
 #| 
 ;;; Other properties to put
