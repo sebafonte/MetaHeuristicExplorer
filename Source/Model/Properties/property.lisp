@@ -231,7 +231,7 @@
         (default-value property) (funcall (default-value-function property) dependent-value))
   (ensure-valid-value target property))
 
-;; #TODO: Change to a functional style
+;; #TODO: Better in functional style
 (defmethod all-dependent-properties (object)
   (let ((result (dependent-properties object)))
     (dolist (i (dependency-list object))
