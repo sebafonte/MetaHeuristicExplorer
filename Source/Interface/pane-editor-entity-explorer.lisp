@@ -61,7 +61,6 @@
          (selected-node-index (1- (capi:choice-selection (pane-graph (interface p)))))
          (selected-subtree (selected-subtree model selected-node-index)))
     ;; Children creation
-    (re-initialize-properties-for child-object algorithm)
     (block child-generation-block
       (dotimes (i (fail-iterations p))
         (let ((operation (copy (selected-operation p algorithm))))
