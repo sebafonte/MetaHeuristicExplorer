@@ -21,12 +21,12 @@
 (defmethod test-reinitialize-properties-process-language ((o test-core-objects))
   "Verifies whether a algorithm reinitialize dependent properties for <o>."
   (let* ((algorithm (default-algorithm o))
-         (context (context algorithm)))
-    (setf (language context) (copy (language context))
-          (slot-value (language context) 'operators) 'some-value
-          (objetive-class context) 'entity-function-x)
-    (check (not (equal 'some-value (operators (language context)))))))
-
+         (context (copy-cyclic (context algorithm))))
+    (set-value-for-property-named context 'objetive-class 'entity-function-x)
+    (let ((original (language context)))
+      (set-value-for-property-named context 'objetive-class 'entity-function-x-y)
+      (check (not (equal original (language context)))))))
+  
 (defmethod test-fitness-evaluation-case-comparison ((o test-entity-x))
   "Test basic behaviour for instance of class 'entity-function-x."
   (let ((a (make-instance 'entity-function-x :expresion '(+ (* x x) 7)))

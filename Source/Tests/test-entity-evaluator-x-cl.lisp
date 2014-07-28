@@ -30,7 +30,7 @@
   (let* ((algorithm (algorithm task))
          (population (generate-population (initialization-method algorithm) algorithm))
          (evaluator (opencl-test-evaluator o)))
-    (setf (program-source-part-population o) (string-from-file (merge-pathnames "OpenCL\\fitness-base-part-population-x-test.cl" *base-pathname*) ))
+    (setf (program-source-part-population o) (string-from-file (merge-pathnames "OpenCL\\fitness-base-part-population-x-test.cl" *base-pathname*)))
     (initialize-fitness-data evaluator)
     (evaluate evaluator population)
     (check (<= (abs (- (fitness (nth 0 (individuals population))) 10)) 0.01))

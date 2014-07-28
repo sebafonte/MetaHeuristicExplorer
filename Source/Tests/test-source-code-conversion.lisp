@@ -56,7 +56,7 @@
     (eq (eval (new-source-description #'-)) '-)
     (eq (eval (new-source-description #'class-name)) 'class-name)))
 
-(defmethod test-business-objects-conversion-eval ((o test-source-code-conversion))
+(defmethod test-models-conversion-eval ((o test-source-code-conversion))
   (verify-source-code-persistence-eval o (make-instance 'log-data-container))
   (verify-source-code-persistence-eval o (make-instance 'property))
   (verify-source-code-persistence-eval o (make-instance 'population :count-individuals 20))
@@ -71,7 +71,7 @@
   (verify-source-code-persistence-eval o (make-instance 'manual-search-algorithm))
   (verify-source-code-persistence-eval o (make-instance 'search-task)))
 
-(defmethod test-business-objects-equality ((o test-source-code-conversion))
+(defmethod test-models-equality ((o test-source-code-conversion))
   ;; CASE: Vector equals
   (verify-source-code-persistence-equals o (make-instance 'image-vector-3d :x 10 :y 20 :z 30))
   ;; CASE: Program equal 'entity-function-x-y
