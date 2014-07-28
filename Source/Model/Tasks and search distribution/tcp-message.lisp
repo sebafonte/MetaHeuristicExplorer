@@ -6,6 +6,16 @@
 (defmethod error-message-p ((o tcp-message)) 
   (eql (name o) 'message-error))
 
+(defun error-description (error) 
+  (format nil "~a" error))
+
+(defun handle-transfer-error (error)
+  (log-error *logger* :tcp-message-processing-error error))
+
+(defun handle-command-error (error)
+  (log-error *logger* :tcp-message-processing-error error))
+
+
 (defun initialize-default-tcp-messages ()
   (system-add
    ;; Connection hand-shaking / status messages
@@ -17,11 +27,10 @@
    ;; Basic signaling
    (make-instance 'tcp-message :name 'message-ok :content nil)
    (make-instance 'tcp-message :name 'message-error :content nil)
+   (make-instance 'tcp-message :name 'message-result :content nil)
    ;; Task managament messages
-   (make-instance 'tcp-message :name 'message-send-subtask :content nil)
-   (make-instance 'tcp-message :name 'message-send-subtask-result :content nil)
    (make-instance 'tcp-message :name 'message-send-task :content nil)
-   (make-instance 'tcp-message :name 'message-send-task-result :content nil)
+   (make-instance 'tcp-message :name 'message-send-subtask :content nil)
    (make-instance 'tcp-message :name 'message-evaluate-object :content nil)
    ;; Statistics managament messages
    (make-instance 'tcp-message :name 'message-get-stats :content nil)
@@ -30,29 +39,32 @@
    (make-instance 'tcp-message :name 'message-run-performance-test :content nil)
    (make-instance 'tcp-message :name 'message-tx-performance-test :content nil)
    (make-instance 'tcp-message :name 'message-rx-performance-test :content nil)
-   ;; Object list / object sharing messages
+   ;; Object sharing messages
    (make-instance 'tcp-message :name 'message-object-list-request :content nil)
    (make-instance 'tcp-message :name 'message-object-list-send :content nil)
    (make-instance 'tcp-message :name 'message-object-request :content nil)
    (make-instance 'tcp-message :name 'message-object-send :content nil)
-   (make-instance 'tcp-message :name 'message-object-property-update :content nil)
    ;; Image purging / control
    (make-instance 'tcp-message :name 'message-respawn-image :content nil)
    (make-instance 'tcp-message :name 'message-clean-image :content nil)
    (make-instance 'tcp-message :name 'message-update-version :content nil)
    (make-instance 'tcp-message :name 'message-remote-client-advisor :content nil)))
-   
 
 
-;;; Behaviour dispatch: 
+;;; Behaviour dispatch
 ;;;   - Using message name not class at the moment (it´s enough at the moment)
 ;;;   - Administrator could be used in the body
 ;;;
 (defmethod dispatch-message-name ((message-name t) message administrator stream)
   nil)
 
-(defmethod dispatch-message-name ((message-name (eql 'message-object-request)) message administrator stream)
-  nil)
+(defmethod dispatch-message-name ((message-name (eql 'message-eval)) message administrator stream)
+  (format stream (make-tcp-message-string 'message-result (eval (content message))))
+  (force-output stream))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-object-get)) message administrator stream)
+  (format stream (make-tcp-message-string 'message-object-request (system-get (content message))))
+  (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-object-send)) message administrator stream)
   (open-in-new-editor (content message) (interface *main-pane*)))
@@ -79,32 +91,35 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-send-task)) message administrator stream)
   (let ((task (content message)))
     (appendf *search-subtasks* (subtasks task))
-    (execute-search task)
-    (format stream (make-tcp-message-string 'message-send-task-result (simplified-copy task)))
-    (force-output stream)))
+    (let ((error))
+      (handler-case 
+          (execute-search task)
+        (error (function) (setf error function) nil))
+      (format stream 
+              (if error
+                  (make-tcp-message-string 'message-error (error-description error))
+                (make-tcp-message-string 'message-result (simplified-copy task))))
+      (force-output stream))))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-send-subtask)) message administrator stream)
   (let ((subtask (content message)))
     (appendf *search-subtasks* (list subtask))
     ;; #TODO: Add a "incoming tasks planifier" to accept all tasks or delegate on other locally known hosts
     (let ((error))
-      (handler-case (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
+      (handler-case
+          (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
         (error (function) (setf error function) nil))
       (format stream 
               (if error
                   (make-tcp-message-string 'message-error (error-description error))
-                (make-tcp-message-string 'message-send-subtask-result (simplified-copy subtask))))
+                (make-tcp-message-string 'message-result (simplified-copy subtask))))
       (force-output stream))))
 
-(defun error-description (error)
-  (format nil "~a" error))
-
 (defmethod dispatch-message-name ((message-name (eql 'message-clean-image)) message administrator stream)
-  "Executes garbage collector and purge all known buffers and unused object."
+  "Execute garbage collector, purge all known buffers and unused objects."
   (reset-environment-callback nil nil)
-  ;(format stream (make-tcp-message-string 'message-ok))
-  ;(force-output stream)
-  )
+  (format stream (make-tcp-message-string 'message-ok))
+  (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-remote-client-advisor)) message administrator stream)
   "Updates client version automatically to current version if newer."
