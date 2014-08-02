@@ -387,4 +387,4 @@
 (open-pane (setf *main-pane* (make-instance 'pane-principal)))
 
 ;; #FIX: Patch for search-task-sample-language test
-;(initialize-default-search-task-object-templates)
+(initialize-default-search-task-object-templates)

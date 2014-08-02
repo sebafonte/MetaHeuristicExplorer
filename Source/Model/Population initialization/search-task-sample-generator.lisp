@@ -33,51 +33,51 @@
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-      (MAKE-LG-OBJ 40 0 10)
-      (MAKE-GN-RND-OBJ 1)
-      (MAKE-FE-OBJ 1)))
+      (MAKE-LG 40 0 10)
+      (MAKE-GN-RND 1)
+      (MAKE-FE 1)))
    ;; Composite task (paralell)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-      (MAKE-LG-OBJ 40 0 10)
-      (MAKE-GN-RND-OBJ 1)
-      (MAKE-FE-OBJ 1))
+      (MAKE-LG 40 0 10)
+      (MAKE-GN-RND 1)
+      (MAKE-FE 1))
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-      (MAKE-LG-OBJ 40 0 10)
-      (MAKE-GN-RND-OBJ 1)
-      (MAKE-FE-OBJ 1)))
+      (MAKE-LG 40 0 10)
+      (MAKE-GN-RND 1)
+      (MAKE-FE 1)))
    ;; Composite task (combined results, 2 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-      (MAKE-LG-OBJ 40 0 10)
-      (MAKE-GN-BESTS-OBJ (MAKE-TASK
+      (MAKE-LG 40 0 10)
+      (MAKE-GN-BESTS (MAKE-TASK
                           (MAKE-BUILDER-IT 10)
                           (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-                          (MAKE-LG-OBJ 40 0 10)
-                          (MAKE-GN-RND-OBJ 1)
-                          (MAKE-FE-OBJ 1)))
-      (MAKE-FE-OBJ 1)))
+                          (MAKE-LG 40 0 10)
+                          (MAKE-GN-RND 1)
+                          (MAKE-FE 1)))
+      (MAKE-FE 1)))
    ;; Composite task (combined results, 3 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-      (MAKE-LG-OBJ 40 0 10)
-      (MAKE-GN-BESTS-OBJ (MAKE-TASK
+      (MAKE-LG 40 0 10)
+      (MAKE-GN-BESTS (MAKE-TASK
                           (MAKE-BUILDER-IT 5)
                           (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-                          (MAKE-LG-OBJ 40 0 10)
-                          (MAKE-GN-BESTS-OBJ (MAKE-TASK
+                          (MAKE-LG 40 0 10)
+                          (MAKE-GN-BESTS (MAKE-TASK
                                               (MAKE-BUILDER-IT 5)
                                               (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
-                                              (MAKE-LG-OBJ 40 0 10)
-                                              (MAKE-GN-RND-OBJ 1)
-                                              (MAKE-FE-OBJ 1)))
-                          (MAKE-FE-OBJ 1)))
-      (MAKE-FE-OBJ 1)))))
+                                              (MAKE-LG 40 0 10)
+                                              (MAKE-GN-RND 1)
+                                              (MAKE-FE 1)))
+                          (MAKE-FE 1)))
+      (MAKE-FE 1)))))

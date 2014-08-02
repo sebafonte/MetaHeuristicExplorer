@@ -115,6 +115,7 @@
                   :lexer 'search-task-grammar-lexer
                   :parser-initializer 'initialize-search-task-grammar-parser
                   :productions (search-task-grammar-productions)
+                  :tokens *search-task-grammar-tokens*
                   :crossover-tokens '(:constant
                                       :search-object-description
                                       :task-description-list

@@ -16,12 +16,12 @@
    (benchmarker :initarg :benchmarker :accessor benchmarker)
    (initial-time :initarg :initial-time :initform nil :accessor initial-time)
    (final-time :initform nil :accessor final-time)
-   ;; Objetive properties
+   ;; Objetive
    (objetive-class :initarg :objetive-class :accessor objetive-class)
    (fitness-evaluator :initarg :fitness-evaluator :accessor fitness-evaluator)
    (language :initarg :language :accessor language)
    (algorithm :initarg :algorithm :accessor algorithm)
-   ;; Properties for planification
+   ;; Planification
    (task-builder :initarg :task-builder :accessor task-builder)
    (task-planifier :initarg :task-planifier :accessor task-planifier)))
 

@@ -17,7 +17,7 @@
   "Use <evaluator> to calculate and answer <object> fitness."
   (let* ((task-description (program object))
          (task-object (eval task-description))
-         (task-tree (build-task-tree task-description)))    
+         (task-tree (build-task-tree task-description)))
     (declare (ignore task-tree))
     (execute-search task-object)
     (setf (fitness object) (fitness (best-individual task-object)))))
@@ -32,5 +32,3 @@
 
 (defun build-task-tree (task-description)
   nil)
-  
-

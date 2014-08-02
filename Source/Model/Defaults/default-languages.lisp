@@ -264,6 +264,10 @@
                   :functions (functions-list-from-tokens *search-task-grammar-tokens*)
                   :operators (default-genetic-operators-probability-search-task)
                   :valid-new-expresion-function 'create-new-first-parent
+                  :max-size-new-individuals 50
+                  :max-depth-new-individuals 20
+                  :max-size 100
+                  :max-depth 20
                   :tokens *search-task-grammar-tokens*)
    ;; Lisp -> CL translation language
    (make-instance 'cfg-tree-language 

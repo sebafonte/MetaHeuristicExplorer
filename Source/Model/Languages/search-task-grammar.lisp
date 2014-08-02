@@ -4,8 +4,8 @@
 
 
 (defparameter *search-task-grammar-tokens*
-  '(;; Objects
-    (OBJ :search-object)
+  '(;; Object
+    ;(MAKE-OBJ :search-object)
     ;; Connectors
     (BEST-OF-TASK :best-of-task)
     (BEST-OF-TASKS :best-of-tasks)
@@ -17,32 +17,19 @@
     (MAKE-ALG-GG :algorithm-generational)
     (MAKE-ALG-SS :algorithm-steady-state)
     ;; Generators
-    (MAKE-GN-RND-OBJ :generator-random-object)
-    (MAKE-GN-RND-OP :generator-random-operator)
+    (MAKE-GN-RND :generator-random-object)
     (MAKE-GN-RND-ST :generator-random-search-task)
-    (MAKE-GN-BESTS-OBJ :generator-bests-object)
-    (MAKE-GN-BESTS-OP :generator-bests-operator)
     (MAKE-GN-BESTS-ST :generator-bests-search-task)
     ;; Languages
-    (MAKE-LG-OBJ :language-object)
-    (MAKE-LG-OP :language-operator)
+    (MAKE-LG :language-object)
     (MAKE-LG-ST :language-search-task)
     ;; Language functions
-    (MAKE-LGF-OBJ :language-functions-object)
+    (MAKE-LGF :language-functions-object)
     (MAKE-LGF-ST :language-functions-search-task)
-    (MAKE-LGF-OP :language-functions-operator)
     ;; Fitness evaluators
-    (MAKE-FE-OBJ :fitness-evaluator-object)
-    (MAKE-FE-OP :fitness-evaluator-operator)
-    (MAKE-FE-ST :fitness-evaluator-search-task)
+    (MAKE-FE :fitness-evaluator-object)
     ;; Operators usage
-    (MAKE-OP-OBJ :operator-description-object)
-    (MAKE-OP-ST :operator-description-search-task)
-    (MAKE-OP-OP :operator-description-operator)
-    ;; Operators usage
-    (MAKE-OPU-OBJ :operator-usage-object)
-    (MAKE-OPU-ST :operator-usage-search-task)
-    (MAKE-OPU-OP :operator-usage-operator)
+    (MAKE-OP :operator-description-object)
     ;; Selection methods
     (MAKE-SM-TOURNAMENT :tournament-selection-method)
     (MAKE-SM-RANK :ranking-selection-method)
@@ -82,19 +69,18 @@
                ;; Object connectors
                ((expresion object)
                 $1)
-               ((object :search-object)
-                `(:search-object-description ,$1))
                ((object best-of-task-description)
                 `(:search-object-description ,$1))
                ((object best-of-tasks-description)
                 `(:search-object-description ,$1))
-               ;; Search tasks
+               ;; Search tasks root node
                ((best-of-task-description :open :best-of-task task-description :close)
                 `((:best-of-task BEST-OF-TASK) ,$3))
                ((best-of-tasks-description :open :best-of-tasks task-description-list :close)
                 `((:best-of-tasks BEST-OF-TASKS) ,$3))
                ((task-description-list task-description-list task-description)
                 `(:task-description-list ,$1 ,$2))
+               ;; Object descriptor
                ((task-description-list task-description)
                 `(:task-description-list ,$1))
                ((task-description :open :task-description 
@@ -102,7 +88,7 @@
                                   generator-description fitness-evaluator-description
                                   :close)
                 `((:task-description MAKE-TASK) ,$3 ,$4 ,$5 ,$6 ,$7))
-               ;; Task builder: #TODO: UN-HARDCODE this iterative builder!
+               ;; Task builder
                ((builder-description :open :iterative-builder iterations-description :close)
                 `((:builder-description MAKE-BUILDER-IT) ,$3))
                ((iterations-description :constant)
@@ -167,31 +153,12 @@
                 :inverse-ranking-selection-method)
                ((inverse-index-selection-method-description :open :inverse-index-selection-method :close)
                 :inverse-index-selection-method)           
-               ;; language (3 types)
+               ;; Language
                ((language-description language-description-object)
                 `,$1)
-               ((language-description language-description-search-task)
-                `,$1)
-               ((language-description language-description-operator)
-                `,$1)
-               ((language-description-object :open :language-object
-                                             tree-max-size
-                                             min-constants
-                                             max-constants
-                                             :close)
-                `((:language-description-object MAKE-LG-OBJ) (:language-object ,$3 ,$4 ,$5)))
-               ((language-description-search-task :open :language-search-task
-                                                  tree-max-size
-                                                  min-constants
-                                                  max-constants
-                                                  :close)
-                `((:language-description-search-task MAKE-LG-ST) (:language-search-task ,$3 ,$4 ,$5)))
-               ((language-description-operator :open :language-operator
-                                               tree-max-size
-                                               min-constants
-                                               max-constants
-                                               :close)
-                `((:language-description-operator MAKE-LG-OP) (:language-operator ,$3 ,$4 ,$5)))
+               ((language-description-object :open :language-object tree-max-size min-constants max-constants :close)
+                `((:language-description-object MAKE-LG) (:language-object ,$3 ,$4 ,$5)))
+               ;; Constants 
                ((tree-max-size :constant)
                 `,$1)
                ((min-constants :constant)
@@ -203,47 +170,23 @@
                 `(:generator-description-object ,$1))
                ((generator-description generator-search-task)
                 `(:generator-description-search-task ,$1))
-               ((generator-description generator-operator)
-                `(:generator-description-operator ,$1))
-               ;; Random generators
+               ;; Random generators (INDIVIDUAL)
                ((generator-object :open :generator-random-object :constant :close)
-                `((:generator-random-object MAKE-GN-RND-OBJ) (:auxiliary-parameter 1)))
+                `((:generator-random-object MAKE-GN-RND) (:auxiliary-parameter 1)))
+               ;; Random generators (TASK)
                ((generator-search-task :open :generator-random-search-task :constant :close)
                 `((:generator-random-search-task MAKE-GN-RND-ST) (:auxiliary-parameter 1)))
-               ((generator-operator :open :generator-random-operator :constant :close)
-                `((:generator-random-operator MAKE-GN-RND-OP) (:auxiliary-parameter 1)))
-               ;; Best objects from task generators
-               ((generator-object :open :generator-bests-object task-description :close)
-                `((:generator-bests-object MAKE-GN-BESTS-OBJ) ,$3))
                ((generator-search-task :open :generator-bests-search-task task-description :close)
                 `((:generator-bests-search-task MAKE-GN-BESTS-ST) ,$3))
-               ((generator-operator :open :generator-bests-operator task-description :close)
-                `((:generator-bests-operator MAKE-GN-BESTS-OP) ,$3))
-               ;; Fitness evaluators (3 types)
+               ;; Fitness evaluators
                ((fitness-evaluator-description fitness-evaluator-description-object)
                 `,$1)
-               ((fitness-evaluator-description fitness-evaluator-description-search-task)
-                `,$1)
-               ((fitness-evaluator-description fitness-evaluator-description-operator)
-                `,$1)
                ((fitness-evaluator-description-object :open :fitness-evaluator-object :constant :close)
-                `((:fitness-evaluator-object MAKE-FE-OBJ) ,$3))
-               ((fitness-evaluator-description-search-task :open :fitness-evaluator-search-task :constant :close)
-                `((:fitness-evaluator-search-task MAKE-FE-ST) ,$3))
-               ((fitness-evaluator-description-operator :open :fitness-evaluator-operator :constant :close)
-                `((:fitness-evaluator-operator MAKE-FE-OP) ,$3))
-               ;; Genetic operators (3 types)
+                `((:fitness-evaluator-object MAKE-FE) ,$3))
+               ;; Genetic operators
                ((operator-usage-description operator-usage-description-object)
                 `(:operator-usage-object ,$1))
-               ((operator-usage-description operator-usage-description-search-task)
-                `(:operator-usage-search-task ,$1))
-               ((operator-usage-description operator-usage-description-operator)
-                `(:operator-usage-operator ,$1))
                ((operator-usage-description-object :operator-usage-object)
-                `,$1)
-               ((operator-usage-description-search-task :operator-usage-search-task)
-                `,$1)
-               ((operator-usage-description-operator :operator-usage-operator)
                 `,$1)
                ;; Elite manager
                ((elite-manager-description :open :elite-manager number-of-elites :close)
@@ -255,7 +198,6 @@
 (defun search-task-grammar-productions ()
   '((start expresion)
     (expresion object)
-    (object :search-object)
     (object best-of-task-description)
     (object best-of-tasks-description)
     (best-of-task-description :open best-of-task task-description-description :close)
@@ -297,39 +239,21 @@
     (inverse-ranking-selection-method-description :open inverse-ranking-selection-method :close)
     (inverse-index-selection-method-description :open inverse-index-selection-method :close)
     (language-description language-description-object)
-    (language-description language-description-search-task)
-    (language-description language-description-operator)
     (language-description-object :open language-object tree-max-size min-constants max-constants :close)
-    (language-description-search-task :open language-search-task tree-max-size min-constants max-constants :close)
-    (language-description-operator :open language-operator tree-max-size min-constants max-constants :close)
     (tree-max-size constant)
     (min-constants constant)
     (max-constants constant)
     (generator-description generator-object)
-    (generator-description generator-search-task)
-    (generator-description generator-operator)
     (generator-object :open generator-random-object constant :close)
-    (generator-search-task :open generator-random-search-task constant :close)
-    (generator-operator :open generator-random-operator constant :close)
-    (generator-object :open generator-bests-object task-description-description :close)
-    (generator-search-task :open generator-bests-search-task task-description-description :close)
-    (generator-operator :open generator-bests-operator task-description-description :close)
+    (generator-object :open generator-bests-search-task task-description-description :close)
+    (generator-object :open generator-random-search-task task-description-description :close)
     (fitness-evaluator-description fitness-evaluator-description-object)
-    (fitness-evaluator-description fitness-evaluator-description-search-task)
-    (fitness-evaluator-description fitness-evaluator-description-operator)
     (fitness-evaluator-description-object :open fitness-evaluator-object constant :close)
-    (fitness-evaluator-description-search-task :open fitness-evaluator-search-task constant :close)
-    (fitness-evaluator-description-operator :open fitness-evaluator-operator constant :close)
     (operator-usage-description operator-usage-description-object)         
-    (operator-usage-description operator-usage-description-search-task)
-    (operator-usage-description operator-usage-description-operator)
     (operator-usage-description-object operator-usage-object)
-    (operator-usage-description-search-task operator-usage-search-task)
-    (operator-usage-description-operator operator-usage-operator)
     (elite-manager-description :open elite-manager number-of-elites :close)
     (number-of-elites constant)
     (constant :constant)))
-
 
 ;;; GLOBAL BINDINGS
 (defparameter *default-template-task* nil)
@@ -410,23 +334,51 @@
           (fitness-evaluator instance) fitness-evaluator)
     instance))
 
+
+(defparameter *min-builder-iterations* 1)
+(defparameter *max-builder-iterations* 5)
+
+(defparameter *min-population-size* 3)
+(defparameter *max-population-size* 100)
+
+(defparameter *min-generations* 3)
+(defparameter *max-generations* 100)
+
+(defparameter *min-iterations* 3)
+(defparameter *max-iterations* 100)
+
+(defparameter *min-size-elites* 0)
+(defparameter *min-size-elites* *max-population-size*)
+
+
+(defun crop-for-property (object value name min max)
+  (let ((property (property-named object name)))
+    (crop 
+     (crop 
+      value 
+      (min-value property) 
+      (max-value property))
+     min
+     max)))
+
 (defun MAKE-BUILDER-IT (iterations)
   (let ((instance (copy-cyclic *default-template-iteration-builder*)))
-    (setf (runs instance) iterations)
+    (setf (runs instance) 
+          (crop-for-property instance iterations 'runs *min-builder-iterations* *max-builder-iterations*))
     instance))
 
-(defun MAKE-ALG-GG (population-size generations selection-method elite-manager)
+(defun MAKE-ALG-GG (population-size max-generations selection-method elite-manager)
   (let ((instance (copy-cyclic *default-template-generational-algorithm*)))
-    (setf (population-size instance) population-size
-          (max-generations instance) generations
+    (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*) 
+          (max-generations instance) (crop-for-property instance max-generations 'max-generations *min-generations* *max-generations*)
           (selection-method instance) selection-method
           (elite-manager instance) elite-manager)
     instance))
 
-(defun MAKE-ALG-SS (population-size iterations selection-method replacement-method)
+(defun MAKE-ALG-SS (population-size max-iterations selection-method replacement-method)
   (let ((instance (copy-cyclic *default-template-steady-state-algorithm*)))
-    (setf (population-size instance) population-size
-          (max-iterations instance) iterations
+    (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*)
+          (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *max-iterations* *max-iterations*)
           (selection-method instance) selection-method
           (replacement-strategy instance) replacement-method)
     instance))
@@ -440,7 +392,7 @@
 (defun MAKE-SM-INDEX ()
   (copy-cyclic *default-template-selection-method-index*))
 
-(defun MAKE-SM-RANDOM (tournament-size)
+(defun MAKE-SM-RANDOM ()
   (copy-cyclic *default-template-selection-method-random*))
 
 (defun MAKE-SM-BEST ()
@@ -457,37 +409,32 @@
 
 (defun MAKE-EM (elites-count)
   (let ((instance (copy-cyclic *default-template-elite-manager*)))
-    (setf (max-size instance) elites-count)
+    (setf (max-size instance) (crop-for-property instance elites-count 'max-size *min-size-elites* *max-size-elites*))
     instance))
 
-(defun MAKE-LG-OBJ (a b c)
+(defun MAKE-LG (a b c)
   (copy-cyclic *default-template-language-object*))
 
-(defun MAKE-LG-OP (a b c)
-  (copy-cyclic *default-template-language-operator*))
+(defun MAKE-OBJ (program)
+  (make-instance (objetive-class task) :expression program))
 
-(defun MAKE-GN-RND-OBJ (auxiliar)
+(defun MAKE-GN-RND (aux)
+  (declare (ignore aux))
   (copy-cyclic *default-template-generator-random-object*))
 
-(defun MAKE-GN-BESTS-OBJ (input-task)
+(defun MAKE-GN-RND-ST (input-task)
   (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
-    (setf (proceso input-task) nil)
-    (setf (input-task instance) input-task)
+    (setf (process input-task) nil
+          (input-task instance) input-task)
     instance))
 
-(defun MAKE-GN-BESTS-ST ()
+(defun MAKE-GN-BESTS-ST (input-task)
   (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
-    (setf (proceso input-task) nil)
-    (setf (input-task instance) input-task)
+    (setf (process input-task) nil
+          (input-task instance) input-task)
     instance))
 
-(defun MAKE-FE-OBJ (auxiliar)
+(defun MAKE-FE (auxiliar)
   (copy-cyclic *default-template-fitness-evaluator-object*))
-
-(defun MAKE-FE-ST (auxiliar)
-  (copy-cyclic *default-template-fitness-evaluator-search-task*))
-
-(defun MAKE-FE-OP (auxiliar)
-  (copy-cyclic *default-template-fitness-evaluator-operator*))

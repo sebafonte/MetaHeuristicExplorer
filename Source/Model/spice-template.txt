@@ -2,10 +2,38 @@
 
 .width out=80
 
+* CAPACITOR
+*	CBYP 13 0 1UF
+*
+* RESISTOR
+*	R1 1 2 100
+*	R1 1 2 1000
+*
+* BOBINAS
+*	LLINK 42 69 1UH
+*	LSHUNT 23 51 10U IC = 1 5. 7MA
+*
+* FUENTES
+*	VCC 10 0 DC 6
+*	VIN 13 2 0 . 0 0 1 AC 1 SIN ( 0 1 1MEG)
+*
+* NOISE
+*	VNoiw 1 0 DC 0 TRNOISE ( 2 0 n 0 . 5 n 0 0 ) $ w hit e	
+
+* TRANSISTORES BIPOLARES
+*	8.1 Bipolar Junction Transistors (BJTs)
+*	General form:
+*	QXXXXXXX nc nb ne <ns > mname < a r e a = v al > < a r e a c = v al > < a r e a b = v al >
+*	+ <m= v al > < o f f > < i c =vbe , vce > <temp= v al > <dtemp= v al >
+*	Examples:
+*	Q23 10 24 13 QMOD IC = 0 . 6 , 5 . 0
+*	Q50A 11 26 4 20 MOD1
+
+
 * Analysis cards :
-.tran 100ps 1ns
-.plot tran v(1) v(7)
-.ic v(1)=0 v(3)=0 v(5)=0 v(7)=0
+*.tran 100ps 1ns
+*.plot tran v(1) v(7)
+*.ic v(1)=0 v(3)=0 v(5)=0 v(7)=0
 
 * Model cards
 .MODEL CMOSN NMOS (VTO=0.83 KP=33U GAMMA=1.36 PHI=0.6

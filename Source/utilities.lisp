@@ -295,3 +295,6 @@
 (defun nan-replace (x value)
   "Answer <value> if <x> it's NAN, otherwise return <x>."
   (if (nan-p x) value x))
+
+(defun between (value min max)
+  (and (<= value max) (>= value min)))

@@ -287,7 +287,7 @@
                   :description "Best fitness")
    (make-instance 'worst-fitness-selection
                   :name 'worst-fitness-selection-method
-                  :description "Worst fitfness")
+                  :description "Worst fitness")
    (make-instance 'ranking-proportionate-selection 
                   :name 'ranking-proportionate-selection-method
                   :description "Ranking proportional")
