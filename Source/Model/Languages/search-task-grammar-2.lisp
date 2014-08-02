@@ -1,5 +1,5 @@
 
-(defclass search-algorithm-grammar (context-free-grammar)
+(defclass search-task-grammar (context-free-grammar)
   ())
 
 
@@ -17,30 +17,31 @@
     (MAKE-ALG-GG :algorithm-generational)
     (MAKE-ALG-SS :algorithm-steady-state)
     ;; Generators
-    (MAKE-GN-RND-OBJ :generator-random-object)
-    (MAKE-GN-RND-OP :generator-random-operator)
+    (MAKE-GN-RND :generator-random-object)
     (MAKE-GN-RND-ST :generator-random-search-task)
-    (MAKE-GN-BESTS-OBJ :generator-bests-object)
-    (MAKE-GN-BESTS-OP :generator-bests-operator)
     (MAKE-GN-BESTS-ST :generator-bests-search-task)
+    (MAKE-GN-OP :generator-random-operator)
+    (MAKE-GN-RND-OP-ST :generator-random-operator)
+    (MAKE-GN-BESTS-OP-ST :generator-bests-operator)
     ;; Languages
-    (MAKE-LG-OBJ :language-object)
-    (MAKE-LG-OP :language-operator)
+    (MAKE-LG :language-object)
     (MAKE-LG-ST :language-search-task)
+    (MAKE-LG-OP :language-operator)
+    (MAKE-LG-OP-ST :language-operator)
     ;; Language functions
-    (MAKE-LGF-OBJ :language-functions-object)
-    (MAKE-LGF-ST :language-functions-search-task)
+    (MAKE-LGF :language-functions-object)
     (MAKE-LGF-OP :language-functions-operator)
+    (MAKE-LGF-ST :language-functions-search-task)
     ;; Fitness evaluators
-    (MAKE-FE-OBJ :fitness-evaluator-object)
-    (MAKE-FE-OP :fitness-evaluator-operator)
+    (MAKE-FE :fitness-evaluator-object)
     (MAKE-FE-ST :fitness-evaluator-search-task)
+    (MAKE-FE-OP :fitness-evaluator-operator)
     ;; Operators usage
-    (MAKE-OP-OBJ :operator-description-object)
+    (MAKE-OP :operator-description-object)
     (MAKE-OP-ST :operator-description-search-task)
     (MAKE-OP-OP :operator-description-operator)
     ;; Operators usage
-    (MAKE-OPU-OBJ :operator-usage-object)
+    (MAKE-OPU :operator-usage-object)
     (MAKE-OPU-ST :operator-usage-search-task)
     (MAKE-OPU-OP :operator-usage-operator)
     ;; Selection methods
@@ -62,12 +63,13 @@
       nil)))
 
 (defun search-task-grammar-get-token (grammar word)
-  "Answer the token type of word."
+  "Answer the token type of <word> for <grammar>."
   (let ((token-type (search-on-symbol-table (tokens grammar) word)))
     (if (equal token-type :unknown) 
         (setf token-type 
               (if (numberp word) :constant 
                 (if (listp word) :list))))
+    (when (null token-type) (error (format nil "Unknown token for <~A>" word)))
     (values token-type (list token-type word))))
 
 (defun initialize-search-task-grammar-parser (name)
@@ -87,13 +89,14 @@
                 `(:search-object-description ,$1))
                ((object best-of-tasks-description)
                 `(:search-object-description ,$1))
-               ;; Search tasks
+               ;; Search tasks root node
                ((best-of-task-description :open :best-of-task task-description :close)
                 `((:best-of-task BEST-OF-TASK) ,$3))
                ((best-of-tasks-description :open :best-of-tasks task-description-list :close)
                 `((:best-of-tasks BEST-OF-TASKS) ,$3))
                ((task-description-list task-description-list task-description)
                 `(:task-description-list ,$1 ,$2))
+               ;; Object descriptor
                ((task-description-list task-description)
                 `(:task-description-list ,$1))
                ((task-description :open :task-description 
@@ -387,20 +390,20 @@
 
 (defun BEST-OF-TASK (task)
   (execute-search task) 
-  (multiple-value-bind (result context) 
+  (multiple-value-bind (result subtask) 
       (best-individual task)
     result))
 
 (defun BEST-OF-TASKS (&rest tasks)
   (let ((task (first tasks)))
     (execute-search task) 
-    (multiple-value-bind (result context) 
+    (multiple-value-bind (result subtask) 
         (best-individual task)
       result)))
 
 (defun MAKE-TASK (builder algorithm language generator fitness-evaluator)
-  (let ((instance (copy *default-template-task*)))
-    (setf (algorithm (context instance)) algorithm
+  (let ((instance (copy-cyclic *default-template-task*)))
+    (setf (algorithm instance) algorithm
           (language instance) language
           (input instance) generator
           ;; #TODO: Fix and take this out of here
@@ -410,12 +413,12 @@
     instance))
 
 (defun MAKE-BUILDER-IT (iterations)
-  (let ((instance (copy *default-template-iteration-builder*)))
+  (let ((instance (copy-cyclic *default-template-iteration-builder*)))
     (setf (runs instance) iterations)
     instance))
 
 (defun MAKE-ALG-GG (population-size generations selection-method elite-manager)
-  (let ((instance (copy *default-template-generational-algorithm*)))
+  (let ((instance (copy-cyclic *default-template-generational-algorithm*)))
     (setf (population-size instance) population-size
           (max-generations instance) generations
           (selection-method instance) selection-method
@@ -423,7 +426,7 @@
     instance))
 
 (defun MAKE-ALG-SS (population-size iterations selection-method replacement-method)
-  (let ((instance (copy *default-template-steady-state-algorithm*)))
+  (let ((instance (copy-cyclic *default-template-steady-state-algorithm*)))
     (setf (population-size instance) population-size
           (max-iterations instance) iterations
           (selection-method instance) selection-method
@@ -431,62 +434,63 @@
     instance))
 
 (defun MAKE-SM-TOURNAMENT (tournament-size)
-  (copy *default-template-selection-method-tournament*))
+  (copy-cyclic *default-template-selection-method-tournament*))
 
 (defun MAKE-SM-RANK ()
-  (copy *default-template-selection-method-tournament*))
+  (copy-cyclic *default-template-selection-method-tournament*))
 
 (defun MAKE-SM-INDEX ()
-  (copy *default-template-selection-method-index*))
+  (copy-cyclic *default-template-selection-method-index*))
 
-(defun MAKE-SM-RANDOM (tournament-size)
-  (copy *default-template-selection-method-random*))
+(defun MAKE-SM-RANDOM ()
+  (copy-cyclic *default-template-selection-method-random*))
 
 (defun MAKE-SM-BEST ()
-  (copy *default-template-selection-method-best*))
+  (copy-cyclic *default-template-selection-method-best*))
 
 (defun MAKE-SM-WORST () 
-  (copy *default-template-selection-method-worst*))
+  (copy-cyclic *default-template-selection-method-worst*))
 
 (defun MAKE-SM-IINDEX ()
-  (copy *default-template-selection-method-index-inverse*))
+  (copy-cyclic *default-template-selection-method-index-inverse*))
 
 (defun MAKE-SM-IRANKING ()
-  (copy *default-template-selection-method-ranking-inverse*))
+  (copy-cyclic *default-template-selection-method-ranking-inverse*))
 
 (defun MAKE-EM (elites-count)
-  (let ((instance (copy *default-template-elite-manager*)))
+  (let ((instance (copy-cyclic *default-template-elite-manager*)))
     (setf (max-size instance) elites-count)
     instance))
 
-(defun MAKE-LG-OBJ (a b c)
-  (copy *default-template-language-object*))
+(defun MAKE-LG (a b c)
+  (copy-cyclic *default-template-language-object*))
 
 (defun MAKE-LG-OP (a b c)
-  (copy *default-template-language-operator*))
+  (copy-cyclic *default-template-language-operator*))
 
-(defun MAKE-GN-RND-OBJ (auxiliar)
-  (copy *default-template-generator-random-object*))
+(defun MAKE-GN-RND (aux)
+  (declare (ignore aux))
+  (copy-cyclic *default-template-generator-random-object*))
 
-(defun MAKE-GN-BESTS-OBJ (input-task)
-  (let ((instance (copy *default-template-generator-bests-object*)))
+(defun MAKE-GN-RND-ST (input-task)
+  (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
     (setf (proceso input-task) nil)
     (setf (input-task instance) input-task)
     instance))
 
-(defun MAKE-GN-BESTS-ST ()
-  (let ((instance (copy *default-template-generator-bests-object*)))
+(defun MAKE-GN-BESTS-ST (input-task)
+  (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
     (setf (proceso input-task) nil)
     (setf (input-task instance) input-task)
     instance))
 
-(defun MAKE-FE-OBJ (auxiliar)
-  (copy *default-template-fitness-evaluator-object*))
+(defun MAKE-FE (auxiliar)
+  (copy-cyclic *default-template-fitness-evaluator-object*))
 
 (defun MAKE-FE-ST (auxiliar)
-  (copy *default-template-fitness-evaluator-search-task*))
+  (copy-cyclic *default-template-fitness-evaluator-search-task*))
 
 (defun MAKE-FE-OP (auxiliar)
-  (copy *default-template-fitness-evaluator-operator*))
+  (copy-cyclic *default-template-fitness-evaluator-operator*))
