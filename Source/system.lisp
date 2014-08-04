@@ -333,6 +333,7 @@
             "Test unit\\performance-test-case.lisp"
             ;; Tests
             "Tests\\test-utilities.lisp"
+            "Tests\\test-default-search-algorithms.lisp"
             "Tests\\test-base-model.lisp"
             "Tests\\test-core-objects.lisp"
             "Tests\\test-core-functions.lisp"
@@ -385,6 +386,3 @@
 
 ;; Open main window
 (open-pane (setf *main-pane* (make-instance 'pane-principal)))
-
-;; #FIX: Patch for search-task-sample-language test
-(initialize-default-search-task-object-templates)

@@ -136,26 +136,28 @@
 
 (defmethod signal-error-on (planifier target task error)
   (setf (state task) 'error)
+  ;(log-error *logger* error target task)
   ;(error (format nil "Error on <~a> with <~a>: ~a" target task error))
   )
 
 (defun update-transfered-subtask (new-task task)
   "Update redundant information deleted to transfer <new-task>."
-  (setf ;; Set new task property definitions
-        (properties-definition new-task) 
-        (properties-definition task)
-        ;; Set property definitions
-        (properties-definition (algorithm new-task)) 
-        (properties-definition (algorithm task))
-        (properties-definition (fitness-evaluator new-task)) 
-        (properties-definition (fitness-evaluator task))
-        (properties-definition (selection-method (algorithm new-task))) 
-        (properties-definition (selection-method (algorithm task)))
-        (properties-definition (initialization-method (algorithm new-task)))
-        (properties-definition (initialization-method (algorithm task)))
-        ;; #TODO: Check if copy-cyclic is necessary
-        ;; Connect new-task with algorithm
-        (context (algorithm new-task)) new-task))
+  (setf 
+   ;; Set new task property definitions
+   (properties-definition new-task) 
+   (properties-definition task)
+   ;; Set property definitions
+   (properties-definition (algorithm new-task)) 
+   (properties-definition (algorithm task))
+   (properties-definition (fitness-evaluator new-task)) 
+   (properties-definition (fitness-evaluator task))
+   (properties-definition (selection-method (algorithm new-task))) 
+   (properties-definition (selection-method (algorithm task)))
+   (properties-definition (initialization-method (algorithm new-task)))
+   (properties-definition (initialization-method (algorithm task)))
+   ;; #TODO: Check if copy-cyclic is necessary
+   ;; Connect new-task with algorithm
+   (context (algorithm new-task)) new-task))
 
 (defmethod select-task-target ((planifier task-planifier))
   "Answer a connection description to execute a task."
@@ -172,14 +174,16 @@
               (mp:process-wait "Waiting for process completion."
                              (lambda () 
                                (mp:with-lock (*task-planifier-lock*)
-                                 (< *simultaneous-processes* (real-max-simultaneous-processes planifier)))))
+                                 (let ((value (max (minimum-simultaneous-processes task) 
+                                                   (real-max-simultaneous-processes planifier))))
+                                   (< *simultaneous-processes* value)))))
               (mp:with-lock (*task-planifier-lock*)
                 (incf *simultaneous-processes*))
-              (setf (process task) 
+              (setf (process task)
                     (mp:process-run-function
                      "Process task"
                      (list :priority (priority task))
-                     (lambda (children-number) 
+                     (lambda (children-number)
                        (let ((result-task (execute-subtask
                                            planifier 
                                            (nth children-number (children task)))))
@@ -188,6 +192,16 @@
                          (setf (nth children-number (children task)) result-task)))
                      n)))))))
 
-(defmethod real-max-simultaneous-processes ((planifier task-planifier))
-  (or (max-simultaneous-processes planifier)
-      (length (active-connections planifier))))
+(defun minimum-processes ()
+  (let ((tasks (remove nil *search-tasks*)))
+    (when tasks
+      (reduce 'min (mapcar 'minimum-simultaneous-processes tasks)))))
+
+(defmethod minimum-simultaneous-processes ((o search-task))
+  (minimum-simultaneous-processes-objetive o (objetive-class o)))
+
+(defmethod minimum-simultaneous-processes-objetive ((o search-task) (class (eql 'search-task)))
+  2)
+
+(defmethod minimum-simultaneous-processes-objetive ((o search-task) class)
+  1)

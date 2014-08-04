@@ -37,7 +37,8 @@
   (initialize-texture-manager)
   (initialize-graphics-updater)
   (initialize-stack)
-  (initialize-image-vector-functions))
+  (initialize-image-vector-functions)
+  (initialize-default-search-task-object-templates))
 
 (defun application-relative-pathname (file)
   (let* ((executable-name (car sys:*line-arguments-list*))

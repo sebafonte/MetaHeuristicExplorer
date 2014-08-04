@@ -10,7 +10,7 @@
     (BEST-OF-TASK :best-of-task)
     (BEST-OF-TASKS :best-of-tasks)
     ;; Task specifier
-    (MAKE-TASK :task-description)
+    (MAKE-TASK :make-task-description)
     ;; Task builder
     (MAKE-BUILDER-IT :iterative-builder)
     ;; Algorithms
@@ -83,7 +83,7 @@
                ;; Object descriptor
                ((task-description-list task-description)
                 `(:task-description-list ,$1))
-               ((task-description :open :task-description 
+               ((task-description :open :make-task-description 
                                   builder-description algorithm-description language-description 
                                   generator-description fitness-evaluator-description
                                   :close)
@@ -104,14 +104,14 @@
                                                     selection-method-description
                                                     elite-manager-description
                                                     :close)
-                `((:algorithm-generational MAKE-ALG-GG) ,$3 ,$4 ,$5 ,$6))
+                `((:generational-algorithm-description MAKE-ALG-GG) ,$3 ,$4 ,$5 ,$6))
                ((steady-state-algorithm-description :open :algorithm-steady-state 
                                                     population-size
                                                     max-iterations
                                                     selection-method-description
                                                     replacement-method-description
                                                     :close)
-                `((:algorithm-steady-state MAKE-ALG-SS) ,$3 ,$4 ,$5 ,$6))
+                `((:steady-state-algorithm-description MAKE-ALG-SS) ,$3 ,$4 ,$5 ,$6))
                ((max-generations :constant)
                 `,$1)
                ((max-iterations :constant)
@@ -152,7 +152,7 @@
                ((inverse-ranking-selection-method-description :open :inverse-ranking-selection-method :close)
                 :inverse-ranking-selection-method)
                ((inverse-index-selection-method-description :open :inverse-index-selection-method :close)
-                :inverse-index-selection-method)           
+                :inverse-index-selection-method)
                ;; Language
                ((language-description language-description-object)
                 `,$1)
@@ -249,7 +249,7 @@
     (generator-object :open generator-random-search-task task-description-description :close)
     (fitness-evaluator-description fitness-evaluator-description-object)
     (fitness-evaluator-description-object :open fitness-evaluator-object constant :close)
-    (operator-usage-description operator-usage-description-object)         
+    (operator-usage-description operator-usage-description-object)
     (operator-usage-description-object operator-usage-object)
     (elite-manager-description :open elite-manager number-of-elites :close)
     (number-of-elites constant)
@@ -357,7 +357,6 @@
 (defun MAKE-TASK (context builder algorithm language generator fitness-evaluator)
   (let ((instance (copy-cyclic *default-template-task*)))
     (setf 
-     (parent instance) context
      (algorithm instance) algorithm
      (language instance) language
      (input instance) generator
