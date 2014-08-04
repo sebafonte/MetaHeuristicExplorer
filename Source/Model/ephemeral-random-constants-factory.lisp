@@ -25,7 +25,7 @@
 (defmethod create-constant-type ((o ephemeral-random-constants-factory) (type (eql 'integer)))
   (random-integer (min-value o) (max-value o)))
 
-;; #TODO: Agregar conversion!
+;; #TODO: Add coerce
 (defmethod create-constant-type ((o ephemeral-random-constants-factory) (type (eql 'float)))
   (random-real (min-value o) (max-value o)))
 

@@ -1,0 +1,7 @@
+
+# TTL npn NAND-gate seed circuit
+R1 n4 vc 1k
+R2 out vc 1k
+Q11 n5 n4 in1 2N3904
+Q12 n5 n4 in2 2N3904
+Q13 out n5 0 2N3904

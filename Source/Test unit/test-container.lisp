@@ -15,11 +15,11 @@
            (make-instance (class-name (test-class o)))))
 
 (defmethod run-test ((o test-container))
-  "Executes tests of <o>."
+  "Execute <o> tests."
   (run-case-with (test-result o) o))
 
 (defmethod debug-test ((o test-container))
-  "Executes tests of <o>."
+  "Execute <o> tests."
   (debug-case-with (test-result o) o))
 
 (defmethod get-info-test ((o test-container))

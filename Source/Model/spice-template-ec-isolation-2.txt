@@ -1,0 +1,30 @@
+
+.model 2N3906  PNP(Is=455.9E-18 Xti=3 Eg=1.11 Vaf=33.6 Bf=204 Ise=7.558f
++               Ne=1.536 Ikf=.3287 Nk=.9957 Xtb=1.5 Var=100 Br=3.72
++               Isc=529.3E-18 Nc=15.51 Ikr=11.1 Rc=.8508 Cjc=10.13p Mjc=.6993
++               Vjc=1.006 Fc=.5 Cje=10.39p Mje=.6931 Vje=.9937 Tr=10n Tf=181.2p
++               Itf=4.881m Xtf=.7939 Vtf=10 Rb=10, level=1)
+
+.model 2N3904   NPN(Is=6.734f Xti=3 Eg=1.11 Vaf=74.03 Bf=416.7 Ne=1.259
++               Ise=6.734f Ikf=66.78m Xtb=1.5 Br=.7371 Nc=2 Isc=0 Ikr=0 Rc=1
++               Cjc=3.638p Mjc=.3085 Vjc=.75 Fc=.5 Cje=4.493p Mje=.2593 Vje=.75
++               Tr=239.5n Tf=301.2p Itf=.4 Vtf=4 Xtf=2 Rb=10, level=1)
+
+#5V power supply with series resistance of 10 ohms.
+#Bypass capacitor with series resistance of 0.1 ohms.
+#10k ohm and 100pF of load
+
+Vc na 0 5
+Rc na vc 10
+cv na nb 10n
+rcv nb vc 100m
+rload out 0 10k
+cload out 0 100p
+
+.control
+tran 10u 20u
+print v(in2)
+.endc
+
+Vin in1 0 0 PWL(0 0 5u 0 15u 5 20u 5)
+rin in2 0 100k

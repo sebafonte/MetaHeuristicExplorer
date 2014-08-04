@@ -3,7 +3,7 @@
   ())
 
 
-(defmethod clos:class-extra-initargs ((x base-model))
+(defmethod clos:class-extra-initargs ((o base-model))
   '(:forget-defaults))
 
 (defmethod initialize-instance :before ((o base-model) &rest keys)

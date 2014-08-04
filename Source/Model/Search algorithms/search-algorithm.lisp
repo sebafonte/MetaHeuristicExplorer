@@ -18,7 +18,7 @@
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :data-type 'symbol
     :default-value 'search-algorithm :editor 'text-editor)  
    (:name 'description :label "Description" :accessor-type 'accessor-accessor-type 
-    :data-type 'string :editor 'text-editor)
+    :data-type 'string :editor 'text-editor :default-value "Description")
    (:name 'iteration :label "Iteration" :default-value 0 :accessor-type 'accessor-accessor-type 
     :data-type 'integer :read-only t :editor 'number-editor)
    (:name 'max-iterations :label "Max iterations" :accessor-type 'accessor-accessor-type 

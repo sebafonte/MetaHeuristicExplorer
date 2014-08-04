@@ -28,7 +28,6 @@
       (lambda (interface) (redisplay-canvas (graphic-part interface)))
       interface))))
 
-
 ;; ?
 (defun initialize-opengl-refresh ()
   (dolist (i *interface-editors*)
