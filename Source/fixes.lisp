@@ -125,3 +125,25 @@
   (when (or (not (slot-boundp o 'tree-language))
             (null min-function-args))
     (setf (min-function-args o) (min-language-function-with-args (functions o)))))
+
+;; Only used to create random, there should not be a need to cache this using cfg
+(defmethod (setf functions) (value (o tree-language))
+  (setf 
+   (slot-value 'functions o) value
+   (min-function-args o) (min-language-function-with-args (functions o))))
+
+(defmethod (setf functions) (value (o cfg-tree-language))
+  (setf 
+   (slot-value 'functions o) value))
+
+;; #FIX:
+(defmethod real-max-simultaneous-processes ((planifier task-planifier))
+  ;; #TODO: Should be of tasks used by this planifier only
+  (max (minimum-processes)
+       (length (active-connections planifier))))
+
+(defmethod real-max-simultaneous-processes ((planifier running-image-planifier))
+  ;; #TODO: Should be of tasks used by this planifier only
+  (max (minimum-processes)
+       (or (max-simultaneous-processes planifier)
+           1)))

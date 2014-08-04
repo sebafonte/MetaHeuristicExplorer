@@ -233,8 +233,10 @@
                  (equal "Task dispatcher " (subseq (mp:process-name process) 0 16))))
         (mp:process-kill process)))
   ;; #NOTE: Can be deleted for runtime, this is just for development
-  (if (null *task-planifier-lock*) 
-      (setf *task-planifier-lock* (mp:make-lock))))
+  (when (null *task-planifier-lock*) 
+    (setf *task-planifier-lock* (mp:make-lock :name "task-planifier-lock")))
+  (when (null *auxiliar-lock*) 
+    (setf *auxiliar-lock* (mp:make-lock :name "auxiliar-lock"))))
 
 (defmethod save-model ((pane pane-search-tasks))
   (let ((path (capi:prompt-for-file "Select a file to save model"

@@ -154,6 +154,12 @@
       (incf local-size (calculated-minimum-element-size grammar i)))
     local-size))
 
+(defun calculated-minimum-production-depth (grammar production)
+  (let ((local-depth 0))
+    (dolist (i (cdr production))
+      (setf local-size (max local-size (calculated-minimum-production-depth grammar i))))
+    (incf local-depth)))
+
 (defun calculated-minimum-element-size (grammar element)
   (if (keywordp element)
       (if (structural-symbol element) 0 1)

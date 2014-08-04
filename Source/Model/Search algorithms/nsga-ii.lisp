@@ -7,7 +7,6 @@
 ;;  - http://www.cleveralgorithms.com/nature-inspired/evolution/nsga.html#Goldberg1989
 ;; 
 ;; #TODO: Check if it's a good idea to create a class for fronts (to hold crowding distance for example)
-;; 
 ;;
 
 ;(defpackage "NSGA-2" (:use "CL")
@@ -115,6 +114,9 @@ D: 2, 4, 1
 
 (defmethod all-individuals ((a nsga-ii))
   (individuals (population a)))
+
+(defmethod register-best-individual ((a nsga-ii) population)
+  (setf (best a) (best-individual-on a population)))
 
 (defmethod best-individual ((a nsga-ii))
   "Anwer the best individual found by <a>."
@@ -338,9 +340,6 @@ D: 2, 4, 1
     (if (< (aref (rank a) x) (aref (rank a) y))
         x 
       y)))
-
-(defmethod register-best-individual ((a nsga-ii) population)
-  (setf (best a) (best-individual-on a population)))
 
 (defmethod pareto-dominates ((algorithm nsga-ii) a b)
   "Answer whether <a> pareto dominates <b> for <algorithm>, it means, not worse in every objective and at least in one better."

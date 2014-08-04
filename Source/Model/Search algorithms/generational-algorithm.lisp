@@ -32,6 +32,7 @@
   (setf *seed* (coerce seed 'double-float))
   ;; Initialize population
   (generate-initial-population a)
+  (register-elites a)
   ;; Generational loop
   (do ((generation 1 (1+ generation)))
       ((test-termination a generation))

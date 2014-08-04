@@ -15,20 +15,19 @@
 
 (defmethod evaluate ((evaluator search-task-objetive-fitness-evaluator) (object search-task))
   "Use <evaluator> to calculate and answer <object> fitness."
-  (let* ((task-description (program object))
-         (task-object (eval task-description))
-         (task-tree (build-task-tree task-description)))
-    (declare (ignore task-tree))
-    (execute-search task-object)
-    (setf (fitness object) (fitness (best-individual task-object)))))
+  (let ((task-description (cadr-insert (program object) object)))
+    (multiple-value-bind (result task)
+        (eval task-description)
+      (setf (fitness object) (fitness result))
+      (fitness result))))
 
+(defun cadr-insert (exp value &optional (condition t))
+  (if exp 
+      (append (list (car exp))
+              (list value)
+              (cdr-insert (cdr exp) value condition))))
 
-;;; #TODO: Tests for task description evaluation
-(defmethod node-result (node-best-object)
-  nil)
-
-(defmethod node-result (search-task)
-  nil)
-
-(defun build-task-tree (task-description)
-  nil)
+(defun cdr-insert (exp value &optional (condition t))
+  (mapcar 
+   (lambda (o) (if (consp o) (cadr-insert o value condition) o))
+   exp))

@@ -139,11 +139,6 @@
    #NOTE: Penalty method is assigned for flat color images."
   (setf (fitness o) 5))
 
-(defmethod register-elites ((a search-algorithm))
-  "Register elites of <a> into it's hash."
-  (dolist (i (elites (elite-manager a)))
-    (register-individual a i)))
-
 (defmethod register-individual ((a search-algorithm) o)
   "Register <o> on <a>."
   (setf (gethash (program o) (registry a)) t))

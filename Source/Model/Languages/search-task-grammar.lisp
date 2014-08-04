@@ -286,55 +286,27 @@
   ;; Initialize task default objects
   (setf *default-template-task* (make-instance 'search-task))
   (setf *default-template-iteration-builder* (make-instance 'n-runs-task-builder :runs 1))
-  ;; Initialize typed objects
-  (setf *default-template-fitness-evaluator-object* (system-get 'medium-0-10-function-x-y-evaluator))
+  ;; Initialize default generic objects
   (setf *default-template-fitness-evaluator-search-task* (system-get 'default-search-task-objetive-fitness-evaluator))
   (setf *default-template-fitness-evaluator-operator* nil)
   (setf *default-template-generator-random-object* (system-get 'random-trees-initializer))
   (setf *default-template-generator-bests-object* (system-get 'task-best-objects-initializer))
-  (setf *default-template-language-object* (system-get 'lisp-math-function-xy))
-  (setf *default-template-language-operator* nil)
   ;; Initialize default algorithms
-  (setf *default-template-generational-algorithm* (make-instance 'generational-algorithm))
-  (setf *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm))
+  (setf *default-template-generational-algorithm* (make-instance 'generational-algorithm :description "default generational"))
+  (setf *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm :description "default steady state"))
   ;; Initialize algorithm default objects
   (setf *default-template-elite-manager* (make-instance 'elite-manager :max-size 1))
   (setf *default-template-selection-method-tournament* (system-get 'tournament-selection-method))
   (setf *default-template-selection-method-index* (system-get 'ranking-proportionate-selection-method))
   (setf *default-template-selection-method-index-inverse* (system-get 'ranking-inverse-proportionate-selection-method))
   (setf *default-template-selection-method-ranking* (system-get 'ranking-inverse-proportionate-selection-method))
-  (setf *default-template-selection-method-ranking-inverse* 
-        (system-get 'ranking-inverse-proportionate-selection-method))
+  (setf *default-template-selection-method-ranking-inverse* (system-get 'ranking-inverse-proportionate-selection-method))
   (setf *default-template-selection-method-best* (system-get 'best-fitness-selection-method))
   (setf *default-template-selection-method-random* (system-get 'random-selection-method))
   (setf *default-template-selection-method-worst* (system-get 'worst-fitness-selection-method)))
 
 
-(defun BEST-OF-TASK (task)
-  (execute-search task) 
-  (multiple-value-bind (result subtask) 
-      (best-individual task)
-    result))
-
-(defun BEST-OF-TASKS (&rest tasks)
-  (let ((task (first tasks)))
-    (execute-search task) 
-    (multiple-value-bind (result subtask) 
-        (best-individual task)
-      result)))
-
-(defun MAKE-TASK (builder algorithm language generator fitness-evaluator)
-  (let ((instance (copy-cyclic *default-template-task*)))
-    (setf (algorithm instance) algorithm
-          (language instance) language
-          (input instance) generator
-          ;; #TODO: Fix and take this out of here
-          (initialization-method algorithm) generator
-          (task-builder instance) builder
-          (fitness-evaluator instance) fitness-evaluator)
-    instance))
-
-
+;; Handle some global constraints
 (defparameter *min-builder-iterations* 1)
 (defparameter *max-builder-iterations* 5)
 
@@ -348,26 +320,87 @@
 (defparameter *max-iterations* 100)
 
 (defparameter *min-size-elites* 0)
-(defparameter *min-size-elites* *max-population-size*)
+(defparameter *max-size-elites* *max-population-size*)
+
+(defparameter *min-size-language* 10)
+(defparameter *max-size-language* 100)
+
+(defparameter *min-size-constants* 2)
+(defparameter *max-size-constants* 1000)
 
 
 (defun crop-for-property (object value name min max)
   (let ((property (property-named object name)))
-    (crop 
-     (crop 
-      value 
-      (min-value property) 
-      (max-value property))
-     min
-     max)))
+    (unless property (error "Property not found"))
+    (crop (crop value (min-value property) (max-value property)) min max)))
 
-(defun MAKE-BUILDER-IT (iterations)
+;; DSL Functions
+(defun BEST-OF-TASK (context task)
+  (execute-search task) 
+  (multiple-value-bind (result subtask) 
+      (best-individual task)
+    (values result subtask)))
+
+(defun BEST-OF-TASKS (context &rest tasks)
+  (execute-search (first tasks))
+  (let* ((best-task (first tasks))
+         (best (best-individual best-task)))
+    (dolist (i (cdr tasks))
+      (execute-search i) 
+      (multiple-value-bind (result subtask) 
+          (best-individual i)
+        (when (better-than result best)
+          (setf best-task i
+                best result))))
+    (values best best-task)))
+
+(defun MAKE-TASK (context builder algorithm language generator fitness-evaluator)
+  (let ((instance (copy-cyclic *default-template-task*)))
+    (setf 
+     (parent instance) context
+     (algorithm instance) algorithm
+     (language instance) language
+     (input instance) generator
+     (initialization-method algorithm) generator
+     (task-builder instance) builder
+     (fitness-evaluator instance) fitness-evaluator)
+    (make-task-representation-corrections instance)
+    instance))
+
+(defun make-task-representation-corrections (task)
+  (make-task-representation-corrections-generator task (initialization-method (algorithm task))))
+
+;; Tree generator size correction
+(defmethod make-task-representation-corrections-generator (task (o t))
+  nil)
+
+(defmethod make-task-representation-corrections-generator (task (o random-trees-generator))
+  (setf (min-size o) (min-length (language task))
+        (max-size o) (max-size (language task))
+        (min-depth o) (min-depth (language task))
+        (max-depth o) (max-depth (language task))))
+
+;; Constants correction
+(defmethod make-task-representation-corrections-constants (task (o ephemeral-random-constants-factory) min max)
+  (setf (min-value o) min
+        (max-value o) max))
+
+(defmethod make-task-representation-corrections-constants (task (o fixed-set-constants-factory) min max)
+  (setf (constants-set o) 
+        (select (constants-set o) 
+                (lambda (x) 
+                  (between 
+                   x 
+                   min
+                   max)))))
+
+(defun MAKE-BUILDER-IT (context iterations)
   (let ((instance (copy-cyclic *default-template-iteration-builder*)))
     (setf (runs instance) 
           (crop-for-property instance iterations 'runs *min-builder-iterations* *max-builder-iterations*))
     instance))
 
-(defun MAKE-ALG-GG (population-size max-generations selection-method elite-manager)
+(defun MAKE-ALG-GG (context population-size max-generations selection-method elite-manager)
   (let ((instance (copy-cyclic *default-template-generational-algorithm*)))
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*) 
           (max-generations instance) (crop-for-property instance max-generations 'max-generations *min-generations* *max-generations*)
@@ -375,66 +408,78 @@
           (elite-manager instance) elite-manager)
     instance))
 
-(defun MAKE-ALG-SS (population-size max-iterations selection-method replacement-method)
+(defun MAKE-ALG-SS (context population-size max-iterations selection-method replacement-method)
   (let ((instance (copy-cyclic *default-template-steady-state-algorithm*)))
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*)
-          (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *max-iterations* *max-iterations*)
+          (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *min-iterations* *max-iterations*)
           (selection-method instance) selection-method
           (replacement-strategy instance) replacement-method)
     instance))
 
-(defun MAKE-SM-TOURNAMENT (tournament-size)
+(defun MAKE-SM-TOURNAMENT (context tournament-size)
   (copy-cyclic *default-template-selection-method-tournament*))
 
-(defun MAKE-SM-RANK ()
+(defun MAKE-SM-RANK (context)
   (copy-cyclic *default-template-selection-method-tournament*))
 
-(defun MAKE-SM-INDEX ()
+(defun MAKE-SM-INDEX (context)
   (copy-cyclic *default-template-selection-method-index*))
 
-(defun MAKE-SM-RANDOM ()
+(defun MAKE-SM-RANDOM (context)
   (copy-cyclic *default-template-selection-method-random*))
 
-(defun MAKE-SM-BEST ()
+(defun MAKE-SM-BEST (context)
   (copy-cyclic *default-template-selection-method-best*))
 
-(defun MAKE-SM-WORST () 
+(defun MAKE-SM-WORST (context) 
   (copy-cyclic *default-template-selection-method-worst*))
 
-(defun MAKE-SM-IINDEX ()
+(defun MAKE-SM-IINDEX (context)
   (copy-cyclic *default-template-selection-method-index-inverse*))
 
-(defun MAKE-SM-IRANKING ()
+(defun MAKE-SM-IRANKING (context)
   (copy-cyclic *default-template-selection-method-ranking-inverse*))
 
-(defun MAKE-EM (elites-count)
+(defun MAKE-EM (context elites-count)
   (let ((instance (copy-cyclic *default-template-elite-manager*)))
     (setf (max-size instance) (crop-for-property instance elites-count 'max-size *min-size-elites* *max-size-elites*))
     instance))
 
-(defun MAKE-LG (a b c)
-  (copy-cyclic *default-template-language-object*))
+(defun MAKE-LG (context max-size min-constants max-constants)
+  (let ((value (copy-cyclic (default-language (make-instance (objetive-class context)))))
+        (min (crop (min min-constants max-constants) *min-size-constants* *max-size-constants*))
+        (max (crop (max min-constants max-constants) *min-size-constants* *max-size-constants*)))
+    (when (< (- max min) 2)
+      (incf max)
+      (decf min))
+    (setf (max-size value) (crop-for-property value max-size 'max-size *min-size-language* *max-size-language*))
+    (make-task-representation-corrections-constants value (constants-strategy value) min max)
+    value))
 
-(defun MAKE-OBJ (program)
+(defun MAKE-OBJ (context program)
+  (declare (ignore context))
   (make-instance (objetive-class task) :expression program))
 
-(defun MAKE-GN-RND (aux)
-  (declare (ignore aux))
+(defun MAKE-GN-RND (context aux)
+  (declare (ignore aux context))
   (copy-cyclic *default-template-generator-random-object*))
 
-(defun MAKE-GN-RND-ST (input-task)
+(defun MAKE-GN-RND-ST (context input-task)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
     (setf (process input-task) nil
           (input-task instance) input-task)
     instance))
 
-(defun MAKE-GN-BESTS-ST (input-task)
+(defun MAKE-GN-BESTS-ST (context input-task)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
     (execute-search input-task)
     (setf (process input-task) nil
           (input-task instance) input-task)
     instance))
 
-(defun MAKE-FE (auxiliar)
-  (copy-cyclic *default-template-fitness-evaluator-object*))
+(defun MAKE-FE (context auxiliar)
+  (declare (ignore auxiliar))
+  (copy-cyclic (first (default-fitness-evaluators (make-instance (objetive-class context))))))

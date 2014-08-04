@@ -54,9 +54,16 @@
 (defmethod all-individuals ((a evolutionary-algorithm))
   (individuals (population a)))
 
+;; #NOTE: - Elite manager has the best in this kind of algorithm
+;;        - Changes if another objetive is measured for on elites
+;;        - Has a ugly dependence on algorithm code
 (defmethod best-individual ((a evolutionary-algorithm))
   "Anwer the best individual found by <a>."
-  (best (elite-manager a)))
+  (let ((manager (elite-manager a)))
+    (if (and (population a) (individuals (population a)))
+        (if (elites manager)
+            (best (elite-manager a))
+          (first (sort (individuals (population a)) 'lambda-default-fitness-comparer))))))
 
 (defmethod select-genetic-operation ((a evolutionary-algorithm))
   "Answer a genetic operation for <a>."
@@ -87,3 +94,11 @@
 (defmethod abstractp ((o (eql 'evolutionary-algorithm)))
   "Answer whether <o> is abstract."
   t)
+
+(defmethod register-elites ((a evolutionary-algorithm))
+  "Register algorithm elites (from population to manager and into registry)."
+  (let ((manager (elite-manager a)))
+    (check-elite manager (population a))
+    (update-population manager (population a))
+    (dolist (i (elites manager))
+      (register-individual a i))))

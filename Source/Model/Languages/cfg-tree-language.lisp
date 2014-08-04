@@ -68,3 +68,10 @@
 (defmethod compatible-language ((a cfg-tree-language) (b cfg-tree-language))
   (and (equals (variables a) (variables b))
        (equals (tokens a) (tokens b))))
+
+(defmethod min-length ((a cfg-tree-language))
+  (calculated-minimum-production-size (grammar a) '(start)))
+
+(defmethod min-depth ((a cfg-tree-language))
+  (calculated-minimum-production-depth (grammar a) '(start)))
+
