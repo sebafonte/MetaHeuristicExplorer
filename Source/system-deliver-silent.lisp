@@ -337,6 +337,7 @@
             "Test unit\\performance-test-case.lisp"
             ;; Tests
             "Tests\\test-utilities.lisp"
+            "Tests\\test-default-search-algorithms.lisp"
             "Tests\\test-base-model.lisp"
             "Tests\\test-core-objects.lisp"
             "Tests\\test-core-functions.lisp"
@@ -384,9 +385,6 @@
     (:requires (:load :previous)))))
 
 (setf *system* (compile-system 'gp-tool :force t :load t))
-
-;; #FIX: Patch for search-task-sample-language test
-;(initialize-default-search-task-object-templates)
 
 (defun deliver-initialize-system ()
   (initialize-system)

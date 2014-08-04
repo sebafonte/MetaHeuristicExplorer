@@ -357,7 +357,6 @@
 (defun MAKE-TASK (context builder algorithm language generator fitness-evaluator)
   (let ((instance (copy-cyclic *default-template-task*)))
     (setf 
-     (parent instance) context
      (algorithm instance) algorithm
      (language instance) language
      (input instance) generator
