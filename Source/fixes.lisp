@@ -139,11 +139,11 @@
 ;; #FIX:
 (defmethod real-max-simultaneous-processes ((planifier task-planifier))
   ;; #TODO: Should be of tasks used by this planifier only
-  (max (minimum-processes)
+  (max (or (minimum-processes))
        (length (active-connections planifier))))
 
 (defmethod real-max-simultaneous-processes ((planifier running-image-planifier))
   ;; #TODO: Should be of tasks used by this planifier only
-  (max (minimum-processes)
+  (max (or (minimum-processes) 0)
        (or (max-simultaneous-processes planifier)
            1)))

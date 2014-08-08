@@ -200,14 +200,14 @@
     (expresion object)
     (object best-of-task-description)
     (object best-of-tasks-description)
-    (best-of-task-description :open best-of-task task-description-description :close)
+    (best-of-task-description :open best-of-task task-description :close)
     (best-of-tasks-description :open best-of-tasks task-description-list :close)
-    (task-description-list task-description-list task-description-description)
-    (task-description-list task-description-description)
-    (task-description-description :open task-description 
-                                  builder-description algorithm-description language-description 
-                                  generator-description fitness-evaluator-description
-                                  :close)
+    (task-description-list task-description-list task-description)
+    (task-description-list task-description)
+    (task-description :open make-task-description 
+                      builder-description algorithm-description language-description 
+                      generator-description fitness-evaluator-description
+                      :close)
     (builder-description :open iterative-builder iterations-description :close)
     (iterations-description constant)
     (algorithm-description generational-algorithm-description)
@@ -244,9 +244,10 @@
     (min-constants constant)
     (max-constants constant)
     (generator-description generator-object)
+    (generator-description generator-search-task)
     (generator-object :open generator-random-object constant :close)
-    (generator-object :open generator-bests-search-task task-description-description :close)
-    (generator-object :open generator-random-search-task task-description-description :close)
+    (generator-search-task :open generator-bests-search-task task-description :close)
+    (generator-search-task :open generator-random-search-task task-description :close)
     (fitness-evaluator-description fitness-evaluator-description-object)
     (fitness-evaluator-description-object :open fitness-evaluator-object constant :close)
     (operator-usage-description operator-usage-description-object)
