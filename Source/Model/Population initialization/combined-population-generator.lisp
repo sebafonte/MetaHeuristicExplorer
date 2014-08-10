@@ -34,7 +34,7 @@
               ;; 3 - Max attempts have'nt been reached
               (t (incf attempts)))))
     (clrhash (registry a))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))
 
 (defmethod create-with-random-operation ((p combined-population-generator) (a search-algorithm))
   "Answer a new created object using <p> creation operators."

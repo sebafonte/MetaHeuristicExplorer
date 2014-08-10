@@ -118,7 +118,7 @@
   "Update pane objects from <interface>."
   (let ((children (children (pane interface)))
         (pane-children (pane-children interface)))
-    (dotimes (i (count-individuals children))
+    (dotimes (i (size children))
       (setf (aref (individuals-array children) i) 
             (model (pane (nth i (capi:layout-description pane-children))))))))
 
@@ -126,6 +126,6 @@
   "Update pane objects from <interface>."
   (let ((children (children (pane interface)))
         (pane-children (pane-children interface)))
-    (dotimes (i (count-individuals children))
+    (dotimes (i (size children))
       (set-model (pane (nth i (capi:layout-description pane-children))) 
                  (aref (individuals-array children) i)))))

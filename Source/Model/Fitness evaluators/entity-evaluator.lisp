@@ -52,7 +52,7 @@
 
 (defmethod evaluate ((o entity-evaluator) (p population)) 
   "Evaluate <p> individuals with <a>."
-  (dotimes (i (population-size p))
+  (dotimes (i (size p))
     (evaluate o (aref (individuals-array p) i))))
 
 (defmethod evaluate :after ((o entity-evaluator) (e entity)) 

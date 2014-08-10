@@ -12,8 +12,7 @@
    (:name 'expresion-list :label "Expression list" :accessor-type 'accessor-accessor-type 
     :data-type 'list :default-value nil :editor 'one-line-lisp-editor)))
 
-(defmethod generate-population ((generator fixed-solutions-generator) 
-                                (algorithm search-algorithm))
+(defmethod generate-population ((generator fixed-solutions-generator) (algorithm search-algorithm))
   "Generate population for search on <algorithm>."
   (let* ((population-size (population-size algorithm))
          (population (make-array population-size))
@@ -23,4 +22,4 @@
       (let ((object (make-instance (objetive-class algorithm) :expresion (nth (mod i size) fixed-solutions))))
         (setf (aref population i) object)))
     (evaluate algorithm population)
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))

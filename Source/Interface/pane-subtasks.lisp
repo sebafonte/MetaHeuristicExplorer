@@ -291,7 +291,7 @@
                                       :name "Fitness distribution"
                                       :subject (population selection)
                                       :xmin 0 
-                                      :xmax (count-individuals (population selection)) 
+                                      :xmax (size (population selection)) 
                                       :ymin (min-fitness (fitness-evaluator selection))
                                       :ymax (max-fitness (fitness-evaluator selection))
                                       :valuable-x-list '(lambda (o) (first o))
@@ -309,7 +309,7 @@
                                       :name "Size distribution"
                                       :subject (population selection)
                                       :xmin 0 
-                                      :xmax (count-individuals (population selection)) 
+                                      :xmax (size (population selection)) 
                                       :ymin 0 
                                       :ymax (max-size selection)
                                       :valuable-x-list '(lambda (o) (first o))
@@ -634,7 +634,7 @@
 (defmethod save-default-model-to ((pane pane-subtasks) path)
   (if (probe-file path) (delete-file path))
   (save-source-description (model pane) path))
-  
+
 (defmethod load-default ((pane pane-subtasks))
   (let ((path (default-model-path pane)))
     (load-default-from pane path)))

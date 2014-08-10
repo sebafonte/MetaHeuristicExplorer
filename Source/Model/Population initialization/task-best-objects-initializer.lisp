@@ -17,4 +17,4 @@
          (individuals (best-individuals (input-task o) population-size)))
     (dotimes (i population-size)
       (setf (aref population i) (random-element individuals)))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))

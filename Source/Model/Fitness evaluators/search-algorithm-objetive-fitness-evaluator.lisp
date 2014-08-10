@@ -64,7 +64,7 @@
           (initializer object) (initializer algorithm)
           (language object) (language algorithm))
     (dotimes (i (samples evaluator))
-      (execute-subtask-local (system-get 'global-running-image-planifier) task)
+      (execute-subtask-local (system-get 'global-coevolution-running-image-planifier) task)
       (mp:process-wait-with-timeout
        "Evaluating task..."
        (timeout evaluator)

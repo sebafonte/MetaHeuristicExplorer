@@ -42,6 +42,6 @@
             (appendf new-exp (list (list '* factor (cons '* variable-list))))))
         (let ((object (make-instance (objetive-class algorithm) :expresion new-exp)))
           (setf (aref population i) object))))
-    (let ((new-population (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate algorithm new-population)
       new-population)))

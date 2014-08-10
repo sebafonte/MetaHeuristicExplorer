@@ -280,7 +280,7 @@
 
 (defmethod draw-opengl-on ((o graphic-property-map) canvas viewer)
   "Compute pixmap values into <o> pixmap."
-  (let* ((population-size (population-size (subject o)))
+  (let* ((population-size (size (subject o)))
          (size-sqrt (ceiling (sqrt population-size)))
          (index 0))
     (opengl:rendering-on (canvas)

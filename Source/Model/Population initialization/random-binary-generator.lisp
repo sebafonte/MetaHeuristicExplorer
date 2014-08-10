@@ -39,7 +39,7 @@
          (t (incf attempts)))))
     ;; #TODO: this should be moved to algorithm calling function
     (clrhash (registry a))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))
 
 (defmethod generate-population-no-control ((p random-binary-generator) (a search-algorithm))
   "Generate population for search on <algorithm>.
@@ -52,7 +52,7 @@
       (setf (aref population i) (generate-individual p a))
       (incf i))
     ;; Answer population object
-    (let ((new-population (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate a new-population)
       new-population)))
 

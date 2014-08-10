@@ -59,7 +59,7 @@
 (defmethod test-models-conversion-eval ((o test-source-code-conversion))
   (verify-source-code-persistence-eval o (make-instance 'log-data-container))
   (verify-source-code-persistence-eval o (make-instance 'property))
-  (verify-source-code-persistence-eval o (make-instance 'population :count-individuals 20))
+  (verify-source-code-persistence-eval o (make-instance 'population :size 20))
   (verify-source-code-persistence-eval o (make-instance 'entity))
   (verify-source-code-persistence-eval o (make-instance 'genotype))
   (verify-source-code-persistence-eval o (make-instance 'genotype :expresion '(+ x y (* x x) (* x x x) (* x x x x x))))
@@ -83,7 +83,7 @@
   (let ((object (make-instance 'entity-linear-ordering-list :matrix #(2 2))))
     (equalp (program (eval (new-source-description object)))
             (program object))))
-  
+
 (defmethod test-same-object-equality ((o test-source-code-conversion))
   ;; CASE: List with various instances of the same object
   (let* ((object (make-instance 'entity))

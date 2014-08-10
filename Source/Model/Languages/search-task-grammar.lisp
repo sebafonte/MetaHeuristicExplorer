@@ -202,12 +202,10 @@
     (iterations-description constant)
     (algorithm-description generational-algorithm-description)
     (algorithm-description steady-state-algorithm-description)
-    (generational-algorithm-description 
-     :open algorithm-generational 
-     population-size max-generations selection-method-description elite-manager-description :close)
-    (steady-state-algorithm-description 
-     :open algorithm-steady-state 
-     population-size max-iterations selection-method-description replacement-method-description :close)
+    (generational-algorithm-description
+     :open algorithm-generational population-size max-generations selection-method-description elite-manager-description :close)
+    (steady-state-algorithm-description
+     :open algorithm-steady-state population-size max-iterations selection-method-description replacement-method-description :close)
     (max-generations constant)
     (max-iterations constant)
     (population-size constant)
@@ -245,49 +243,36 @@
 ;;; GLOBAL BINDINGS
 (defparameter *default-template-task* nil)
 (defparameter *default-template-iteration-builder* nil)
-
-(defparameter *default-template-fitness-evaluator-object* nil)
-
-(defparameter *default-template-language-object* nil)
-(defparameter *default-template-language-operator* nil)
-(defparameter *default-template-language-search-task* nil)
-
 (defparameter *default-template-generational-algorithm* nil)
 (defparameter *default-template-steady-state-algorithm* nil)
-
 (defparameter *default-template-elite-manager* nil)
 
 
 (defun initialize-default-search-task-object-templates ()
-  ;; Initialize task default objects
-  (setf *default-template-task* (make-instance 'search-task)
-        *default-template-iteration-builder* (make-instance 'n-runs-task-builder :runs 1)
-        ;; Initialize default algorithms
-        *default-template-generational-algorithm* (make-instance 'generational-algorithm :description "default generational")
-        *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm :description "default steady state")
-        ;; Initialize algorithm default objects
-        *default-template-elite-manager* (make-instance 'elite-manager :max-size 1)))
+  (setf 
+   ;; Initialize task default objects
+   *default-template-task* (make-instance 'search-task)
+   *default-template-iteration-builder* (make-instance 'n-runs-task-builder :runs 1)
+   ;; Initialize default algorithms
+   *default-template-generational-algorithm* (make-instance 'generational-algorithm :description "default generational")
+   *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm :description "default steady state")
+   ;; Initialize algorithm default objects
+   *default-template-elite-manager* (make-instance 'elite-manager :max-size 1)))
 
 
 ;; Handle some global constraints
 (defparameter *min-builder-iterations* 1)
 (defparameter *max-builder-iterations* 5)
-
 (defparameter *min-population-size* 3)
 (defparameter *max-population-size* 100)
-
 (defparameter *min-generations* 3)
 (defparameter *max-generations* 100)
-
 (defparameter *min-iterations* 3)
 (defparameter *max-iterations* 100)
-
 (defparameter *min-size-elites* 0)
 (defparameter *max-size-elites* *max-population-size*)
-
 (defparameter *min-size-language* 10)
 (defparameter *max-size-language* 100)
-
 (defparameter *min-size-constants* 2)
 (defparameter *max-size-constants* 1000)
 

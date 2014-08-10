@@ -12,7 +12,5 @@
     (execute-optimization-on method i)))
 
 (defmethod execute-optimization-on ((method optimization-method) (object population))
-  (dotimes (i (count-individuals object))
-    (execute-optimization-on 
-     method 
-     (aref (individuals-array object) i))))
+  (dotimes (i (size object))
+    (execute-optimization-on method (aref (individuals-array object) i))))

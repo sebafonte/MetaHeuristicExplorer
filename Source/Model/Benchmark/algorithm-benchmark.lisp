@@ -44,7 +44,7 @@
 (defmethod diversity-vs-x ((p population) x)
   "Answer <p> diversity level vs <x> time variable."
   (let ((table (make-hash-table)))
-    (dotimes (i (count-individuals p))
+    (dotimes (i (size p))
       (setf (gethash (if (consp p)
                          (car (program (get-individual p i)))
                        p)

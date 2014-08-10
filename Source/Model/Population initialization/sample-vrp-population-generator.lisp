@@ -31,7 +31,7 @@
       (let ((new-object (make-instance 'entity-sample-vrp :expresion cw-solution)))
         (evaluate algorithm new-object)
         (setf (aref individuals i) new-object)))
-    (make-instance 'population :count-individuals population-size :individuals-array individuals)))
+    (make-instance 'population :individuals-array individuals)))
 
 (defmethod one-vehicle-per-city-method ((object sample-vrp-population-generator) (algorithm search-algorithm))
  "Generation method which implements radial scanning heuristic."
@@ -42,7 +42,7 @@
             (individual (make-instance (objetive-class algorithm) :expresion plan)))
        (evaluate algorithm individual)
        (setf (aref population i) individual)))
-   (make-instance 'population :count-individuals population-size :individuals-array population)))
+   (make-instance 'population :individuals-array population)))
 
 (defmethod random-tour-variable-vehicles ((object sample-vrp-population-generator) (algorithm search-algorithm))
   "Generation method which generates random tours for a variable amount of vehicles."
@@ -64,7 +64,7 @@
         (let ((individual (construct-individual-from object hash-table)))
           (evaluate algorithm individual)
           (setf (aref population i) individual))))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))
 
 (defmethod select-random-city ((object sample-vrp-population-generator) list)
   (nth (random-integer 0 (length list)) list))

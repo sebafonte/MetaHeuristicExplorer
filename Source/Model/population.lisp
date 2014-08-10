@@ -1,25 +1,25 @@
 
 (defclass population (base-model)
-  ((individuals-array :initarg :individuals-array :initform nil :accessor individuals-array)
-   (count-individuals :initarg :count-individuals :accessor count-individuals)))
+  ((individuals-array :initarg :individuals-array :initform nil :accessor individuals-array)))
 
 
-(defmethod initialize-instance :after ((p population) &key count-individuals individuals-array)
+(defmethod initialize-instance :after ((p population) &key size individuals-array)
   "Initialize <p>."
-  (when (and count-individuals individuals-array (not (= count-individuals (length individuals-array))))
+  (when (and size individuals-array (not (= size (length individuals-array))))
     (error "Invalid count for initial array"))
   (if individuals-array
-      (setf (slot-value p 'individuals-array) individuals-array
-            count-individuals (length individuals-array))
-    (if count-individuals 
-         (setf (slot-value p 'individuals-array) (make-array count-individuals :initial-element nil)))))
+      (setf (slot-value p 'individuals-array) individuals-array)
+    (if size 
+         (setf (slot-value p 'individuals-array) (make-array size :initial-element nil)))))
 
-(defmethod ensure-population-size ((p population) size)
+(defmethod size ((p population))
+  (length (individuals-array p)))
+
+(defmethod ensure-size ((p population) size)
   "Adjust <p> to <size> cropping at the end if neccesary."
-  (when (not (= size (count-individuals p)))
+  (when (not (= size (size p)))
     (let ((array (individuals-array p)))
-      (setf (individuals-array p) (make-array size :initial-element nil)
-            (count-individuals p) size)
+      (setf (individuals-array p) (make-array size :initial-element nil))
       (dotimes (i size)
         (when (< i (length array))
           (setf (aref (individuals-array p) i) (aref array i)))))))
@@ -34,15 +34,11 @@
 
 (defmethod index-individual ((p population) individual)
   "Answer the index of <individual> in <p>."
-  (dotimes (i (population-size p))
+  (dotimes (i (size p))
     (if (eql (aref (individuals-array p) i)
              individual)
         (return-from index-individual i)))
   nil)
-
-(defmethod population-size ((p population))
-  "Answer <p> max size."
-  (count-individuals p))
 
 (defmethod individuals-count ((p population))
   "Answer the actual amount of individuals in <p>."
@@ -50,8 +46,7 @@
 
 (defmethod (setf individuals) (individuals (p population))
   "Setter for <p> individuals."
-  (setf (slot-value p 'count-individuals) (length individuals)
-        (slot-value p 'individuals-array) individuals))
+  (setf (slot-value p 'individuals-array) individuals))
 
 (defmethod normalize-population-fitness ((p population) fitness-function)
   "Fill normalized values for <p> using <fitness-function>."
@@ -93,7 +88,7 @@
   "Anwer the best individual found by <p>."
   (let ((best-individual (aref (individuals-array p) 0)))
     (do ((i 1 (1+ i)))
-        ((>= i (count-individuals p)))
+        ((>= i (size p)))
       (if (better-than (aref (individuals-array p) i) best-individual)
           (setf best-individual (aref (individuals-array p) i))))
     best-individual))
@@ -113,7 +108,7 @@
   "Answer the <p> worst individual."
   (let ((worst (aref (individuals-array p) 0)))
     (do ((i 1 (1+ i)))
-        ((>= i (count-individuals p)))
+        ((>= i (size p)))
       (if (not (better-than (aref (individuals-array p) i) worst))
           (setf worst (aref (individuals-array p) i))))
     worst))
@@ -123,7 +118,7 @@
   (let ((best (aref (individuals-array p) 0))
         (index 0))
     (do ((i 1 (1+ i)))
-        ((>= i (count-individuals p)))
+        ((>= i (size p)))
       (if (better-than (aref (individuals-array p) i) best)
           (setf best (aref (individuals-array p) i)
                 index i)))
@@ -134,7 +129,7 @@
   (let ((worst (aref (individuals-array p) 0))
         (index 0))
     (do ((i 1 (1+ i)))
-        ((>= i (count-individuals p)))
+        ((>= i (size p)))
       (if (not (better-than (aref (individuals-array p) i) worst))
           (setf worst (aref (individuals-array p) i)
                 index i)))
@@ -143,16 +138,16 @@
 (defmethod medium-value ((p population) function)
   "Answer the <function> medium value for <p>."
   (let ((acum 0))
-    (dotimes (i (count-individuals p))
+    (dotimes (i (size p))
       (incf acum (funcall function (aref (individuals-array p) i))))
-    (/ acum (count-individuals p))))
+    (/ acum (size p))))
 
 (defmethod best-individuals ((p population) n)
   "Answer the <n> best individuals of <p>."
   (let* ((individuals (copy-seq (individuals-array p)))
          (sorted-individuals (sort individuals #'> :key #'fitness))
          (result))
-    (dotimes (i (min (count-individuals p) n))
+    (dotimes (i (min (size p) n))
       (push (aref sorted-individuals i) result))
     result))
 
@@ -180,7 +175,7 @@
 
 (defmethod clear-population ((p population))
   "Clear <p>."
-  (dotimes (i (count-individuals p))
+  (dotimes (i (size p))
     (setf (aref (individuals-array p) i) nil)))
 
 (defmethod replace-individual ((p population) object replacement) 
@@ -189,13 +184,13 @@
 
 (defmethod simplify-strategy ((p population) strategy language)
   "Simplify <p> individuals using <strategy>."
-  (dotimes (i (count-individuals p))
+  (dotimes (i (size p))
     (individual-simplification (aref (individuals-array p) i) language)))
 
 (defmethod subpopulation ((p population) start end)
   "Answer a new population with <p> individuals from <start> to <end>."
   (let* ((size (- end start))
-         (new-population (make-instance 'population :count-individuals size)))
+         (new-population (make-instance 'population :size size)))
     (dotimes (i size)
       (setf (aref (individuals-array new-population) (+ start i))
             (aref (individuals-array p) (+ start i))))
@@ -204,7 +199,7 @@
 (defmethod subpopulation ((p array) start end)
   "Answer a new population with <p> individuals from <start> to <end>."
   (let* ((size (- end start))
-         (new-population (make-instance 'population :count-individuals size)))
+         (new-population (make-instance 'population :size size)))
     (dotimes (i size)
       (setf (aref (individuals-array new-population) (+ start i))
             (aref p (+ start i))))
@@ -212,4 +207,4 @@
 
 (defmethod make-population-with (individuals)
   "Answer a new population for <individuals>."
-  (make-instance 'population :individuals-array individuals :count-individuals (length individuals)))
+  (make-instance 'population :individuals-array individuals))

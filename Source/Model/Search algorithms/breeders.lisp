@@ -62,10 +62,10 @@
 (defmethod breed-population ((a new-population-breeder) algorithm)
   (let* ((repeat-control (repeat-control algorithm))
          (population (population algorithm))
-         (new-population (breeding-auxiliary-population a (population-size population)))
+         (new-population (breeding-auxiliary-population a (size population)))
          (number-copies (random-integer (min-copies a) (max-copies a)))
          (copies (perform-selection (selection-method algorithm) population number-copies))
-         (count-create (- (population-size population) number-copies))
+         (count-create (- (size population) number-copies))
          (start number-copies))
     ;; Copy and register
     (dotimes (i (length copies))

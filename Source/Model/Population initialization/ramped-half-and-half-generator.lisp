@@ -24,7 +24,7 @@
                       (generate-individual-grow o a)
                     (generate-individual-full o a))))
         (setf (aref population i) (make-instance (objetive-class a) :expresion tree))))
-    (let ((new-population (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate a new-population)
       new-population)))
 

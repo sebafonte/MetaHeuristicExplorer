@@ -31,9 +31,9 @@
 (defmethod initialize-defaults ((p pane-explorer))
   (setf (level (history p)) (get-value-for-property-named p 'history-level)
         (slot-value p 'parents)
-        (make-instance 'population :count-individuals (number-parents p))
+        (make-instance 'population :size (number-parents p))
         (slot-value p 'children) 
-        (make-instance 'population :count-individuals (number-children p)))
+        (make-instance 'population :size (number-children p)))
   (load-default-configuration p)
   (update-pane-interface p))
 
@@ -120,8 +120,8 @@
         (children (children o))
         (parents (parents o)))
     (update-editor-properties interface)
-    (ensure-population-size children (get-value-for-property-named o 'number-children))
-    (ensure-population-size parents (get-value-for-property-named o 'number-parents))
+    (ensure-size children (get-value-for-property-named o 'number-children))
+    (ensure-size parents (get-value-for-property-named o 'number-parents))
     (pane-explorer-rebuild-editors interface children parents)
     (remap-interface-population interface)
     (refresh-images o)))
@@ -215,10 +215,10 @@
         (pane-parents (pane-parents interface))
         (pane-children (pane-children interface)))
     (when parents
-      (dotimes (i (count-individuals parents))
+      (dotimes (i (size parents))
         (destroy-interface (nth i (capi:layout-description pane-parents)))))
     (when children
-      (dotimes (i (count-individuals children))
+      (dotimes (i (size children))
         (destroy-interface (nth i (capi:layout-description pane-children)))))))
 
 (defmethod pane-explorer-edit-properties (interface data)
@@ -293,7 +293,7 @@
     (dolist (object children)
       (setf (aref (individuals-array (children p)) index) object)
       (incf index))))
-        
+
 (defmethod load-in-parents ((p pane-explorer) objects)
   "Load <objects> on <p> parents."
   (let ((parents (eval (read-from-string (car objects))))
@@ -301,7 +301,7 @@
     (dolist (object parents)
       (setf (aref (individuals-array (parents p)) index) object)
       (incf index))))
-    
+
 ;; #TODO: Refactor this function and the next
 (defmethod remap-population-interface ((interface interface-pane-explorer))
   "Refresh pane objects from <interface>.
@@ -310,10 +310,10 @@
         (parents (parents (pane interface)))
         (pane-parents (pane-parents interface))
         (pane-children (pane-children interface)))
-    (dotimes (i (count-individuals children))
+    (dotimes (i (size children))
       (setf (aref (individuals-array children) i) 
             (model (pane (nth i (capi:layout-description pane-children))))))
-    (dotimes (i (count-individuals parents))
+    (dotimes (i (size parents))
       (setf (aref (individuals-array parents) i) 
             (model (pane (nth i (capi:layout-description pane-parents))))))))
 
@@ -324,10 +324,10 @@
         (parents (parents (pane interface)))
         (pane-parents (pane-parents interface))
         (pane-children (pane-children interface)))
-    (dotimes (i (count-individuals children))
+    (dotimes (i (size children))
       (set-model (pane (nth i (capi:layout-description pane-children))) 
                  (aref (individuals-array children) i)))
-    (dotimes (i (count-individuals parents))
+    (dotimes (i (size parents))
       (set-model (pane (nth i (capi:layout-description pane-parents))) 
                  (aref (individuals-array parents) i)))))
 
@@ -338,11 +338,11 @@
          (parents (parents pane))
          (pane-parents (pane-parents interface))
          (pane-children (pane-children interface)))
-    (dotimes (i (count-individuals children))
+    (dotimes (i (size children))
       (setf (image-render-step (pane (nth i (capi:layout-description pane-children))))
             (render-step pane))
       (reset-image (pane (nth i (capi:layout-description pane-children)))))
-    (dotimes (i (count-individuals parents))
+    (dotimes (i (size parents))
       (setf (image-render-step (pane (nth i (capi:layout-description pane-parents))))
             (render-step pane))
       (reset-image (pane (nth i (capi:layout-description pane-parents)))))))
@@ -397,7 +397,7 @@
       (ensure-objetive-data-initialized (algorithm p))
       (update-language (language (algorithm p)))
       (if (and individuals prepare-result)
-          (dotimes (i (count-individuals (children p)))
+          (dotimes (i (size (children p)))
             (setf (aref (individuals-array (children p)) i) 
                   (pane-explorer-create-new-child p parents :operation operation)))))))
 
@@ -410,11 +410,11 @@
   (let ((individuals)
         (n 0)
         (result (make-instance 'population)))
-    (dotimes (i (count-individuals (parents p)))
+    (dotimes (i (size (parents p)))
       (when (aref (individuals-array (parents p)) i) 
         (incf n)
         (setf individuals (push (aref (individuals-array (parents p)) i) individuals))))
-    (setf (count-individuals result) n
+    (setf (size result) n
           (individuals-array result) (to-array individuals))
     result))
 	
@@ -564,7 +564,7 @@
   (let* ((interface (interface p))
          (parents (parents p))
          (pane-parents (pane-parents interface)))
-    (dotimes (i (count-individuals parents))
+    (dotimes (i (size parents))
       (let ((pane (pane (nth i (capi:layout-description pane-parents)))))
         (when-send-to (interface pane) :interface-model-changed 'parent-model-changed-callback p)))))
 

@@ -49,4 +49,4 @@
                 object (permutate-random-column object a nil)))
         (evaluate a object)
         (setf (aref population i) object)))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))

@@ -138,7 +138,7 @@ D: 2, 4, 1
   (calculate-objetives a (individuals (population a))))
 
 (defmethod initialize-dominance-matrix ((a nsga-ii) (p population))
-  (let ((size (population-size p)))
+  (let ((size (size p)))
     (setf fronts nil
           (individuals a) (individuals-array p)
           (rank a) (make-array (list size) :element-type 'integer)
@@ -239,7 +239,7 @@ D: 2, 4, 1
   (initialize-dominance-matrix a p)
   (let* ((fronts (list nil))
          (array (individuals-array p))
-         (size (population-size p))
+         (size (size p))
          (changed t))
     ;; Build first front
     (dotimes (i size)

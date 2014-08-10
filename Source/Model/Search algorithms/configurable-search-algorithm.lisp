@@ -298,7 +298,7 @@
 
 ;; #TODO: Unhardcode random
 (defmethod select-replacement-index (evolver operation object)
-  (random-integer 0 (population-size (population evolver))))
+  (random-integer 0 (size (population evolver))))
 
 (defmethod replace-individual-into ((e generational-evolver) operation object population)
   "Replace <object> into <population> for <operation>."
@@ -307,8 +307,8 @@
 
 (defmethod breed ((b generational-evolver))
   (let* ((population (population b))
-         (size (count-individuals population))
-         (new-population (make-instance 'population :count-individuals size)))
+         (size (size population))
+         (new-population (make-instance 'population :size size)))
     ;; Fill new population
     (dotimes (i size)
       (breed-individual-into b population new-population))

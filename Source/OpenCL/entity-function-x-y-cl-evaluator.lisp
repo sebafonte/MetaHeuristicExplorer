@@ -69,7 +69,7 @@
   "OpenCL individual evaluation."
   (let* ((queue (queue e))
          (buffer-size-bytes (* *float-size* (samples e)))
-         (groups-size (min (count-individuals p) (global-work-size e))))
+         (groups-size (min (size p) (global-work-size e))))
     ;; Evaluate objects by groups
     (dolist (group (population-groups p groups-size))
       (let* ((result-buffer-size (* *float-size* (length group)))

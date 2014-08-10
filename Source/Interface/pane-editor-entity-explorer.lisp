@@ -9,7 +9,7 @@
   "Initialize <p>."
   (declare (ignore key))
   (setf (slot-value p 'children) 
-        (make-instance 'population :count-individuals (count-children p))))
+        (make-instance 'population :size (count-children p))))
 
 (defmethod post-initialize-interface :after ((p pane-editor-entity-explorer))
   "Post initialize actions for <p>."

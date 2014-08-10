@@ -14,13 +14,21 @@
   (add-properties-from-values
    object
    (:name 'min-size :label "Min size" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor
+    ;:dependency (make-eql-language-dependence 'objetive-class)
+    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (min-size (default-language (make-instance objetive-class))))))
    (:name 'max-size :label "Max size" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor
+    ;:dependency (make-eql-language-dependence 'objetive-class)
+    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (max-size (default-language (make-instance objetive-class))))))
    (:name 'min-depth :label "Min depth" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor)
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor
+    ;:dependency (make-eql-language-dependence 'objetive-class)
+    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (min-depth (default-language (make-instance objetive-class))))))
    (:name 'max-depth :label "Max depth" :accessor-type 'accessor-accessor-type 
-    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor)
+    :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor 
+    ;:dependency (make-eql-language-dependence 'objetive-class)
+    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (max-depth (default-language (make-instance objetive-class))))))
    (:name 'use-top :label "Use top" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value t :editor 'boolean-editor)
    (:name 'use-full :label "Use full" :accessor-type 'accessor-accessor-type 
@@ -59,7 +67,7 @@
          (t (incf attempts)))))
     ;; #TODO: this should be moved to algorith calling function
     (clrhash (registry a))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))
 
 (defmethod generate-population-no-control ((o random-trees-generator) (a search-algorithm))
   "Generate population for search on <algorithm>.
@@ -73,7 +81,7 @@
         (setf (aref population i) (make-instance (objetive-class a) :expresion program))
         (incf i)))
     ;; Answer population object
-    (let ((new-population (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate a new-population)
       new-population)))
 

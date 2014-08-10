@@ -45,6 +45,11 @@
                     :name 'global-running-image-planifier 
                     :description "Running image"
                     :connection-administrator administrator)
+     (make-instance 'running-image-planifier 
+                    :name 'global-coevolution-running-image-planifier
+                    :description "Coevolution"
+                    :max-simultaneous-processes 1024
+                    :connection-administrator administrator)					
      (make-instance 'equitative-planifier 
                     :name 'global-local-planifier
                     :remote nil
@@ -74,6 +79,7 @@
 
 (defun system-global-task-planifiers ()
   (list (system-get 'global-running-image-planifier)
+        (system-get 'global-coevolution-running-image-planifier)
         (system-get 'global-local-planifier)
         (system-get 'global-random-task-planifier)
         (system-get 'global-remote-planifier)

@@ -15,7 +15,7 @@
 ;;;
 
 (defclass pane-buffer (base-pane)
-  ((population :initarg :population :initform (make-instance 'population :count-individuals 9) :accessor population)
+  ((population :initarg :population :initform (make-instance 'population :size 9) :accessor population)
    (pane-mode :initarg :pane-mode :initform 'pane-mode-list :accessor pane-mode)
    (view-mode :initarg :view-mode :initform 'interface-mode-graphic :accessor view-mode)
    (selection :initarg :selection :initform nil :accessor selection)
@@ -76,7 +76,7 @@
     (refresh-images p)))
   
 (defun image-editors (population)
-  (loop for i below (population-size population) collect 
+  (loop for i below (size population) collect 
         (interface (make-image-editor-pane :open nil))))
 
 (defun layout-images (population)
@@ -356,7 +356,7 @@
   (remap-population-pane o)
   (let ((count (prompt-for-plusp-integer "Enter number of individuals")))
     (when count
-      (ensure-population-size (population o) count)
+      (ensure-size (population o) count)
       (refresh-images o)
       (pane-buffer-rebuild-editors (interface o) (population o))
       ;; #TODO: Delete this, use an event

@@ -24,7 +24,7 @@
         (let ((object (make-instance (objetive-class algorithm) :expresion new-exp)))
           (evaluate algorithm object)
           (setf (aref population i) object))))
-    (make-instance 'population :count-individuals population-size :individuals-array population)))
+    (make-instance 'population :individuals-array population)))
 
 (defmethod default-objects ((object search-task-sample-generator))
   (list

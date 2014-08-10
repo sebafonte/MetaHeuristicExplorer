@@ -174,9 +174,7 @@
               (mp:process-wait "Waiting for process completion."
                              (lambda () 
                                (mp:with-lock (*task-planifier-lock*)
-                                 (let ((value (max (minimum-simultaneous-processes task) 
-                                                   (real-max-simultaneous-processes planifier))))
-                                   (< *simultaneous-processes* value)))))
+                                 (lambda () (< *simultaneous-processes* (real-max-simultaneous-processes planifier))))))
               (mp:with-lock (*task-planifier-lock*)
                 (incf *simultaneous-processes*))
               (setf (process task)
@@ -192,16 +190,5 @@
                          (setf (nth children-number (children task)) result-task)))
                      n)))))))
 
-(defun minimum-processes ()
-  (let ((tasks (remove nil *search-tasks*)))
-    (when tasks
-      (reduce 'min (mapcar 'minimum-simultaneous-processes tasks)))))
-
-(defmethod minimum-simultaneous-processes ((o search-task))
-  (minimum-simultaneous-processes-objetive o (objetive-class o)))
-
-(defmethod minimum-simultaneous-processes-objetive ((o search-task) (class (eql 'search-task)))
-  2)
-
-(defmethod minimum-simultaneous-processes-objetive ((o search-task) class)
-  1)
+(defmethod real-max-simultaneous-processes ((planifier task-planifier))
+  (or (max-simultaneous-processes planifier) 1))

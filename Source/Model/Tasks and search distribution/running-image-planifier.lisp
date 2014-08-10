@@ -20,7 +20,3 @@
 (defmethod execute-subtask ((planifier running-image-planifier) (subtask search-task))
   (incf (tasks-asigned (system-get 'running-image-descriptor)))
   (execute-subtask-local planifier subtask))
-
-(defmethod real-max-simultaneous-processes ((planifier running-image-planifier))
-  (or (max-simultaneous-processes planifier)
-      1))

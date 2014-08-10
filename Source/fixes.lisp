@@ -75,9 +75,9 @@
 (defmethod initialize-defaults ((p pane-explorer))
   (setf (level (history p)) (get-value-for-property-named p 'history-level)
         (slot-value p 'parents)
-        (make-instance 'population :count-individuals (number-parents p))
+        (make-instance 'population :size (number-parents p))
         (slot-value p 'children) 
-        (make-instance 'population :count-individuals (number-children p)))
+        (make-instance 'population :size (number-children p)))
   (load-default-configuration p))
 
 (defmethod new-from-description ((o pane-description))
@@ -135,15 +135,3 @@
 (defmethod (setf functions) (value (o cfg-tree-language))
   (setf 
    (slot-value 'functions o) value))
-
-;; #FIX:
-(defmethod real-max-simultaneous-processes ((planifier task-planifier))
-  ;; #TODO: Should be of tasks used by this planifier only
-  (max (or (minimum-processes))
-       (length (active-connections planifier))))
-
-(defmethod real-max-simultaneous-processes ((planifier running-image-planifier))
-  ;; #TODO: Should be of tasks used by this planifier only
-  (max (or (minimum-processes) 0)
-       (or (max-simultaneous-processes planifier)
-           1)))

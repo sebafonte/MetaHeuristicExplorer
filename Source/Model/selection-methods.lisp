@@ -25,7 +25,7 @@
   "Answer a list with <number> elements from <population> using <o>."
   (let ((result))
     (dotimes (i number)
-      (let ((a (aref (individuals-array population) (random-integer 0 (population-size population)))))
+      (let ((a (aref (individuals-array population) (random-integer 0 (size population)))))
         (setf result (nconc result (list a)))))
     result))
 
@@ -35,10 +35,10 @@
 (defmethod perform-selection ((o tournament-selection) population number)
   "Answer a list with <number> elements from <population> using <o>."
   (let ((result)
-        (population-size (population-size population)))
+        (size (size population)))
     (dotimes (i number)
-      (let ((a (aref (individuals-array population) (random-integer 0 population-size))) 
-            (b (aref (individuals-array population) (random-integer 0 population-size))))
+      (let ((a (aref (individuals-array population) (random-integer 0 size))) 
+            (b (aref (individuals-array population) (random-integer 0 size))))
         (setf result (nconc result (list (best-of a b))))))
     result))
 
@@ -58,11 +58,11 @@
 (defmethod perform-selection ((o n-tournament-selection) population number)
   "Answer a list with <number> elements from <population> using <o>."
   (let ((result)
-        (population-size (population-size population)))
+        (size (size population)))
     (dotimes (i number)
       (let ((tournament))
         (dotimes (j (tournament-size o))
-          (appendf tournament (aref (individuals-array population) (random-integer 0 population-size))))
+          (appendf tournament (aref (individuals-array population) (random-integer 0 size))))
         (appendf result (list (reduce 'better-than (to-list array))))))
     result))
 
@@ -82,7 +82,7 @@
    #NOTE: Population fitness need to be normalized."
   (let ((result)
         (sum-ranking 0)
-        (size (count-individuals p)))
+        (size (size p)))
     (dotimes (i (1+ size))
       (incf sum-ranking i))
     (dotimes (c n)
@@ -122,7 +122,7 @@
   (let ((result))
     (dotimes (c n)
       (let ((sum 1.0) 
-            (size (count-individuals p)) 
+            (size (size p)) 
             (value (random-real 0 1)))
         (setf result 
               (nconc result 
