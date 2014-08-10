@@ -37,7 +37,10 @@
                   :description "Sample algorithm")
    (make-instance 'task-best-objects-initializer 
                   :name 'task-best-objects-initializer
-                  :description "Task best objects")))
+                  :description "Task best objects")
+   (make-instance 'task-random-objects-initializer 
+                  :name 'task-random-objects-initializer
+                  :description "Task random objects")))
 
 
 (defmethod possible-initialization-methods ((o t))

@@ -106,6 +106,7 @@
             "Model\\Population initialization\\polynomial-sample-generator.lisp"
             "Model\\Population initialization\\search-task-sample-generator.lisp"
             "Model\\Population initialization\\task-best-objects-initializer.lisp"
+            "Model\\Population initialization\\task-random-objects-initializer.lisp"
             "Model\\Population initialization\\combined-population-generator.lisp"
             "Model\\Population initialization\\evolutive-algorithm-sample-generator.lisp"
             "Model\\default-population-generators.lisp"

@@ -287,10 +287,6 @@
   (not-available-pixmap pinboard object pane o parent-pinboard x y))
 
 (defmethod individuals ((o search-task))
-  "Answer <object> individuals."
-  (individuals-array (population o)))
-
-(defmethod individuals ((o search-task))
   "Answer <object> individuals without nils."
   (individuals (population o)))
 

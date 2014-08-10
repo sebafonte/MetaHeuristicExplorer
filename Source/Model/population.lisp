@@ -1,17 +1,18 @@
-(defparameter *default-population-size* 100)
-
 
 (defclass population (base-model)
   ((individuals-array :initarg :individuals-array :initform nil :accessor individuals-array)
-   (count-individuals :initarg :count-individuals :initform *default-population-size* :accessor count-individuals)))
+   (count-individuals :initarg :count-individuals :accessor count-individuals)))
 
 
 (defmethod initialize-instance :after ((p population) &key count-individuals individuals-array)
   "Initialize <p>."
-  (setf (slot-value p 'individuals-array)
-        (if individuals-array 
-            individuals-array
-          (make-array count-individuals :initial-element nil))))
+  (when (and count-individuals individuals-array (not (= count-individuals (length individuals-array))))
+    (error "Invalid count for initial array"))
+  (if individuals-array
+      (setf (slot-value p 'individuals-array) individuals-array
+            count-individuals (length individuals-array))
+    (if count-individuals 
+         (setf (slot-value p 'individuals-array) (make-array count-individuals :initial-element nil)))))
 
 (defmethod ensure-population-size ((p population) size)
   "Adjust <p> to <size> cropping at the end if neccesary."
@@ -22,7 +23,7 @@
       (dotimes (i size)
         (when (< i (length array))
           (setf (aref (individuals-array p) i) (aref array i)))))))
-    
+
 (defmethod get-individual ((p population) i)
   "Answer the individual indexed by <i> in <p>."
   (aref (individuals-array p) i))
@@ -70,7 +71,7 @@
         (setf (fitness-normalized individual)
               (if (> sum 0.0) 
                   (/ (fitness individual) sum)
-                ;; Else: 0 (or 0.0)
+                ;; Else 0 (or 0.0)
                 (fitness individual)))))))
 
 (defmethod sort-population-fitness ((p population))
@@ -107,7 +108,7 @@
       (if (apply function (list i best))
           (setf best i)))
     best))
-    
+
 (defmethod worst-individual ((p population))
   "Answer the <p> worst individual."
   (let ((worst (aref (individuals-array p) 0)))

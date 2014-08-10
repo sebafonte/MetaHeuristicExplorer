@@ -33,12 +33,10 @@
     ;; Selection methods
     (MAKE-SM-TOURNAMENT :tournament-selection-method)
     (MAKE-SM-RANK :ranking-selection-method)
-    (MAKE-SM-INDEX :index-selection-method)
     (MAKE-SM-RANDOM :random-selection-method)
     (MAKE-SM-BEST :best-selection-method)
     (MAKE-SM-WORST :worst-selection-method)
     (MAKE-SM-IRANKING :inverse-ranking-selection-method)
-    (MAKE-SM-IINDEX :inverse-index-selection-method)
     ;; Elite manager
     (MAKE-EM :elite-manager)))
 
@@ -73,7 +71,7 @@
                 `(:search-object-description ,$1))
                ((object best-of-tasks-description)
                 `(:search-object-description ,$1))
-               ;; Search tasks root node
+               ;; Search task root node
                ((best-of-task-description :open :best-of-task task-description :close)
                 `((:best-of-task BEST-OF-TASK) ,$3))
                ((best-of-tasks-description :open :best-of-tasks task-description-list :close)
@@ -123,8 +121,6 @@
                 `(:selection-method-description ,$1))
                ((selection-method-description ranking-selection-method-description)
                 `(:selection-method-description ,$1))
-               ((selection-method-description index-selection-method-description)
-                `(:selection-method-description ,$1))
                ((selection-method-description random-selection-method-description)
                 `(:selection-method-description ,$1))
                ((selection-method-description best-selection-method-description)
@@ -133,26 +129,20 @@
                 `(:selection-method-description ,$1))
                ((selection-method-description inverse-ranking-selection-method-description)
                 `(:selection-method-description ,$1))
-               ((selection-method-description inverse-index-selection-method-description)
-                `(:selection-method-description ,$1))
                ((replacement-method-description selection-method-description)
                 `,$1)
                ((tournament-selection-method-description :open :tournament-selection-method :constant :close)
                 `((:tournament-selection-method MAKE-SM-TOURNAMENT) ,$3))
                ((ranking-selection-method-description :open :ranking-selection-method :close)
-                :tournament-selection-method)
-               ((index-selection-method-description :open :index-selection-method :close)
-                :index-selection-method)
+                `((:ranking-selection-method MAKE-SM-RANK)))
                ((random-selection-method-description :open :random-selection-method :close)
-                :random-selection-method)
+                `((:random-selection-method MAKE-SM-RANDOM)))
                ((best-selection-method-description :open :best-selection-method :close)
-                :best-selection-method)
+                `((:best-selection-method MAKE-SM-BEST)))
                ((worst-selection-method-description :open :worst-selection-method :close)
-                :worst-selection-method)
+                `((:worst-selection-method MAKE-SM-WORST)))
                ((inverse-ranking-selection-method-description :open :inverse-ranking-selection-method :close)
-                :inverse-ranking-selection-method)
-               ((inverse-index-selection-method-description :open :inverse-index-selection-method :close)
-                :inverse-index-selection-method)
+                `((:inverse-ranking-selection-method MAKE-SM-IRANKING)))
                ;; Language
                ((language-description language-description-object)
                 `,$1)
@@ -174,8 +164,8 @@
                ((generator-object :open :generator-random-object :constant :close)
                 `((:generator-random-object MAKE-GN-RND) (:auxiliary-parameter 1)))
                ;; Random generators (TASK)
-               ((generator-search-task :open :generator-random-search-task :constant :close)
-                `((:generator-random-search-task MAKE-GN-RND-ST) (:auxiliary-parameter 1)))
+               ((generator-search-task :open :generator-random-search-task task-description :close)
+                `((:generator-random-search-task MAKE-GN-RND-ST) ,$3))
                ((generator-search-task :open :generator-bests-search-task task-description :close)
                 `((:generator-bests-search-task MAKE-GN-BESTS-ST) ,$3))
                ;; Fitness evaluators
@@ -223,21 +213,17 @@
     (population-size constant)
     (selection-method-description tournament-selection-method-description)
     (selection-method-description ranking-selection-method-description)
-    (selection-method-description index-selection-method-description)
     (selection-method-description random-selection-method-description)
     (selection-method-description best-selection-method-description)
     (selection-method-description worst-selection-method-description)
     (selection-method-description inverse-ranking-selection-method-description)
-    (selection-method-description inverse-index-selection-method-description)
     (replacement-method-description selection-method-description)
     (tournament-selection-method-description :open tournament-selection-method constant :close)
     (ranking-selection-method-description :open ranking-selection-method :close)
-    (index-selection-method-description :open index-selection-method :close)
     (random-selection-method-description :open random-selection-method :close)
     (best-selection-method-description :open best-selection-method :close)
     (worst-selection-method-description :open worst-selection-method :close)
     (inverse-ranking-selection-method-description :open inverse-ranking-selection-method :close)
-    (inverse-index-selection-method-description :open inverse-index-selection-method :close)
     (language-description language-description-object)
     (language-description-object :open language-object tree-max-size min-constants max-constants :close)
     (tree-max-size constant)
@@ -261,8 +247,6 @@
 (defparameter *default-template-iteration-builder* nil)
 
 (defparameter *default-template-fitness-evaluator-object* nil)
-(defparameter *default-template-generator-random-object* nil)
-(defparameter *default-template-generator-bests-object* nil)
 
 (defparameter *default-template-language-object* nil)
 (defparameter *default-template-language-operator* nil)
@@ -273,38 +257,16 @@
 
 (defparameter *default-template-elite-manager* nil)
 
-(defparameter *default-template-selection-method-tournament* nil)
-(defparameter *default-template-selection-method-index* nil)
-(defparameter *default-template-selection-method-index-inverse* nil)
-(defparameter *default-template-selection-method-ranking* nil)
-(defparameter *default-template-selection-method-ranking-inverse* nil)
-(defparameter *default-template-selection-method-best* nil)
-(defparameter *default-template-selection-method-random* nil)
-(defparameter *default-template-selection-method-worst* nil)
-
 
 (defun initialize-default-search-task-object-templates ()
   ;; Initialize task default objects
-  (setf *default-template-task* (make-instance 'search-task))
-  (setf *default-template-iteration-builder* (make-instance 'n-runs-task-builder :runs 1))
-  ;; Initialize default generic objects
-  (setf *default-template-fitness-evaluator-search-task* (system-get 'default-search-task-objetive-fitness-evaluator))
-  (setf *default-template-fitness-evaluator-operator* nil)
-  (setf *default-template-generator-random-object* (system-get 'random-trees-initializer))
-  (setf *default-template-generator-bests-object* (system-get 'task-best-objects-initializer))
-  ;; Initialize default algorithms
-  (setf *default-template-generational-algorithm* (make-instance 'generational-algorithm :description "default generational"))
-  (setf *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm :description "default steady state"))
-  ;; Initialize algorithm default objects
-  (setf *default-template-elite-manager* (make-instance 'elite-manager :max-size 1))
-  (setf *default-template-selection-method-tournament* (system-get 'tournament-selection-method))
-  (setf *default-template-selection-method-index* (system-get 'ranking-proportionate-selection-method))
-  (setf *default-template-selection-method-index-inverse* (system-get 'ranking-inverse-proportionate-selection-method))
-  (setf *default-template-selection-method-ranking* (system-get 'ranking-inverse-proportionate-selection-method))
-  (setf *default-template-selection-method-ranking-inverse* (system-get 'ranking-inverse-proportionate-selection-method))
-  (setf *default-template-selection-method-best* (system-get 'best-fitness-selection-method))
-  (setf *default-template-selection-method-random* (system-get 'random-selection-method))
-  (setf *default-template-selection-method-worst* (system-get 'worst-fitness-selection-method)))
+  (setf *default-template-task* (make-instance 'search-task)
+        *default-template-iteration-builder* (make-instance 'n-runs-task-builder :runs 1)
+        ;; Initialize default algorithms
+        *default-template-generational-algorithm* (make-instance 'generational-algorithm :description "default generational")
+        *default-template-steady-state-algorithm* (make-instance 'steady-state-algorithm :description "default steady state")
+        ;; Initialize algorithm default objects
+        *default-template-elite-manager* (make-instance 'elite-manager :max-size 1)))
 
 
 ;; Handle some global constraints
@@ -416,29 +378,29 @@
           (replacement-strategy instance) replacement-method)
     instance))
 
-(defun MAKE-SM-TOURNAMENT (context tournament-size)
-  (copy-cyclic *default-template-selection-method-tournament*))
-
-(defun MAKE-SM-RANK (context)
-  (copy-cyclic *default-template-selection-method-tournament*))
-
-(defun MAKE-SM-INDEX (context)
-  (copy-cyclic *default-template-selection-method-index*))
-
 (defun MAKE-SM-RANDOM (context)
-  (copy-cyclic *default-template-selection-method-random*))
+  (copy-cyclic (system-get 'random-selection-method)))
+
+(defun MAKE-SM-TOURNAMENT (context tournament-size)
+  (copy-cyclic (system-get 'tournament-selection-method)))
 
 (defun MAKE-SM-BEST (context)
-  (copy-cyclic *default-template-selection-method-best*))
+  (copy-cyclic (system-get 'best-fitness-selection-method)))
 
 (defun MAKE-SM-WORST (context) 
-  (copy-cyclic *default-template-selection-method-worst*))
+  (copy-cyclic (system-get 'worst-fitness-selection-method)))
 
-(defun MAKE-SM-IINDEX (context)
-  (copy-cyclic *default-template-selection-method-index-inverse*))
+(defun MAKE-SM-RANK (context)
+  (copy-cyclic (system-get 'ranking-selection-method)))
 
 (defun MAKE-SM-IRANKING (context)
-  (copy-cyclic *default-template-selection-method-ranking-inverse*))
+  (copy-cyclic (system-get 'ranking-inverse-selection-method)))
+
+(defun MAKE-SM-FITNESS (context)
+  (copy-cyclic (system-get 'fitness-proportionate-selection-method)))
+
+(defun MAKE-SM-IFITNESS (context)
+  (copy-cyclic (system-get 'inverse-fitness-selection-method)))
 
 (defun MAKE-EM (context elites-count)
   (let ((instance (copy-cyclic *default-template-elite-manager*)))
@@ -462,11 +424,11 @@
 
 (defun MAKE-GN-RND (context aux)
   (declare (ignore aux context))
-  (copy-cyclic *default-template-generator-random-object*))
+  (copy-cyclic (system-get 'random-trees-initializer)))
 
 (defun MAKE-GN-RND-ST (context input-task)
   (declare (ignore context))
-  (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
+  (let ((instance (copy-cyclic (system-get 'task-random-objects-initializer))))
     (execute-search input-task)
     (setf (process input-task) nil
           (input-task instance) input-task)
@@ -474,7 +436,7 @@
 
 (defun MAKE-GN-BESTS-ST (context input-task)
   (declare (ignore context))
-  (let ((instance (copy-cyclic *default-template-generator-bests-object*)))
+  (let ((instance (copy-cyclic (system-get 'task-best-objects-initializer))))
     (execute-search input-task)
     (setf (process input-task) nil
           (input-task instance) input-task)

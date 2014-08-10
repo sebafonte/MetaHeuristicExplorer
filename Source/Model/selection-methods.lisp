@@ -289,10 +289,10 @@
                   :name 'worst-fitness-selection-method
                   :description "Worst fitness")
    (make-instance 'ranking-proportionate-selection 
-                  :name 'ranking-proportionate-selection-method
+                  :name 'ranking-selection-method
                   :description "Ranking proportional")
    (make-instance 'ranking-inverse-proportionate-selection
-                  :name 'ranking-inverse-proportionate-selection-method
+                  :name 'ranking-inverse-selection-method
                   :description "Ranking inverse")
    (make-instance 'fitness-proportionate-selection 
                   :name 'fitness-proportionate-selection-method
@@ -305,8 +305,8 @@
   (list 
    (system-get 'random-selection-method)
    (system-get 'tournament-selection-method)
-   (system-get 'ranking-proportionate-selection-method)
-   (system-get 'ranking-inverse-proportionate-selection-method)
+   (system-get 'ranking-selection-method)
+   (system-get 'ranking-inverse-selection-method)
    (system-get 'fitness-proportionate-selection-method)
    (system-get 'inverse-fitness-selection-method)
    (system-get 'best-fitness-selection-method)
