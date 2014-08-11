@@ -35,7 +35,7 @@
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
       (MAKE-LG 40 0 10)
       (MAKE-GN-RND 1)
-      (MAKE-FE 1)))
+      (MAKE-FE)))
    ;; Composite task (paralell)
    '(BEST-OF-TASKS
      (MAKE-TASK
@@ -43,13 +43,13 @@
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
       (MAKE-LG 40 0 10)
       (MAKE-GN-RND 1)
-      (MAKE-FE 1))
+      (MAKE-FE))
      (MAKE-TASK
       (MAKE-BUILDER-IT 10)
       (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
       (MAKE-LG 40 0 10)
       (MAKE-GN-RND 1)
-      (MAKE-FE 1)))
+      (MAKE-FE)))
    ;; Composite task (combined results, 2 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
@@ -61,8 +61,8 @@
                           (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
                           (MAKE-LG 40 0 10)
                           (MAKE-GN-RND 1)
-                          (MAKE-FE 1)))
-      (MAKE-FE 1)))
+                          (MAKE-FE)))
+      (MAKE-FE)))
    ;; Composite task (combined results, 3 levels)
    '(BEST-OF-TASKS
      (MAKE-TASK
@@ -78,6 +78,6 @@
                                               (MAKE-ALG-GG 100 50 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 4))
                                               (MAKE-LG 40 0 10)
                                               (MAKE-GN-RND 1)
-                                              (MAKE-FE 1)))
-                          (MAKE-FE 1)))
-      (MAKE-FE 1)))))
+                                              (MAKE-FE)))
+                          (MAKE-FE)))
+      (MAKE-FE)))))

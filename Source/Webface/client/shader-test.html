@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Genetic explorer interface</title>
+
+	<script src="glMatrix-0.9.5.min.js"></script>
+	<script src="webgl-utils.js"></script>
+	<script src="webgl-entities.js"></script>
+	<!--<script src="webgl-style.js"></script>-->
+	
+	<script id="shader-fs" type="x-shader/x-fragment">
+		precision mediump float;
+
+		void main(void) {
+			gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		}
+	</script>
+
+	<script id="shader-vs" type="x-shader/x-vertex">
+		attribute vec3 aVertexPosition;
+
+		uniform mat4 uMVMatrix;
+		uniform mat4 uPMatrix;
+
+		void main(void) {
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+		}
+	</script>
+</head>
+
+<body ng-app="genetic-explorer-app" onload="initWebGL()">
+	<p>Test WebGL shaders</p>
+
+	<div id="parents-div" class="view-container">
+		<ul>
+			<canvas id="parent1" style="border: none;" width="500" height="500"></canvas>
+		</ul>
+	</div>
+	
+	<!--
+	<div id="children-div" class="view-container">
+		<ul>
+		<canvas id="child1" style="border: none;" width="500" height="500"></canvas>
+		<canvas id="child2" style="border: none;" width="500" height="500"></canvas>
+		</ul>	
+	</div>
+	-->
+	
+	<div id="comments-div" class="view-container">
+		<form>
+			Name: <input type="text" name="name"><br>
+			Comment: <input type="text" name="comment">
+		</form>
+	</div>
+</body>
+
+</html>
+

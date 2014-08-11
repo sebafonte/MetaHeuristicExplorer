@@ -44,7 +44,7 @@
 
 (defmethod initialize-properties :after ((task search-task))
   "Initialize <task> properties."
-  (let ((objetive-class (default-search-object-class task))
+  (let ((objetive-class (default-search-object-class))
         (default-algorithms (default-search-algorithms)))
     (add-properties-from-values
      task
@@ -204,9 +204,8 @@
   (declare (ignore o))
   (system-get 'sample-property-sampling-initializer))
 
-(defmethod default-search-object-class (o)
-  "Answer <o> default search class."
-  (declare (ignore o))
+(defun default-search-object-class ()
+  "Answer default search class."
   'entity-function-x)
 
 (defmethod possible-languages ((o search-task))

@@ -10,10 +10,10 @@
 
 (defmethod initialize-properties :after ((o search-algorithm-objetive-fitness-evaluator))
   "Initialize <o> properties."
-  (let ((candidate-object-class (default-search-object-class o)))
+  (let ((candidate-object-class (default-search-object-class)))
     (add-properties-from-values
      o
-     ;; Evaluation specific properties
+     ;; Evaluation specific
      (:name 'candidate-object-class :label "Candidate object class" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value candidate-object-class :possible-values (possible-classes-to-search) 
       :editor 'list-editor :update-callback 'lambda-update-callback-search-algorithm-objetive-fitness-evaluator
@@ -24,8 +24,6 @@
       :data-type 'integer :default-value 10 :editor 'number-editor)
      (:name 'timeout :label "Timeout" :accessor-type 'accessor-accessor-type 
       :data-type 'integer :default-value 15 :editor 'number-editor)
-     ;; Evaluation context (auxliliary in some way) parameters
-     ;; #TODO: I think here a new event :task-language-changed should be implemented 
      (:name 'candidate-language :label "Candidate language" :accessor-type 'accessor-accessor-type 
       :data-type 'model :editor 'configurable-copy-list-editor 
       :dependency (make-possible-class-dependency 'candidate-object-class)

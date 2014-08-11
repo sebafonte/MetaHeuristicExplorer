@@ -171,8 +171,8 @@
                ;; Fitness evaluators
                ((fitness-evaluator-description fitness-evaluator-description-object)
                 `,$1)
-               ((fitness-evaluator-description-object :open :fitness-evaluator-object :constant :close)
-                `((:fitness-evaluator-object MAKE-FE) ,$3))
+               ((fitness-evaluator-description-object :open :fitness-evaluator-object :close)
+                `((:fitness-evaluator-object MAKE-FE)))
                ;; Genetic operators
                ((operator-usage-description operator-usage-description-object)
                 `(:operator-usage-object ,$1))
@@ -233,7 +233,7 @@
     (generator-search-task :open generator-bests-search-task task-description :close)
     (generator-search-task :open generator-random-search-task task-description :close)
     (fitness-evaluator-description fitness-evaluator-description-object)
-    (fitness-evaluator-description-object :open fitness-evaluator-object constant :close)
+    (fitness-evaluator-description-object :open fitness-evaluator-object :close)
     (operator-usage-description operator-usage-description-object)
     (operator-usage-description-object operator-usage-object)
     (elite-manager-description :open elite-manager number-of-elites :close)
@@ -335,11 +335,7 @@
 (defmethod make-task-representation-corrections-constants (task (o fixed-set-constants-factory) min max)
   (setf (constants-set o) 
         (select (constants-set o) 
-                (lambda (x) 
-                  (between 
-                   x 
-                   min
-                   max)))))
+                (lambda (x) (between x min max)))))
 
 (defun MAKE-BUILDER-IT (context iterations)
   (let ((instance (copy-cyclic *default-template-iteration-builder*)))
@@ -352,6 +348,8 @@
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*) 
           (max-generations instance) (crop-for-property instance max-generations 'max-generations *min-generations* *max-generations*)
           (selection-method instance) selection-method
+          (fitness-evaluator (context instance)) (candidate-fitness-evaluator (fitness-evaluator context))
+          (language (context instance)) (candidate-language (fitness-evaluator context))
           (elite-manager instance) elite-manager)
     instance))
 
@@ -360,6 +358,8 @@
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*)
           (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *min-iterations* *max-iterations*)
           (selection-method instance) selection-method
+          (fitness-evaluator (context instance)) (candidate-fitness-evaluator (fitness-evaluator context))
+          (language (context instance)) (candidate-language (fitness-evaluator context))
           (replacement-strategy instance) replacement-method)
     instance))
 
@@ -393,7 +393,7 @@
     instance))
 
 (defun MAKE-LG (context max-size min-constants max-constants)
-  (let ((value (copy-cyclic (default-language (make-instance (objetive-class context)))))
+  (let ((value (copy-cyclic (default-language (make-instance (candidate-language (fitness-evaluator context))))))
         (min (crop (min min-constants max-constants) *min-size-constants* *max-size-constants*))
         (max (crop (max min-constants max-constants) *min-size-constants* *max-size-constants*)))
     (when (< (- max min) 2)
@@ -405,7 +405,7 @@
 
 (defun MAKE-OBJ (context program)
   (declare (ignore context))
-  (make-instance (objetive-class task) :expression program))
+  (make-instance (candidate-objetive-class (fitness-evaluator task)) :expression program))
 
 (defun MAKE-GN-RND (context aux)
   (declare (ignore aux context))
@@ -427,6 +427,5 @@
           (input-task instance) input-task)
     instance))
 
-(defun MAKE-FE (context auxiliar)
-  (declare (ignore auxiliar))
-  (copy-cyclic (first (default-fitness-evaluators (make-instance (objetive-class context))))))
+(defun MAKE-FE (context)
+  (candidate-fitness-evaluator (fitness-evaluator context)))
