@@ -104,7 +104,7 @@
 ;; Individual creation functions
 (defmethod create-individual ((a evolutionary-algorithm) &optional (evaluate t))
   "Answer a new individual for <a>."
-  (let* ((child (make-instance (objetive-class a)))
+  (let* ((child (make-objective a))
          (operation (select-genetic-operation a))
          (parents (perform-selection (selection-method a) (population a) (arity operation)))
          (programs (mapcar (lambda (i) (program i)) parents)))
@@ -114,7 +114,7 @@
 
 (defmethod create-distinct-individual ((a evolutionary-algorithm) &optional (evaluate t))
   "Answer a new generated children for <a> trying again until max iterations reached."
-  (let* ((child (make-instance (objetive-class a)))
+  (let* ((child (make-objective a))
          (operation (select-genetic-operation a))
          (parents (perform-selection (selection-method a) (population a) (arity operation)))
          (max-iterations (max-unique-iterations a))

@@ -118,7 +118,7 @@
   "Clear temporary data to be used for evaluation, suck as array, flags, etc."
   (setf (fitness-vector evaluator) nil))
 
-(defmethod objetive-class ((evaluator entity-function-x-evaluator))
+(defmethod objective-class ((evaluator entity-function-x-evaluator))
   'entity-function-x)
 
 (defmethod samples-xmin ((e entity-function-x-evaluator))

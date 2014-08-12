@@ -16,8 +16,8 @@
    (benchmarker :initarg :benchmarker :accessor benchmarker)
    (initial-time :initarg :initial-time :initform nil :accessor initial-time)
    (final-time :initform nil :accessor final-time)
-   ;; Objetive
-   (objetive-class :initarg :objetive-class :accessor objetive-class)
+   ;; Objective
+   (objective-class :initarg :objective-class :accessor objective-class)
    (fitness-evaluator :initarg :fitness-evaluator :accessor fitness-evaluator)
    (language :initarg :language :accessor language)
    (algorithm :initarg :algorithm :accessor algorithm)
@@ -44,7 +44,7 @@
 
 (defmethod initialize-properties :after ((task search-task))
   "Initialize <task> properties."
-  (let ((objetive-class (default-search-object-class))
+  (let ((objective-class (default-search-object-class))
         (default-algorithms (default-search-algorithms)))
     (add-properties-from-values
      task
@@ -70,10 +70,10 @@
      (:name 'task-builder :label "Builder" :accessor-type 'accessor-accessor-type :editor 'button-editor 
       :default-value (make-instance 'n-runs-task-builder))
      (:name 'result :label "Result" :accessor-type 'accessor-accessor-type :editor 'button-editor :category "Result")
-     ;; Objetive
-     (:name 'objetive-class :label "Objetive class" :accessor-type 'accessor-accessor-type
-      :data-type 'symbol :default-value objetive-class :possible-values (possible-classes-to-search) 
-      :editor 'list-editor :category "Objetive")
+     ;; Objective
+     (:name 'objective-class :label "Objective class" :accessor-type 'accessor-accessor-type
+      :data-type 'symbol :default-value objective-class :possible-values (possible-classes-to-search) 
+      :editor 'list-editor :category "Objective")
      (:name 'algorithm :label "Search algorithm" :accessor-type 'accessor-accessor-type 
       :data-type 'model :possible-values default-algorithms :default-value (copy-cyclic (first default-algorithms))
       :editor 'configurable-copy-list-editor :setter '(setf algorithm))
@@ -123,16 +123,16 @@
       :getter '(lambda (object) (max (task-running-time object) 0))
       :read-only t :data-type 'integer :category "Result")
      ;; Dependent properties
-     (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objetive"
+     (:name 'language :label "Language" :accessor-type 'accessor-accessor-type :category "Objective"
       :data-type 'model :editor 'configurable-copy-list-editor 
-      :dependency (make-eql-language-dependence 'objetive-class)
-      :default-value-function (lambda (objetive-class) (copy-cyclic (default-language (make-instance objetive-class))))
-      :possible-values-function (lambda (objetive-class) (possible-languages (make-instance objetive-class))))
+      :dependency (make-eql-language-dependence 'objective-class)
+      :default-value-function (lambda (objective-class) (copy-cyclic (default-language (make-instance objective-class))))
+      :possible-values-function (lambda (objective-class) (possible-languages (make-instance objective-class))))
      (:name 'fitness-evaluator :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
-      :editor 'configurable-copy-list-editor :category "Objetive" :data-type 'model
-      :dependency (make-possible-class-dependency 'objetive-class)
-      :default-value-function (lambda (objetive-class) (copy-cyclic (first (default-fitness-evaluators (make-instance objetive-class)))))
-      :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
+      :editor 'configurable-copy-list-editor :category "Objective" :data-type 'model
+      :dependency (make-possible-class-dependency 'objective-class)
+      :default-value-function (lambda (objective-class) (copy-cyclic (first (default-fitness-evaluators (make-instance objective-class)))))
+      :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class)))))))
 
 (defun task-running-time (task)
   "Answer the running time for <task>."
@@ -197,7 +197,7 @@
   "Answer the default classes that can evaluate <o> fitness."
   (declare (ignore o))  
   (list 
-   (system-get 'default-search-task-objetive-fitness-evaluator)))
+   (system-get 'default-search-task-objective-fitness-evaluator)))
 
 (defmethod default-population-initializer ((o search-task))
   "Answer the default population initializer for <o>."
@@ -222,12 +222,12 @@
   (declare (ignore property))
   nil)
 
-(defmethod ejecutar-wait ((task search-task))
+(defmethod execute-wait ((task search-task))
   "Stop <task>."
   (mp:process-stop (process task))
   (setf (state task) 'STOPPED))
 
-(defmethod ejecutar-signal ((task search-task))
+(defmethod execute-signal ((task search-task))
   "Signal <task>."
   (mp:process-unstop (process task))
   (setf (state task) 'RUNNING))
@@ -250,10 +250,9 @@
   "Answer whether <task> as been executed."
   (equal 'FINISHED (state task)))
 
-;; #TODO: Refactor to some kind of copy ?
 (defmethod set-task-values-into ((o search-task) (p search-task))
   (setf (slot-value p 'fitness-evaluator) (copy (fitness-evaluator o))
-        (slot-value p 'objetive-class) (objetive-class o)
+        (slot-value p 'objective-class) (objective-class o)
         (slot-value p 'language) (language o)))
 
 ;; #TODO: Completed subtasks progress if it has. If not, task progress (for example)

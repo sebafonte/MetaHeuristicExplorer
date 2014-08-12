@@ -10,7 +10,7 @@
     (format ostream "TASK: ~A~%~%" (name task))
     (report-properties ostream 
                        task
-                       'description 'best-fitness 'seed 'task-planifier 'objetive-class 
+                       'description 'best-fitness 'seed 'task-planifier 'objective-class 
                        'initial-time 'final-time 'running-time)
     (format ostream "~%BEST TASK INDIVIDUAL DATA: ~%")
     (dolist (subtask (children task))
@@ -102,7 +102,7 @@
                        'max-size)
     (dolist (individual (elites o))
       (report-on-text-stream r individual))))
-  
+
 (defmethod report-on-text-stream ((r text-stream-reporter) (o population))
   (when (not (and
               (find :print-populations (options r))
@@ -111,7 +111,7 @@
       (format ostream "~%POPULATION:~%")
       (dolist (individual (individuals o))
         (report-on-text-stream r individual)))))
-   
+
 (defmethod report-on-text-stream ((r text-stream-reporter) (o entity-evaluator))
   (let ((ostream (output-stream r)))
     (format ostream "~%EVALUATOR ~A:~%" (name o))
@@ -133,7 +133,7 @@
                        'min-fitness
                        'max-fitness
                        'solution-fitness)))
-  
+
 (defmethod report-on-text-stream ((r text-stream-reporter) (o entity-vrp-evaluator))
   (let ((ostream (output-stream r)))
     (format ostream "~%VRP EVALUATOR ~A:~%" (name o))

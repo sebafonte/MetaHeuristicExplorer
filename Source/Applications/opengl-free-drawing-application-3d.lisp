@@ -240,7 +240,7 @@
     (error (function) nil))))
 
 ;;; Fitness evaluator
-(defmethod objetive-class ((evaluator mux-fitness-evaluator))
+(defmethod objective-class ((evaluator mux-fitness-evaluator))
   'entity-opengl-free-drawing-3d)
 
 (defun evaluate-opengl-free-drawing-3d (evaluator object)

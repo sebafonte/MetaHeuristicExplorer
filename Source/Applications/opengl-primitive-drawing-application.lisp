@@ -345,13 +345,13 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
   "Use <evaluator> to calculate and answer <object> fitness."
   (funcall (fitness-function evaluator) evaluator object))
 
-(defmethod objetive-class ((evaluator entity-opengl-primitive-drawing))
+(defmethod objective-class ((evaluator entity-opengl-primitive-drawing))
   'entity-opengl-free-drawing)
 
 (defun evaluate-opengl-primitive-drawing (evaluator object)
   "Evaluation method for OpenGL free drawing object."
   (let ((compiled-program (compiled-program object))
-    ;; ...                             
+    ;; ...
     (setf (fitness object) 1)
     1))
 

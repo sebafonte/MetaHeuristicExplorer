@@ -1,5 +1,5 @@
 
-(defclass search-algorithm-objetive-fitness-evaluator (entity-evaluator)
+(defclass search-algorithm-objective-fitness-evaluator (entity-evaluator)
   ((samples :initarg :samples :accessor samples)
    (candidate-property-name :initarg :candidate-property-name :accessor candidate-property-name)
    (candidate-object-class :initarg :candidate-object-class :accessor candidate-object-class)
@@ -8,7 +8,7 @@
    (timeout :initarg :timeout :accessor timeout)))
 
 
-(defmethod initialize-properties :after ((o search-algorithm-objetive-fitness-evaluator))
+(defmethod initialize-properties :after ((o search-algorithm-objective-fitness-evaluator))
   "Initialize <o> properties."
   (let ((candidate-object-class (default-search-object-class)))
     (add-properties-from-values
@@ -16,7 +16,7 @@
      ;; Evaluation specific
      (:name 'candidate-object-class :label "Candidate object class" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value candidate-object-class :possible-values (possible-classes-to-search) 
-      :editor 'list-editor :update-callback 'lambda-update-callback-search-algorithm-objetive-fitness-evaluator
+      :editor 'list-editor :update-callback 'lambda-update-callback-search-algorithm-objective-fitness-evaluator
       :setter '(setf candidate-object-class))
      (:name 'candidate-property-name :label "Candidate property" :accessor-type 'accessor-accessor-type 
       :editor 'symbol-editor :data-type 'symbol :default-value 'fitness)
@@ -27,27 +27,27 @@
      (:name 'candidate-language :label "Candidate language" :accessor-type 'accessor-accessor-type 
       :data-type 'model :editor 'configurable-copy-list-editor 
       :dependency (make-possible-class-dependency 'candidate-object-class)
-      :default-value-function (lambda (objetive-class) (copy (default-language (make-instance objetive-class))))
-      :possible-values-function (lambda (objetive-class) (copy-tree (possible-languages (make-instance objetive-class)))))
+      :default-value-function (lambda (objective-class) (copy (default-language (make-instance objective-class))))
+      :possible-values-function (lambda (objective-class) (copy-tree (possible-languages (make-instance objective-class)))))
      (:name 'candidate-fitness-evaluator :label "Candidate fitness evaluator" :accessor-type 'accessor-accessor-type 
       :data-type 'model :editor 'configurable-copy-list-editor 
       :dependency (make-possible-class-dependency 'candidate-object-class)
-      :default-value-function (lambda (objetive-class) (first (default-fitness-evaluators (make-instance objetive-class))))
-      :possible-values-function (lambda (objetive-class) (default-fitness-evaluators (make-instance objetive-class)))))))
+      :default-value-function (lambda (objective-class) (first (default-fitness-evaluators (make-instance objective-class))))
+      :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class)))))))
 
-(defun lambda-update-callback-search-algorithm-objetive-fitness-evaluator (object property) 
+(defun lambda-update-callback-search-algorithm-objective-fitness-evaluator (object property) 
   (declare (ignore property)))
 
-(defmethod default-search-task-for-algorithm ((e search-algorithm-objetive-fitness-evaluator) algorithm)
+(defmethod default-search-task-for-algorithm ((e search-algorithm-objective-fitness-evaluator) algorithm)
   (let ((task (make-instance 'search-task)))
-    (setf (objetive-class task) (candidate-object-class e)
+    (setf (objective-class task) (candidate-object-class e)
           (algorithm task) algorithm
           (context algorithm) task
           (language task) (candidate-language e)
           (fitness-evaluator task) (candidate-fitness-evaluator e))
     task))
 
-(defmethod evaluate ((evaluator search-algorithm-objetive-fitness-evaluator) (object configurable-search-algorithm))
+(defmethod evaluate ((evaluator search-algorithm-objective-fitness-evaluator) (object configurable-search-algorithm))
   "Use <evaluator> to calculate and answer <object> fitness."
   (let* ((grammar (system-get 'search-algorithm-grammar))
          (expression (parse grammar (program object)))
@@ -78,7 +78,7 @@
     (setf (fitness object) (fitness best-individual))
     (setf (fitness (gen object)) (fitness best-individual))))
 
-(defmethod specialize-language ((task search-task) (evaluator search-algorithm-objetive-fitness-evaluator))
+(defmethod specialize-language ((task search-task) (evaluator search-algorithm-objective-fitness-evaluator))
   (specialize-language-from (language task) (candidate-language evaluator)))
 
 (defmethod specialize-language-from ((language cfg-tree-language) (candidate language))

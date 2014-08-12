@@ -40,7 +40,7 @@
             (dotimes (j grade)
               (appendf variable-list (list (random-element variables))))
             (appendf new-exp (list (list '* factor (cons '* variable-list))))))
-        (let ((object (make-instance (objetive-class algorithm) :expresion new-exp)))
+        (let ((object (make-objective algorithm new-exp)))
           (setf (aref population i) object))))
     (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate algorithm new-population)

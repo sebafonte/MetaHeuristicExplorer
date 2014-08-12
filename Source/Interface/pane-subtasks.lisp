@@ -124,13 +124,13 @@
   "Suspend selected subtask execution on <interface>."
   (declare (ignore data))
   (if (selection interface) 
-      (ejecutar-wait (selection interface))))
+      (execute-wait (selection interface))))
 
 (defun menu-resume-selection (interface data)
   "Resume selected subtask execution on <interface>."
   (declare (ignore data))
   (if (selection interface)
-      (ejecutar-signal (selection interface))))
+      (execute-signal (selection interface))))
 
 (defun menu-save-template (interface data)
   "Save subtask <interface> model."

@@ -8,7 +8,7 @@
 
 
 (defun default-reporting-headers ()
-  '(objetive-class 
+  '(objective-class 
     task-planifier
     task-builder
     fitness-evaluator 

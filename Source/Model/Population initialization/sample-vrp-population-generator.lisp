@@ -39,7 +39,7 @@
         (population (make-array population-size)))
    (dotimes (i population-size)
      (let* ((plan (list (list 0 1)))
-            (individual (make-instance (objetive-class algorithm) :expresion plan)))
+            (individual (make-objective algorithm plan)))
        (evaluate algorithm individual)
        (setf (aref population i) individual)))
    (make-instance 'population :individuals-array population)))

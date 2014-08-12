@@ -34,7 +34,7 @@
   "Evaluate using absolute difference with target values."
   (setf (fitness o) (funcall (compiled-target-program e) (program o))))
 
-(defmethod objetive-class ((e entity-function-maximization-evaluator))
+(defmethod objective-class ((e entity-function-maximization-evaluator))
   'entity-function-maximization)
 
 ;; #TODO: Use target-program to implement these

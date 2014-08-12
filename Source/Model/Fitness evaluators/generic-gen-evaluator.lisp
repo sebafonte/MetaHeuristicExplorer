@@ -20,7 +20,7 @@
   "Use <evaluator> to calculate and answer <object> fitness."
   (error "Implemented by subclass."))
 
-(defmethod objetive-class ((evaluator entity-evaluator))
+(defmethod objective-class ((evaluator entity-evaluator))
   'entity)
 
 (defmethod specialize-language ((task search-task) (evaluator entity-evaluator))

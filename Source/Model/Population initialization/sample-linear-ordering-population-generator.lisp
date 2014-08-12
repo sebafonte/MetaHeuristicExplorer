@@ -43,7 +43,7 @@
          (population (make-array population-size))
          (initial-matrix (initial-matrix o)))
     (dotimes (i population-size)
-      (let ((object (make-instance (objetive-class a) :matrix initial-matrix :initial-matrix initial-matrix)))
+      (let ((object (make-instance (objective-class a) :matrix initial-matrix)))
         (dotimes (i (initial-permutations o))
           (setf object (permutate-random-row object a nil)
                 object (permutate-random-column object a nil)))

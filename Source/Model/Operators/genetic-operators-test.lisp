@@ -31,7 +31,7 @@
 (defun inject-tree-with-subtree (tree subtree algorithm)
   "Replace each node of <tree> with <subtree>, evaluate and print fitness value."
   (let ((gen (make-instance 'genotype))
-        (object (make-instance (objetive-class algorithm))))
+        (object (make-objective algorithm)))
     (dotimes (i (count-internal-subtrees tree algorithm))
       (let ((tree (replace-internal-subtree tree subtree (1+ i) (language algorithm))))
         (format t "~A  Fitness: ~A ~%"
@@ -43,7 +43,7 @@
   "Answer the structure which produces best fitness improvements."
   (declare (ignore n))
   (let* ((gen (make-instance 'genotype :expresion tree))
-         (object (make-instance (objetive-class algorithm) :gen gen))
+         (object (make-objective gen))
          (fitness-original (evaluate algorithm object))
          (current-fitness)
          (result))

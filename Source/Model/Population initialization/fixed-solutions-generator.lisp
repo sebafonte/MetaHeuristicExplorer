@@ -19,7 +19,7 @@
          (fixed-solutions (expresion-list (initialization-method algorithm)))
          (size (length fixed-solutions)))
     (dotimes (i population-size)
-      (let ((object (make-instance (objetive-class algorithm) :expresion (nth (mod i size) fixed-solutions))))
+      (let ((object (make-objective algorithm (nth (mod i size) fixed-solutions))))
         (setf (aref population i) object)))
     (evaluate algorithm population)
     (make-instance 'population :individuals-array population)))

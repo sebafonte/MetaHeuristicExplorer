@@ -21,7 +21,7 @@
       (let ((new-exp (random-element (sample-objects object))))
         (if (mutate-individuals object)
           (setf new-exp (operate mutation-operator object algorithm)))
-        (let ((object (make-instance (objetive-class algorithm) :expresion new-exp)))
+        (let ((object (make-objective algorithm new-exp)))
           (evaluate algorithm object)
           (setf (aref population i) object))))
     (make-instance 'population :individuals-array population)))

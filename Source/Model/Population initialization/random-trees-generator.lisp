@@ -15,20 +15,20 @@
    object
    (:name 'min-size :label "Min size" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor
-    ;:dependency (make-eql-language-dependence 'objetive-class)
-    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (min-size (default-language (make-instance objetive-class))))))
+    ;:dependency (make-eql-language-dependence 'objective-class)
+    :default-value-function (lambda (objective-class) (lambda (objective-class) (min-size (default-language (make-instance objective-class))))))
    (:name 'max-size :label "Max size" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor
-    ;:dependency (make-eql-language-dependence 'objetive-class)
-    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (max-size (default-language (make-instance objetive-class))))))
+    ;:dependency (make-eql-language-dependence 'objective-class)
+    :default-value-function (lambda (objective-class) (lambda (objective-class) (max-size (default-language (make-instance objective-class))))))
    (:name 'min-depth :label "Min depth" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 1 :editor 'number-editor
-    ;:dependency (make-eql-language-dependence 'objetive-class)
-    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (min-depth (default-language (make-instance objetive-class))))))
+    ;:dependency (make-eql-language-dependence 'objective-class)
+    :default-value-function (lambda (objective-class) (lambda (objective-class) (min-depth (default-language (make-instance objective-class))))))
    (:name 'max-depth :label "Max depth" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :min-value 1 :max-value 10000 :default-value 5 :editor 'number-editor 
-    ;:dependency (make-eql-language-dependence 'objetive-class)
-    :default-value-function (lambda (objetive-class) (lambda (objetive-class) (max-depth (default-language (make-instance objetive-class))))))
+    ;:dependency (make-eql-language-dependence 'objective-class)
+    :default-value-function (lambda (objective-class) (lambda (objective-class) (max-depth (default-language (make-instance objective-class))))))
    (:name 'use-top :label "Use top" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value t :editor 'boolean-editor)
    (:name 'use-full :label "Use full" :accessor-type 'accessor-accessor-type 
@@ -55,7 +55,7 @@
         (cond 
          ;; New and not into registry
          ((not (gethash program (registry a)))
-          (setf (aref population i) (make-instance (objetive-class a) :expresion program))
+          (setf (aref population i) (make-objective aprogram))
           (evaluate a (aref population i))
           (setf (gethash program (registry a)) t
                 attempts 0)
@@ -78,7 +78,7 @@
     (do ((i 0))
         ((>= i population-size))
       (let ((program (generate-program-tree o (language a))))
-        (setf (aref population i) (make-instance (objetive-class a) :expresion program))
+        (setf (aref population i) (make-objective a program))
         (incf i)))
     ;; Answer population object
     (let ((new-population (make-instance 'population :individuals-array population)))
@@ -93,5 +93,4 @@
 
 (defmethod generate-individual ((o random-trees-generator) algorithm)
   "Answer a new generated object on <language> using <generator>."
-  (make-instance (objetive-class algorithm) 
-                 :expresion (generate-program-tree generator (language algorithm))))
+  (make-objective algorithm (generate-program-tree generator (language algorithm))))

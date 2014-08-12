@@ -17,14 +17,13 @@ function drawEntity(entity, entityType, canvas) {
 }
 
 function drawEntityImageBW() {
-
-	// setup a GLSL program
-	var vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
-	var fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
+	// Setup a GLSL program
+	var vertexShader = createShaderFromScriptElement(gl, "shader-vs");
+	var fragmentShader = createShaderFromScriptElement(gl, "shader-fs");
 	var program = createProgram(gl, [vertexShader, fragmentShader]);
 	gl.useProgram(program);
 
-	// look up where the vertex data needs to go
+	// Look up where the vertex data needs to go
 	var positionLocation = gl.getAttribLocation(program, "a_position");
 
 	// Create a buffer and put a single clipspace rectangle in it (2 triangles)

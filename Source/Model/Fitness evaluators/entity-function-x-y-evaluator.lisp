@@ -154,5 +154,5 @@
 |#
 
 
-(defmethod objetive-class ((evaluator entity-function-x-y-evaluator))
+(defmethod objective-class ((evaluator entity-function-x-y-evaluator))
   'entity-function-x-y)

@@ -28,7 +28,7 @@
         (cond 
          ;; New and not into registry
          ((not (gethash value (registry a)))
-          (setf (aref population i) (make-instance (objetive-class a) :expresion value))
+          (setf (aref population i) (make-objective a value))
           (evaluate a (aref population i))
           (setf (gethash value (registry a)) t
                 attempts 0)
@@ -62,5 +62,4 @@
 
 (defmethod generate-individual ((generator random-binary-generator) algorithm)
   "Answer a new generated object on <language> using <generator>."
-  (make-instance (objetive-class algorithm) 
-                 :expresion (generate-individual-value generator (language algorithm))))
+  (make-objective algorithm (generate-individual-value generator (language algorithm))))

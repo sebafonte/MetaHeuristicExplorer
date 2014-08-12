@@ -405,7 +405,7 @@
 
 (defun MAKE-OBJ (context program)
   (declare (ignore context))
-  (make-instance (candidate-objetive-class (fitness-evaluator task)) :expression program))
+  (make-objective context program))
 
 (defun MAKE-GN-RND (context aux)
   (declare (ignore aux context))

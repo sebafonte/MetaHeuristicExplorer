@@ -405,7 +405,7 @@
   "Use <evaluator> to calculate and answer <object> fitness."
   (funcall (fitness-function evaluator) evaluator object))
 
-(defmethod objetive-class ((evaluator opengl-free-drawing-evaluator))
+(defmethod objective-class ((evaluator opengl-free-drawing-evaluator))
   'entity-opengl-free-drawing-2d)
 
 (defmethod evaluate-opengl-free-drawing ((evaluator opengl-free-drawing-evaluator) object)

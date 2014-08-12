@@ -29,9 +29,9 @@
    (:name 'initialization-method :label "Initialization method" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value (system-get 'random-trees-initializer) 
     :editor 'configurable-copy-list-editor :category "Methods"
-    :dependency (make-possible-class-dependency 'objetive-class)
-    :default-value-function (lambda (objetive-class) (copy-cyclic (first (possible-initialization-methods (make-instance objetive-class)))))
-    :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
+    :dependency (make-possible-class-dependency 'objective-class)
+    :default-value-function (lambda (objective-class) (copy-cyclic (first (possible-initialization-methods (make-instance objective-class)))))
+    :possible-values-function (lambda (objective-class) (possible-initialization-methods (make-instance objective-class))))
    (:name 'breed-method :label "Breed method" :accessor-type 'accessor-accessor-type :data-type 'object 
     :editor 'configurable-copy-list-editor :category "Methods")
    (:name 'elite-manager :label "Elite manager" :accessor-type 'accessor-accessor-type 
@@ -55,7 +55,7 @@
   (individuals (population a)))
 
 ;; #NOTE: - Elite manager has the best in this kind of algorithm
-;;        - Changes if another objetive is measured for on elites
+;;        - Changes if new objective is measured for on elites
 ;;        - Has a ugly dependence on algorithm code
 (defmethod best-individual ((a evolutionary-algorithm))
   "Anwer the best individual found by <a>."

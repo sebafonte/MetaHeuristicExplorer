@@ -14,7 +14,7 @@
    (:name 'image-path :label "Image path" :accessor-type 'accessor-accessor-type :default-value "d:\\test.bmp" 
     :data-type 'string :editor 'text-editor)))
 
-(defmethod objetive-class ((evaluator opengl-free-drawing-evaluator-image-distance))
+(defmethod objective-class ((evaluator opengl-free-drawing-evaluator-image-distance))
   'entity-opengl-free-drawing-2d)
 
 (defmethod evaluate-opengl-free-drawing ((evaluator opengl-free-drawing-evaluator-image-distance) object)

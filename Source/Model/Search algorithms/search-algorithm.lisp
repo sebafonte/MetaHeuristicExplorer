@@ -33,12 +33,12 @@
   (fitness-function (context a)))
 
 (defmethod target-program ((a search-algorithm))
-  "Answer <a> objetive sample."
+  "Answer <a> objective sample."
   (target-program (context a)))
 
-(defmethod objetive-class ((a search-algorithm))
-  "Answer <a> objetive class."
-  (objetive-class (context a)))
+(defmethod objective-class ((a search-algorithm))
+  "Answer <a> objective class."
+  (objective-class (context a)))
 
 (defmethod solution-fitness ((a search-algorithm))
   "Answer <a> minimum fitness value for a good solution."
@@ -68,16 +68,16 @@
 (defmethod fitness-evaluator ((a search-algorithm))
   (fitness-evaluator (context a)))
 
-(defmethod initialize-objetive-data ((a search-algorithm))
+(defmethod initialize-objective-data ((a search-algorithm))
   (initialize-fitness-data (fitness-evaluator a)))
 
-(defmethod initialize-objetive-data :before ((a search-algorithm))
+(defmethod initialize-objective-data :before ((a search-algorithm))
   (trigger a :initialize-fitness-data-start))
 
-(defmethod initialize-objetive-data :after ((a search-algorithm))
+(defmethod initialize-objective-data :after ((a search-algorithm))
   (trigger a :initialize-fitness-data-end))
 
-(defmethod ensure-objetive-data-initialized ((a search-algorithm))
+(defmethod ensure-objective-data-initialized ((a search-algorithm))
   (ensure-fitness-data-initialized (fitness-evaluator a)))
 
 ;; Language object hook utility functions
@@ -129,7 +129,7 @@
   "Evaluate <o> using <a> fitness evaluator."
   (trigger a :individual-evaluated o))
 
-(defmethod evaluate :after ((a search-algorithm) (p population)) 
+(defmethod evaluate :after ((a search-algorithm) (p population))
   "Evaluate <p> individuals with <a>."
   (trigger a :population-evaluated p))
 
@@ -145,4 +145,13 @@
 
 (defmethod abstractp ((o (eql 'search-algorithm)))
   "Answer whether <o> is abstract."
-  t) 
+  t)
+
+(defmethod make-objective ((o search-algorithm) &optional exp)
+  (make-instance (objective-class o) exp))
+
+(defmethod make-objective ((o search-task) &optional exp)
+  (make-instance (objective-class o) exp))
+
+(defmethod make-objective ((o symbol) &optional exp)
+  (make-instance o exp))

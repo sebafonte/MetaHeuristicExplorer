@@ -34,13 +34,13 @@
   nil)
 
 (defmethod destination-object ((o entity-evaluator))
-  (make-instance (objetive-class o) :expresion (target-program o)))
+  (make-instance (objective-class o) :expresion (target-program o)))
 
 (defmethod reset-temporary-data ((o entity-evaluator))
   "Clear temporary data used on <evaluator>."
   nil)
 
-(defmethod objetive-class ((o entity-evaluator))
+(defmethod objective-class ((o entity-evaluator))
   'entity)
 
 (defmethod specialize-language ((task search-task) (e entity-evaluator))

@@ -368,7 +368,7 @@
           (show-error p "Can't prepare operations for objects of different classes or with different languages.")
           nil)
       (progn
-        (set-value-for-property-named (context algorithm) 'objetive-class (class-name (class-of (object (car parents)))))
+        (set-value-for-property-named (context algorithm) 'objective-class (class-name (class-of (object (car parents)))))
         (setf (language (context algorithm)) (language (algorithm (context (car parents)))))
         (update-interface-operations p)
         t))))
@@ -394,7 +394,7 @@
            (prepare-result (prepare-operations p individuals))
            (operation (car (find-if (lambda (each) (equal operation (name (car each))))
                                     (genetic-operations p)))))
-      (ensure-objetive-data-initialized (algorithm p))
+      (ensure-objective-data-initialized (algorithm p))
       (update-language (language (algorithm p)))
       (if (and individuals prepare-result)
           (dotimes (i (size (children p)))

@@ -317,9 +317,8 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
 (defmethod evaluate ((evaluator opengl-fragment-drawing-evaluator) (object entity-opengl-fragment-drawing))
   "Use <evaluator> to calculate and answer <object> fitness."
   (funcall (fitness-function evaluator) evaluator object))
-                          
 
-(defmethod objetive-class ((evaluator opengl-fragment-drawing-evaluator))
+(defmethod objective-class ((evaluator opengl-fragment-drawing-evaluator))
   'entity-opengl-fragment-drawing)
 
 (defun evaluate-opengl-fragment-drawing (evaluator object)

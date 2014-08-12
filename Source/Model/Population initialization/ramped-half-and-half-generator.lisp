@@ -23,7 +23,7 @@
       (let ((tree (if (< (random-real 0 1) 0.5)
                       (generate-individual-grow o a)
                     (generate-individual-full o a))))
-        (setf (aref population i) (make-instance (objetive-class a) :expresion tree))))
+        (setf (aref population i) (make-objective a tree))))
     (let ((new-population (make-instance 'population :individuals-array population)))
       (evaluate a new-population)
       new-population)))

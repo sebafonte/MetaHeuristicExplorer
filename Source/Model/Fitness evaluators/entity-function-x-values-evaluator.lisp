@@ -11,7 +11,7 @@
     :data-type 'list :editor 'lisp-editor
     :default-value '((1 1) (2 2) (3 3) (4 4) (5 5)))))
 
-(defmethod objetive-class ((evaluator entity-function-x-values-evaluator))
+(defmethod objective-class ((evaluator entity-function-x-values-evaluator))
   'entity-function-x)
 
 (defmethod evaluate-distance ((evaluator entity-function-x-values-evaluator) (object entity-function-x))

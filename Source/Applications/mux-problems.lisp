@@ -117,7 +117,7 @@
   "Use <evaluator> to calculate and answer <object> fitness."
   (funcall (fitness-function evaluator) evaluator object))
 
-(defmethod objetive-class ((evaluator mux-fitness-evaluator))
+(defmethod objective-class ((evaluator mux-fitness-evaluator))
   'entity-mux)
 
 (defun bit-value (integer position)

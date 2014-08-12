@@ -27,7 +27,7 @@ D: 2, 4, 1
 |#
 
 ;; #OPTIMIZATION
-(declaim (inline objetive-value))
+(declaim (inline objective-value))
 
 (defclass nsga-ii (search-algorithm)
   ((population :initarg :initial-population :accessor population)
@@ -38,7 +38,7 @@ D: 2, 4, 1
    (registry :initform (make-hash-table :test #'eql) :accessor registry)
    (max-generations :initarg :max-generations :initform 100 :accessor max-generations)
    ;; #TODO: Check if move this to fitness evaluator
-   (objetives :initarg :objetives :accessor objetives)
+   (objectives :initarg :objectives :accessor objectives)
    (generation :initform 0 :accessor generation)
    (best :initarg :best :initform nil :accessor best)
    ;; fast-non-dominated-sort cache
@@ -52,7 +52,7 @@ D: 2, 4, 1
 
 (defmethod initialize-properties :after ((a nsga-ii))
   "Initialize <a> properties."
-  (let ((objetives (default-objetives 'entity-function-x)))
+  (let ((objectives (default-objectives 'entity-function-x)))
     (add-properties-from-values
      a
      (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :data-type 'symbol
@@ -69,13 +69,13 @@ D: 2, 4, 1
      (:name 'selection-method :label "Selection method" :accessor-type 'accessor-accessor-type
       :data-type 'symbol :default-value (system-get 'tournament-selection-method)
       :possible-values (system-selection-methods) :editor 'configurable-copy-list-editor)
-     (:name 'objetives :label "Objetives" :accessor-type 'accessor-accessor-type :setter '(setf objetives)
-      :data-type 'list-structure :default-value objetives :possible-values (list objetives) :editor 'object-list-probability-editor)
+     (:name 'objectives :label "Objectives" :accessor-type 'accessor-accessor-type :setter '(setf objectives)
+      :data-type 'list-structure :default-value objectives :possible-values (list objectives) :editor 'object-list-probability-editor)
      (:name 'initialization-method :label "Initialization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value (system-get 'random-trees-initializer) :editor 'configurable-copy-list-editor
-      :dependency (make-possible-class-dependency 'objetive-class)
-      :default-value-function (lambda (objetive-class) (copy-cyclic (first (possible-initialization-methods (make-instance objetive-class)))))
-      :possible-values-function (lambda (objetive-class) (possible-initialization-methods (make-instance objetive-class))))
+      :dependency (make-possible-class-dependency 'objective-class)
+      :default-value-function (lambda (objective-class) (copy-cyclic (first (possible-initialization-methods (make-instance objective-class)))))
+      :possible-values-function (lambda (objective-class) (possible-initialization-methods (make-instance objective-class))))
      (:name 'local-optimization :label "Local optimization" :accessor-type 'accessor-accessor-type 
       :data-type 'symbol :default-value nil :possible-values (optimization-strategies) 
       :editor 'configurable-copy-list-editor)
@@ -84,16 +84,16 @@ D: 2, 4, 1
      (:name 'pareto-front :label "Pareto front" :accessor-type 'valuable-accessor-type :read-only t
       :data-type 'object :editor 'button-editor :getter 'pareto-front))))
 
-(defmethod (setf objetives) (objetives (a nsga-ii))
-  (setf (slot-value a 'objetives) (normalize-operation-list objetives)))
+(defmethod (setf objectives) (objectives (a nsga-ii))
+  (setf (slot-value a 'objectives) (normalize-operation-list objectives)))
 
 (defmethod pareto-front ((a nsga-ii))
   (first (fronts a)))
 
 (defmethod copy ((o nsga-ii))
   (let ((copy (copy-instance o))
-        (new-objetives (funcall (ttrav #'cons (lambda (x) (copy x))) (objetives o))))
-    (setf (objetives copy) new-objetives)
+        (new-objectives (funcall (ttrav #'cons (lambda (x) (copy x))) (objectives o))))
+    (setf (objectives copy) new-objectives)
     copy))
 
 (defmethod select-genetic-operation ((a nsga-ii))
@@ -128,14 +128,14 @@ D: 2, 4, 1
       (first (sort (individuals population)
                    (lambda (x y) 
                      (< 
-                      (weighted-sum-objetives a x) 
-                      (weighted-sum-objetives a y)))))))
+                      (weighted-sum-objectives a x) 
+                      (weighted-sum-objectives a y)))))))
 
 (defmethod generate-initial-population ((a nsga-ii))
   "Generate <a> initial population."
   (setf (population a) (generate-population (initialization-method a) a))
   (normalize-population-fitness (population a) #'fitness)
-  (calculate-objetives a (individuals (population a))))
+  (calculate-objectives a (individuals (population a))))
 
 (defmethod initialize-dominance-matrix ((a nsga-ii) (p population))
   (let ((size (size p)))
@@ -230,7 +230,7 @@ D: 2, 4, 1
   (let* ((parents (to-array (mapcar (lambda (o) (aref (individuals a) o)) parents)))
          (children (create-individuals a count parents)))
     ;; #TODO: Check if move this to #'evaluate (nsga-ii)
-    (calculate-objetives a children)
+    (calculate-objectives a children)
     children))
 
 (defmethod fast-nondominated-sort ((a nsga-ii) (p population))
@@ -279,7 +279,7 @@ D: 2, 4, 1
   (let ((result))
     (dotimes (i count)
       (let* ((operation (select-genetic-operation a))
-             (child (make-instance (objetive-class a)))
+             (child (make-instance (objective-class a)))
              ;; #TODO: Avoid population instanciation (profile)
              (population (make-population-with individuals))
              (parents (perform-selection (selection-method a) population (arity operation))))
@@ -289,46 +289,46 @@ D: 2, 4, 1
     result))
 
 ;; #TODO: Move this to aptitude evaluation and possibly OpenCL
-(defmethod active-objetives ((a nsga-ii))
+(defmethod active-objectives ((a nsga-ii))
   (mapcar (lambda (o) (first o))
-          (select (objetives a)
+          (select (objectives a)
                   (lambda (o) (> (second o) 0.0)))))
 
-(defmethod active-objetives-with-weight ((a nsga-ii))
-  (select (objetives a)
+(defmethod active-objectives-with-weight ((a nsga-ii))
+  (select (objectives a)
           (lambda (o) (> (second o) 0.0))))
 
-(defmethod calculate-objetives ((a nsga-ii) children)
+(defmethod calculate-objectives ((a nsga-ii) children)
   (dolist (i children)
-    (dolist (o (active-objetives a))
+    (dolist (o (active-objectives a))
       (setf (slot-value i (name o))
-            (value-for-objetive o i)))))
+            (value-for-objective o i)))))
 
-(defmethod weighted-sum-objetives (algorithm object)
-  (reduce 'sum-with-inf (objetive-values algorithm object)))
+(defmethod weighted-sum-objectives (algorithm object)
+  (reduce 'sum-with-inf (objective-values algorithm object)))
 
 (defun sum-with-inf (a b)
   (if (or (eql a +1D++0) (eql b +1D++0))
       +1D++0
     (+ a b)))
 
-(defmethod objetive-value ((a nsga-ii) (o entity) (objetive t))
+(defmethod objective-value ((a nsga-ii) (o entity) (objective t))
   (declare (ignore a))
-  (value-for-objetive objetive o))
+  (value-for-objective objective o))
 
 #|
-(defmethod objetive-value ((a nsga-ii) (o entity) (objetive integer))
+(defmethod objective-value ((a nsga-ii) (o entity) (objective integer))
   (declare (ignore a))
-  (aref (objetive-values o) objetive))
+  (aref (objective-values o) objective))
 |#
 
-(defmethod objetive-values ((a nsga-ii) (o entity))
+(defmethod objective-values ((a nsga-ii) (o entity))
   (map 'vector 
-       (lambda (objetive) 
-         (let ((weight (second objetive))
-               (objetive (first objetive)))
-           (* weight (value-for-objetive objetive o))))
-       (active-objetives-with-weight a)))
+       (lambda (objective) 
+         (let ((weight (second objective))
+               (objective (first objective)))
+           (* weight (value-for-objective objective o))))
+       (active-objectives-with-weight a)))
 
 (defun better-rank (a x y)
   (if (and 
@@ -347,31 +347,31 @@ D: 2, 4, 1
       nil
     (let ((dominated)
           (dominates))
-      (dolist (o (active-objetives algorithm))
+      (dolist (o (active-objectives algorithm))
         (when (better-in a b o)
           (setf dominates t))
         (when (better-in b a o)
           (setf dominated t)))
       (and (not dominated) dominates))))
 
-(defmethod better-in (x y objetive)
+(defmethod better-in (x y objective)
   (<
-   (value-for-objetive objetive x)
-   (value-for-objetive objetive y)))
+   (value-for-objective objective x)
+   (value-for-objective objective y)))
 
 ;; #TODO: Optimize and avoid #'to-array on 'individuals (profile)
 (defmethod calculate-crowding-distance ((a nsga-ii) population individuals)
-  (let* ((objetives (active-objetives a))
-         (objetives-count (length objetives))
+  (let* ((objectives (active-objectives a))
+         (objectives-count (length objectives))
          (last-index (1- (length individuals)))
          (array (individuals-array population)))
     (dolist (i individuals)
       (setf (aref (distance a) i) 0))
-    (dolist (i objetives)
-      (let* ((sorted (sort individuals (lambda (x y) (objetive-comparer i array x y))))
+    (dolist (i objectives)
+      (let* ((sorted (sort individuals (lambda (x y) (objective-comparer i array x y))))
              (min (first sorted))
              (max (car (last sorted)))
-             (rge (- (objetive-value a (aref array max) i) (objetive-value a (aref array min) i)))
+             (rge (- (objective-value a (aref array max) i) (objective-value a (aref array min) i)))
              (sorted (to-array sorted)))
         (setf (aref (distance a) (aref sorted 0)) +1D++0
               (aref (distance a) (aref sorted last-index)) +1D++0)
@@ -379,14 +379,14 @@ D: 2, 4, 1
           (dotimes (j last-index)
             (when (not (= j 0))
               (incf (aref (distance a) (aref sorted j))
-                    (/ (- (objetive-value a (aref array (aref sorted (1+ j))) i)
-                          (objetive-value a (aref array (aref sorted (1- j))) i))
+                    (/ (- (objective-value a (aref array (aref sorted (1+ j))) i)
+                          (objective-value a (aref array (aref sorted (1- j))) i))
                        rge)))))))))
 
-(defun objetive-comparer (objetive array x y)
+(defun objective-comparer (objective array x y)
   (< 
-   (value-for-objetive objetive (aref array x))
-   (value-for-objetive objetive (aref array y))))
+   (value-for-objective objective (aref array x))
+   (value-for-objective objective (aref array y))))
 
 (defun crowded-comparison-operator (algorithm x y)
   "Compares between ranks first, then distance <x> and <y>."
@@ -397,21 +397,21 @@ D: 2, 4, 1
            (aref (distance algorithm) y))
       (< rank-x rank-y))))
 
-(defclass moea-objetive (object-with-properties)
+(defclass moea-objective (object-with-properties)
   ((name :initarg :name :accessor name)
    (operator :initarg :operator :accessor operator)
    (weight :initarg :weight :accessor weight)
    (value-expression :initarg :value-expression :initform nil :accessor value-expression)))
 
 
-(defmethod value-for-objetive ((o moea-objetive) object)
+(defmethod value-for-objective ((o moea-objective) object)
   (funcall (or (value-expression o) (name o)) object))
 
-;; Default objetives for multi objetive evolutionary algorithm on common f(x) functions, #REFACTOR
-(defmethod default-objetives ((object (eql 'entity-function-x)))
-  (list (list (subject (system-get 'moea-objetive-distance))               0.5)
-        (list (subject (system-get 'moea-objetive-size))                   0.5)
-        (list (subject (system-get 'moea-objetive-non-linear-components))  0.0)))
+;; Default objectives for multi objective evolutionary algorithm on common f(x) functions, #REFACTOR
+(defmethod default-objectives ((object (eql 'entity-function-x)))
+  (list (list (subject (system-get 'moea-objective-distance))               0.5)
+        (list (subject (system-get 'moea-objective-size))                   0.5)
+        (list (subject (system-get 'moea-objective-non-linear-components))  0.0)))
 
 (defun linear-components-count (exp)
   (recursive-count-list '(+ -) exp))
@@ -440,30 +440,30 @@ D: 2, 4, 1
    (fitness :initarg :fitness :initform 0 :accessor fitness)
    (fitness-adjusted :initarg :fitness-adjusted :initform :fitness-adjusted :accessor fitness-adjusted)
    (fitness-normalized :initarg :fitness-normalized :initform :fitness-normalized :accessor fitness-normalized)
-   ;; Patch instance variables by the moment #1 (objetive values cache)
+   ;; Patch instance variables by the moment #1 (objective values cache)
    (distance :initarg :distance :initform :inf :accessor distance)
    (size :initarg :size :initform 0 :accessor size)
    (non-linear-components :initarg :non-linear-components :initform 0 :accessor non-linear-components)))
 
 
-(defmethod initialize-moea-objetives ()
+(defmethod initialize-moea-objectives ()
   (system-add
    (make-instance 'registrable-object-wrapper 
-                  :name 'moea-objetive-distance
+                  :name 'moea-objective-distance
                   :description "Distance"
-                  :subject (make-instance 'moea-objetive 
+                  :subject (make-instance 'moea-objective 
                   :name 'distance 
                   :value-expression 'lambda-calculated-distance))
    (make-instance 'registrable-object-wrapper 
-                  :name 'moea-objetive-size
+                  :name 'moea-objective-size
                   :description "Size"
-                  :subject (make-instance 'moea-objetive 
+                  :subject (make-instance 'moea-objective 
                   :name 'size 
                   :value-expression 'lambda-tree-size))
    (make-instance 'registrable-object-wrapper 
-                  :name 'moea-objetive-non-linear-components
+                  :name 'moea-objective-non-linear-components
                   :description "Non linear components"
-                  :subject (make-instance 'moea-objetive 
+                  :subject (make-instance 'moea-objective 
                   :name 'non-linear-components 
                   :value-expression 'lambda-non-linear-components-count))))
 
