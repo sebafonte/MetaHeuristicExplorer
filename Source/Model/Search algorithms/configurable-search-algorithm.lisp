@@ -225,7 +225,7 @@
   (let* ((algorithm (algorithm e))
          (operation (select-operation e))
          (new-exp (execute-operation-on operation algorithm))
-         (object (make-objetive algorithm new-exp)))
+         (object (make-objective algorithm new-exp)))
     (replace-individual-into e operation object target-population)))
 
 (defmethod register-run-data ((e evolver))

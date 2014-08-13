@@ -74,9 +74,9 @@
                 (better-than best best-individual))
             (setf best-individual best))))
     ;; #TODO: Debug
-    (setf (context object) task)
-    (setf (fitness object) (fitness best-individual))
-    (setf (fitness (gen object)) (fitness best-individual))))
+    (setf (context object) task
+          (fitness object) (fitness best-individual)
+          (fitness (gen object)) (fitness best-individual))))
 
 (defmethod specialize-language ((task search-task) (evaluator search-algorithm-objective-fitness-evaluator))
   (specialize-language-from (language task) (candidate-language evaluator)))

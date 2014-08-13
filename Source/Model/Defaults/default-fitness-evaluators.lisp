@@ -120,11 +120,11 @@
                   :description "DVRP default evaluator"))
   (system-add
    ;; Evaluators for search tasks
-   (make-instance 'search-algorithm-objetive-fitness-evaluator
+   (make-instance 'search-algorithm-objective-fitness-evaluator
                   :name 'default-composite-algorithm-evaluator-1
                   :description "Algorithm fitness evaluator 1")
    ;; Evaluators for search tasks
-   (make-instance 'search-task-objetive-fitness-evaluator
-                  :name 'default-search-task-objetive-fitness-evaluator
-                  :description "Objetive fitness evaluator")))
+   (make-instance 'search-task-objective-fitness-evaluator
+                  :name 'default-search-task-objective-fitness-evaluator
+                  :description "Objective fitness evaluator")))
 

@@ -18,7 +18,7 @@
   (initialize-subroutine-compression-objects)
   (initialize-default-languages)
   (initialize-default-fitness-evaluators)
-  (initialize-moea-objetives)
+  (initialize-moea-objectives)
   (initialize-default-optimization-methods)
   (initialize-default-optimization-targets)
   (initialize-default-optimization-strategies)

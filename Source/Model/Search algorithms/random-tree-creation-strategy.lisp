@@ -7,6 +7,6 @@
   "Answer a new individual for <a>."
   (let* ((new-exp (create-expresion a (max-size a) (max-depth a) t nil))
          (simplified-exp (simplify-strategy (language a) new-exp a))
-         (child (make-objetive (context a) simplified-exp)))
+         (child (make-objective (context a) simplified-exp)))
     (when evaluate (evaluate a child))
     child))

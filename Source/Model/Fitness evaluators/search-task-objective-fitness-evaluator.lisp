@@ -15,10 +15,10 @@
     :data-type 'symbol :default-value 'fitness :editor 'integer-editor)
    (:name 'number-of-samples :label "Samples" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :default-value 10 :editor 'number-editor)
-   (:name 'candidate-object-class :label "Candidate object class" :accessor-type 'accessor-accessor-type :category "objective"
+   (:name 'candidate-object-class :label "Candidate object class" :accessor-type 'accessor-accessor-type :category "Objective"
     :data-type 'symbol :default-value (default-search-object-class) :possible-values (possible-classes-to-search) 
     :editor 'list-editor)
-   (:name 'candidate-language :label "Language" :accessor-type 'accessor-accessor-type :category "objective"
+   (:name 'candidate-language :label "Language" :accessor-type 'accessor-accessor-type :category "Objective"
     :data-type 'model :editor 'configurable-copy-list-editor 
     :dependency (make-eql-language-dependence 'candidate-object-class)
     :default-value-function (lambda (objective-class) (copy-cyclic (default-language (make-instance objective-class))))
