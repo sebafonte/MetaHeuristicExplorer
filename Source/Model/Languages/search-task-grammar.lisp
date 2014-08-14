@@ -304,11 +304,12 @@
   (let ((instance (copy-cyclic *default-template-task*)))
     (setf 
      (algorithm instance) algorithm
-     (language instance) language
      (input instance) generator
      (initialization-method algorithm) generator
      (task-builder instance) builder
-     (fitness-evaluator instance) fitness-evaluator)
+     (objective-class instance) (candidate-object-class (fitness-evaluator context))
+     (language instance) (candidate-language (fitness-evaluator context))
+     (fitness-evaluator instance) (candidate-fitness-evaluator (fitness-evaluator context)))
     (make-task-representation-corrections instance)
     instance))
 
@@ -346,8 +347,6 @@
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*) 
           (max-generations instance) (crop-for-property instance max-generations 'max-generations *min-generations* *max-generations*)
           (selection-method instance) selection-method
-          (fitness-evaluator (context instance)) (candidate-fitness-evaluator (fitness-evaluator context))
-          (language (context instance)) (candidate-language (fitness-evaluator context))
           (elite-manager instance) elite-manager)
     instance))
 
@@ -356,8 +355,6 @@
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*)
           (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *min-iterations* *max-iterations*)
           (selection-method instance) selection-method
-          (fitness-evaluator (context instance)) (candidate-fitness-evaluator context)
-          (language (context instance)) (candidate-language (fitness-evaluator context))
           (replacement-strategy instance) replacement-method)
     instance))
 
@@ -391,7 +388,7 @@
     instance))
 
 (defun MAKE-LG (context max-size min-constants max-constants)
-  (let* ((value (copy-cyclic (default-language (make-instance (candidate-language (fitness-evaluator context))))))
+  (let* ((value (copy-cyclic (candidate-language (fitness-evaluator context))))
          (min (crop (min min-constants max-constants) *min-size-constants* *max-size-constants*))
          (max (crop (max min-constants max-constants) *min-size-constants* *max-size-constants*)))
     (when (< (- max min) 2)
