@@ -30,7 +30,7 @@
   "Initialize <o> fitness data."
   nil)
 
-(defmethod ensure-fitness-data-initialized ((o entity-evaluator))
+(defmethod ensure-fitness-data-initialized ((o entity-evaluator) algorithm)
   nil)
 
 (defmethod destination-object ((o entity-evaluator))

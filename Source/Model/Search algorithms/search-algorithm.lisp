@@ -55,6 +55,7 @@
 (defmethod search-loop :before ((a search-algorithm) seed)
   "Takes care of finish actions when performing a search-loop on <a>."
   (setf (state (context a)) 'RUNNING)
+  (ensure-fitness-data-initialized (fitness-evaluator a) a)
   (trigger a :algorithm-start))
 
 (defmethod search-loop :after ((a search-algorithm) seed)
@@ -78,7 +79,7 @@
   (trigger a :initialize-fitness-data-end))
 
 (defmethod ensure-objective-data-initialized ((a search-algorithm))
-  (ensure-fitness-data-initialized (fitness-evaluator a)))
+  (ensure-fitness-data-initialized (fitness-evaluator a) a))
 
 ;; Language object hook utility functions
 (defmethod language ((a search-algorithm))
@@ -148,10 +149,7 @@
   t)
 
 (defmethod make-objective ((o search-algorithm) &optional exp)
-  (make-instance (objective-class o) exp))
-
-(defmethod make-objective ((o search-task) &optional exp)
-  (make-instance (objective-class o) exp))
+  (make-instance (objective-class o) :expresion exp))
 
 (defmethod make-objective ((o symbol) &optional exp)
-  (make-instance o exp))
+  (make-instance o :expresion exp))

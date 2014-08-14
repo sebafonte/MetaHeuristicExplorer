@@ -4,7 +4,8 @@
    (number-of-samples :initarg :number-of-samples :accessor number-of-samples)
    (candidate-object-class :initarg :candidate-object-class :accessor candidate-object-class)
    (candidate-language :initarg :candidate-language :accessor candidate-language)
-   (candidate-fitness-evaluator :initarg :candidate-fitness-evaluator :accessor candidate-fitness-evaluator)))
+   (candidate-fitness-evaluator :initarg :candidate-fitness-evaluator :accessor candidate-fitness-evaluator)
+   (context :initarg :context :accessor context)))
 
 
 (defmethod initialize-properties :after ((o search-task-objective-fitness-evaluator))
@@ -31,7 +32,7 @@
 
 (defmethod evaluate ((evaluator search-task-objective-fitness-evaluator) (object search-task))
   "Use <evaluator> to calculate and answer <object> fitness."
-  (let ((task-description (cadr-insert (program object) object)))
+  (let ((task-description (cadr-insert (program object) (context evaluator))))
     (multiple-value-bind (result task)
         (eval task-description)
       (setf (fitness object) (fitness result))
@@ -47,3 +48,6 @@
   (mapcar 
    (lambda (o) (if (consp o) (cadr-insert o value condition) o))
    exp))
+
+(defmethod ensure-fitness-data-initialized ((o search-task-objective-fitness-evaluator) algorithm)
+  (setf (context o) (context algorithm)))

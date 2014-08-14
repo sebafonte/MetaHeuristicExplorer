@@ -11,7 +11,7 @@
   nil)
 
 (defmethod evaluate-distance ((a search-algorithm) (o example-object))
-  "Evaluate <o> fitness depending on the distance to a specific objetive."
+  "Evaluate <o> fitness depending on the distance to a specific objective."
   0)
 
 (defmethod draw-object-background ((o example-object) subtask interface width heigth)

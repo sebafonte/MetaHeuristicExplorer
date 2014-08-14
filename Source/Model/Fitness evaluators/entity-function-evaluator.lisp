@@ -17,7 +17,7 @@
    (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
     :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor)))
 
-(defmethod ensure-fitness-data-initialized ((o entity-function-evaluator))
+(defmethod ensure-fitness-data-initialized ((o entity-function-evaluator) algorithm)
   (if (not (slot-boundp o 'fitness-vector))
       (initialize-fitness-data o)))
 

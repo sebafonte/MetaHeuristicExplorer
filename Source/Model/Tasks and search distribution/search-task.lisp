@@ -350,3 +350,11 @@
 (defmethod possible-initialization-methods-for ((o search-task))
   (list 
    (system-get 'random-trees-cfg-initializer)))
+
+(defmethod make-objective ((o search-task) &optional exp)
+  (make-objective-using-class (objective-class o) exp))
+
+(defmethod make-objective-using-class ((o symbol) &optional exp)
+  (if exp
+      (make-instance o :expresion exp)
+    (make-instance o)))
