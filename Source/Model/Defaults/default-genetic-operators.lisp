@@ -229,12 +229,13 @@
 
 (defun default-genetic-operators-probability-search-task ()
   "Answer a structure with default operations with each normalized probability."
-  (list (list (system-get 'crossover-cfg)              0.2)
-        (list (system-get 'mutate-cfg)                 0.2)
-        (list (system-get 'mutate-reuse-cfg)           0.2)
-        (list (system-get 'mutate-production-cfg)      0.2)
-        (list (system-get 'branch-delete-cfg)          0.2)
-        (list (system-get 'mutate-production-cfg)      0.0)))
+  (list 
+   (list (system-get 'crossover-cfg)                   0.5)
+   (list (system-get 'mutate-cfg)                      0.5)
+   (list (system-get 'mutate-reuse-cfg)                0.0)
+   (list (system-get 'mutate-production-cfg)           0.0)
+   (list (system-get 'random-create-cfg)               0.0)
+   (list (system-get 'branch-delete-cfg)               0.0)))
 
 (defun default-genetic-operators-probability-adf-lisp-expression ()
   "Answer a structure with default operations with each normalized probability."
