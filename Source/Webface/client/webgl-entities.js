@@ -5,75 +5,36 @@ var sampleEntityType = "entity-bw";
 
 // Draw functions
 function drawEntity(entity, entityType, canvas) {
-	// get context
 	var gl = canvas.getContext("experimental-webgl");
-
-	// switch entity type
-	switch(entityType)
-	{
+	
+	switch(entityType) {
 		case "entity-bw":
 			drawEntityImageBW(canvas, gl, entity);	
 	}
 }
 
 function drawEntityImageBW() {
-	// Setup a GLSL program
-	var vertexShader = createShaderFromScriptElement(gl, "shader-vs");
-	var fragmentShader = createShaderFromScriptElement(gl, "shader-fs");
-	var program = createProgram(gl, [vertexShader, fragmentShader]);
-	gl.useProgram(program);
-
-	// Look up where the vertex data needs to go
-	var positionLocation = gl.getAttribLocation(program, "a_position");
-
-	// Create a buffer and put a single clipspace rectangle in it (2 triangles)
-	var buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	gl.bufferData(
-		gl.ARRAY_BUFFER, 
-		new Float32Array([
-			-1.0, -1.0, 
-			 1.0, -1.0, 
-			-1.0,  1.0, 
-			-1.0,  1.0, 
-			 1.0, -1.0, 
-			 1.0,  1.0]), 
-		gl.STATIC_DRAW);
-	gl.enableVertexAttribArray(positionLocation);
-	gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-	// draw
-	gl.drawArrays(gl.TRIANGLES, 0, 6); 	
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	mat4.identity(mvMatrix);
+	mat4.translate(mvMatrix, [0.0, 0.0, -1.2]);
+	gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	setMatrixUniforms();
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
 }
- 
+        
 function drawShaderEntity () { 
-	// setup a GLSL program
-	var vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
-	var fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
-	var program = createProgram(gl, [vertexShader, fragmentShader]);
-	gl.useProgram(program);
-
-	// look up where the vertex data needs to go
-	var positionLocation = gl.getAttribLocation(program, "a_position");
-
-	// Create a buffer and put a single clipspace rectangle in it (2 triangles)
-	var buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	gl.bufferData(
-		gl.ARRAY_BUFFER, 
-		new Float32Array([
-			-1.0, -1.0, 
-			 1.0, -1.0, 
-			-1.0,  1.0, 
-			-1.0,  1.0, 
-			 1.0, -1.0, 
-			 1.0,  1.0]), 
-		gl.STATIC_DRAW);
-	gl.enableVertexAttribArray(positionLocation);
-	gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-	// draw
-	gl.drawArrays(gl.TRIANGLES, 0, 6); 
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	mat4.identity(mvMatrix);
+	mat4.translate(mvMatrix, [0.0, 0.0, -1.2]);
+	gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	setMatrixUniforms();
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
 }
 
 function drawEntityImageVecColor() {

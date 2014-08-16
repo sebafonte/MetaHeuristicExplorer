@@ -4,29 +4,14 @@ var sampleEntityType = "entity-bw";
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 var shaderProgram;
+var triangleVertexPositionBuffer;
+var squareVertexPositionBuffer;
 var gl;
 
-
-/*
-<script id="2d-vertex-shader" type="x-shader/x-vertex">
-attribute vec2 a_position;
-
-void main() {
-  gl_Position = vec4(a_position, 0, 1);
-}
-</script>
-
-<script id="2d-fragment-shader" type="x-shader/x-fragment">
-void main() {
-  gl_FragColor = vec4(0,1,0,1);  // green
-}
-</script>
-*/
-
 // Init functions
-function initWebGL(entity) {
-	var canvas = document.getElementById("parent1");
-    initGL(canvas);
+function initWebGL(canvas, entity) {
+    var canvas = document.getElementById(canvas);
+	initGL(canvas);
 	initShaders();
     initBuffers();
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -36,7 +21,6 @@ function initWebGL(entity) {
 
 function initGL(canvas) {
 	try {
-		var canvas = document.getElementById("parent1");
 		gl = canvas.getContext("experimental-webgl");
 		gl.viewportWidth = canvas.width;
 		gl.viewportHeight = canvas.height;
@@ -50,7 +34,26 @@ function initGL(canvas) {
 function initBuffers() {
     triangleVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-	
+	var vertices = [
+		 0.0,  1.0,  0.0,
+		-1.0, -1.0,  0.0,
+		 1.0, -1.0,  0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	triangleVertexPositionBuffer.itemSize = 3;
+	triangleVertexPositionBuffer.numItems = 3;
+
+	squareVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+	vertices = [
+		 1.0,  1.0,  0.0,
+		-1.0,  1.0,  0.0,
+		 1.0, -1.0,  0.0,
+		-1.0, -1.0,  0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	squareVertexPositionBuffer.itemSize = 3;
+	squareVertexPositionBuffer.numItems = 4;
 }
 
 function initShaders() {

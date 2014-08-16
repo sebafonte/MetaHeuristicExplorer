@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Genetic explorer interface test</title>
+	<script src="glMatrix-0.9.5.min.js"></script>
+	<script src="webgl-utils.js"></script>
+	<script src="webgl-entities.js"></script>
+	
+	<script id="shader-fs" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec4 vColor;
+		varying float xpos;
+		varying float ypos;
+		varying float zpos;
+		
+		void main(void) {
+			gl_FragColor = vec4 (xpos, ypos, zpos, 1.0);
+		}
+	</script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+		attribute vec3 aVertexPosition;
+		uniform mat4 uMVMatrix;
+		uniform mat4 uPMatrix;
+		varying float xpos;
+		varying float ypos;
+		varying float zpos;
+
+		void main(void) {
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 2.0);
+			float scale = 20.0;
+			float value = abs(sin(aVertexPosition.x * scale) * cos(aVertexPosition.y * scale));
+			xpos = clamp(aVertexPosition.x,0.0,1.0);
+			ypos = clamp(aVertexPosition.y,0.0,1.0);
+			zpos = clamp(aVertexPosition.z,0.0,1.0);
+		}
+	</script>
+	
+	<script>
+		var startupDraw = function () {
+			/*
+			var htmlCode = "";
+			for (var i=0; i< 8; i++) {
+				var canvasId = "parent" + i.toString();
+				htmlCode += "<canvas id=\"" + canvasId + ""\"width=\"150\" height=\"150\"></canvas>";
+			}
+			
+			document.getElementById("parents-div").innerHtml = htmlCode;
+			*/
+			
+			for (var i=0; i< 4; i++) {
+				var canvasId = "parent" + i.toString();
+				initWebGL(canvasId, "cos(x) * cos(y)");
+			}	
+			
+			for (var i=0; i< 16; i++) {
+				var canvasId = "child" + i.toString();
+				initWebGL(canvasId, "cos(x) * cos(y)");
+			}	
+		};
+	</script>
+</head>
+
+<body onload="startupDraw()">
+	<p>Test WebGL shaders</p>
+	
+	<div>
+		<div id="parents-div" class="view-container">
+			<canvas id="parent0" width="150" height="150"></canvas>
+			<canvas id="parent1" width="150" height="150"></canvas>
+			<canvas id="parent2" width="150" height="150"></canvas>
+			<canvas id="parent3" width="150" height="150"></canvas>
+		</div>
+		<HR>
+		<div id="children-div" class="view-container">
+			<canvas id="child0" width="150" height="150"></canvas>
+			<canvas id="child1" width="150" height="150"></canvas>
+			<canvas id="child2" width="150" height="150"></canvas>
+			<canvas id="child3" width="150" height="150"></canvas>
+			<canvas id="child4" width="150" height="150"></canvas>
+			<canvas id="child5" width="150" height="150"></canvas>
+			<canvas id="child6" width="150" height="150"></canvas>
+			<canvas id="child7" width="150" height="150"></canvas>		
+		</div>
+		
+		<div id="comments-div" class="view-container">
+			<form>
+				Name: <input type="text" name="name"><br>
+				Comment: <input type="text" name="comment">
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>
+
+
