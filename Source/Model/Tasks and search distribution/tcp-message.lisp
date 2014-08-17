@@ -164,7 +164,7 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-random)) message administrator stream)
   (let ((language (system-get (first (content message))))
         (max-size (second (content message))))
-  (format stream "~A" (create-random-from-production language '(start) max-size nil))
+  (format stream "~A" (infix-coverted-string (create-random-from-production language '(start) max-size nil)))
   (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-crossover)) message administrator stream)
@@ -172,12 +172,49 @@
         (object-a (second (content message)))
         (object-b (third (content message)))
         (operator (system-get 'crossover-cfg)))
-  (format stream "~A" (crossover-cfg object-a object-b language operator))
+  (format stream "~A" (infix-coverted-string (crossover-cfg object-a object-b language operator)))
   (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-mutate)) message administrator stream)
   (let ((language (system-get (first message)))
         (object (second message))
         (operator (system-get 'mutate-cfg)))
-  (format stream "~A" (mutate-cfg object language operator))
+  (format stream "~A" (infix-coverted-string (mutate-cfg object language operator)))
   (force-output stream)))
+
+;; Infix converter (#TEMP)
+(defun infix-converter (o buffer)
+  (if (consp o)
+      (if (or (eql (first o) '+) (eql (first o) '-) (eql (first o) '*) (eql (first o) '/))
+          (progn 
+            ;; Operator
+            (format buffer "(")
+            (infix-converter (second o) buffer)
+            (infix-converter (first o) buffer)
+            (infix-converter (third o) buffer)
+            (format buffer ")"))
+        ;; Function
+        (progn 
+          (infix-converter (first o) buffer)
+          (format buffer "(")
+          (dotimes (i (length (cdr o)))
+            (infix-converter (nth i (cdr o)) buffer)
+            (when (< i (1- (length (cdr o))))
+              (format buffer ",")))
+          (format buffer ")")))
+    ;; Constant or name
+    (format buffer "~4$" (replace-converter o))))
+
+(defmethod replace-converter ((o (eql '/-)))
+  'divideprotected)
+
+(defmethod replace-converter ((o t))
+  o)
+
+(defun infix-coverted-string (o)
+  (with-output-to-string (stream)
+    (infix-converter o stream)))
+
+
+
+

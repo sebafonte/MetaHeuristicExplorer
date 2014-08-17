@@ -2,7 +2,7 @@
   ())
 
 
-;;; AUXILIAR METHODS
+;;; Auxiliar methods
 (defmethod verify-source-code-persistence ((test test-source-code-conversion) (object t) &optional (function nil))
   (check
     (apply function (list (eval (new-source-description object)) object))))
@@ -23,7 +23,7 @@
   (verify-source-code-persistence test object #'equalp))
 
 
-;;; TEST METHODS
+;;; Tests
 (defmethod test-basic-objects-equality ((o test-source-code-conversion))
   ;; CASES: Basic cases
   (verify-source-code-persistence-equal o 222)
