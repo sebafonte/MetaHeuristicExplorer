@@ -162,24 +162,27 @@
   (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-random)) message administrator stream)
-  (let ((language (system-get (first (content message))))
-        (max-size (second (content message))))
-  (format stream "~A" (infix-coverted-string (create-random-from-production language '(start) max-size nil)))
-  (force-output stream)))
+  (let* ((language (system-get (first (content message))))
+         (max-size (second (content message)))
+         (result (create-random-from-production language '(start) max-size nil)))
+    (format stream "~A | ~A" result (infix-coverted-string result))
+    (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-crossover)) message administrator stream)
-  (let ((language (system-get (first (content message))))
-        (object-a (second (content message)))
-        (object-b (third (content message)))
-        (operator (system-get 'crossover-cfg)))
-  (format stream "~A" (infix-coverted-string (crossover-cfg object-a object-b language operator)))
+  (let* ((language (system-get (first (content message))))
+         (object-a (second (content message)))
+         (object-b (third (content message)))
+         (operator (system-get 'crossover-cfg))
+         (result (crossover-cfg object-a object-b language operator)))
+  (format stream "~A | ~A" result (infix-coverted-string result))
   (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-mutate)) message administrator stream)
-  (let ((language (system-get (first message)))
-        (object (second message))
-        (operator (system-get 'mutate-cfg)))
-  (format stream "~A" (infix-coverted-string (mutate-cfg object language operator)))
+  (let* ((language (system-get (first (content message))))
+         (object (second (content message)))
+         (operator (system-get 'mutate-cfg))
+         (result (mutate-cfg object language operator)))
+    (format stream "~A | ~A" result (infix-coverted-string result))
   (force-output stream)))
 
 ;; Infix converter (#TEMP)
@@ -214,7 +217,3 @@
 (defun infix-coverted-string (o)
   (with-output-to-string (stream)
     (infix-converter o stream)))
-
-
-
-
