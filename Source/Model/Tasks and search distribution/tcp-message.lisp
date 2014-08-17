@@ -156,3 +156,28 @@
     (setf (content new-message) content)
     new-message))
 
+;;; Web interface
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-languages)) message administrator stream)
+  (format stream "lisp-math-function-x lisp-math-function-xy rgb-color-images")
+  (force-output stream))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-random)) message administrator stream)
+  (let ((language (system-get (first (content message))))
+        (max-size (second (content message))))
+  (format stream "~A" (create-random-from-production language '(start) max-size nil))
+  (force-output stream)))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-crossover)) message administrator stream)
+  (let ((language (system-get (first (content message))))
+        (object-a (second (content message)))
+        (object-b (third (content message)))
+        (operator (system-get 'crossover-cfg)))
+  (format stream "~A" (crossover-cfg object-a object-b language operator))
+  (force-output stream)))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-mutate)) message administrator stream)
+  (let ((language (system-get (first message)))
+        (object (second message))
+        (operator (system-get 'mutate-cfg)))
+  (format stream "~A" (mutate-cfg object language operator))
+  (force-output stream)))
