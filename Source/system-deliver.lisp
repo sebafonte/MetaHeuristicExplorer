@@ -232,6 +232,8 @@
             "Model\\Tasks and search distribution\\benchmarking.lisp"
             "Model\\Tasks and search distribution\\distributed-environment-initialization.lisp"
             "Model\\Tasks and search distribution\\main-server-informer.lisp"
+            ;; TCP interface
+            "tcp-interface.lisp"
             ;; Benchmarking
             "Model\\Benchmark\\base-benchmark.lisp"
             "Model\\Benchmark\\task-benchmark.lisp"
