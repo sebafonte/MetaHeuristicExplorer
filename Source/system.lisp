@@ -228,8 +228,6 @@
             "Model\\Tasks and search distribution\\benchmarking.lisp"
             "Model\\Tasks and search distribution\\distributed-environment-initialization.lisp"
             "Model\\Tasks and search distribution\\main-server-informer.lisp"
-            ;; TCP interface
-            "tcp-interface.lisp"
             ;; Benchmarking
             "Model\\Benchmark\\base-benchmark.lisp"
             "Model\\Benchmark\\task-benchmark.lisp"
@@ -306,6 +304,8 @@
             "Interface\\interface-pane-editor-entity-explorer.lisp"
             "Interface\\interface-pane-editor-entity-image-opengl.lisp"
             "Interface\\interface-pane-editor-entity-explorer-opengl.lisp"
+            ;; TCP interface
+            "tcp-interface.lisp"
             ;; Source code extraction
             "Model\\Tasks and search distribution\\source-code-description.lisp"
             ;; OpenGL drawing
@@ -386,6 +386,7 @@
 (setf *system* (compile-system 'gp-tool :force t :load t))
 (initialize-system)
 (initialize-gui-logger)
+(initialize-default-web-interface-objects)
 
 ;; Open main window
 (open-pane (setf *main-pane* (make-instance 'pane-principal)))

@@ -13,9 +13,9 @@
 
 (defmethod possible-generation-methods ((object sample-vrp-population-generator))
   '(clark-and-wright-generation
-	random-tour-variable-vehicles
+    random-tour-variable-vehicles
     random-tour-fixed-vehicles
-	radial-scan-generation-method
+    radial-scan-generation-method
     one-vehicle-per-city-method))
 
 (defmethod generate-population ((object sample-vrp-population-generator) (algorithm search-algorithm))

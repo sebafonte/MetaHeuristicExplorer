@@ -133,7 +133,9 @@
 
 (defmethod property-named ((o base-model) name)
   "Answers <o> property named <label>."
-  (find-if (lambda (p) (equal (name p) name)) (properties o)))
+  (if (consp name)
+      (get-property-from-chain o name)
+    (find-if (lambda (p) (equal (name p) name)) (properties o))))
 
 (defmethod property-labeled ((o base-model) label)
   "Answers <o> property labeled <label>."
@@ -193,6 +195,17 @@
       (if (eql j (car (last chain)))
           ;; Get value
           (return-from get-property-chain-value (get-chained-property-value final-object j))
+        ;; Move to next object
+        (setf final-object (get-value-for-property-named final-object j))))))
+
+(defun get-property-from-chain (object chain)
+  ;; Go to last property of the chain
+  (let ((final-object object))
+    (dolist (j chain)
+      ;; #NOTE: Not support for the same property name in the chain!!! 
+      (if (eql j (car (last chain)))
+          ;; Get value
+          (return-from get-property-from-chain (property-named final-object j))
         ;; Move to next object
         (setf final-object (get-value-for-property-named final-object j))))))
 

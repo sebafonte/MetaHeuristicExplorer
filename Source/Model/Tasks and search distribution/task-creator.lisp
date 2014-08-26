@@ -92,22 +92,22 @@
     (dolist (i combinations)
       (let ((new-task (copy-cyclic task)))
         (setf (name new-task) (format nil "~A~A.task" (name new-task) (length result)))
-        (apply-variation creator new-task i properties)
+        (apply-variation new-task i properties)
         (appendf result (list new-task))))
     ;; #TODO: Check if necessary
     (setf (process task) old-process)
     result))
 
-(defmethod apply-variation ((creator task-creator) new-task variation properties)
+(defun apply-variation (object variation properties)
   (dolist (i properties)
     ;; Go to last property of the chain
-    (let ((final-object new-task))
+    (let ((final-object object))
       (dolist (j i)
         (if (eql j (car (last i)))
             ;; Set value for property
             (apply-chained-property final-object j variation)
           ;; Move to next object
-          (setf final-object (get-value-for-property-named new-task j)))))))
+          (setf final-object (get-value-for-property-named object j)))))))
 
 (defmethod apply-chained-property (object property value)
   (if (symbolp property)

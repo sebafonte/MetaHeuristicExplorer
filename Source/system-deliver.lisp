@@ -232,8 +232,6 @@
             "Model\\Tasks and search distribution\\benchmarking.lisp"
             "Model\\Tasks and search distribution\\distributed-environment-initialization.lisp"
             "Model\\Tasks and search distribution\\main-server-informer.lisp"
-            ;; TCP interface
-            "tcp-interface.lisp"
             ;; Benchmarking
             "Model\\Benchmark\\base-benchmark.lisp"
             "Model\\Benchmark\\task-benchmark.lisp"
@@ -310,6 +308,8 @@
             "Interface\\interface-pane-editor-entity-explorer.lisp"
             "Interface\\interface-pane-editor-entity-image-opengl.lisp"
             "Interface\\interface-pane-editor-entity-explorer-opengl.lisp"
+            ;; TCP interface
+            "tcp-interface.lisp"
             ;; Source code extraction
             "Model\\Tasks and search distribution\\source-code-description.lisp"
             ;; OpenGL drawing
@@ -392,6 +392,7 @@
 (defun deliver-initialize-system ()
   (initialize-system)
   (initialize-command-line-settings)
+  (initialize-default-web-interface-objects)
   (when *open-gui-on-startup*
     (load-default-panes)
     (open-pane (setf *main-pane* (make-instance 'pane-principal)))))

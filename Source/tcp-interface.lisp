@@ -4,6 +4,15 @@
   (format stream "lisp-math-function-x lisp-math-function-xy rgb-color-images")
   (force-output stream))
 
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-default)) message administrator stream)
+  (let ((name (first (content message)))
+        (properties-description (second (content message))))
+    (let ((object (task-get name)))
+      (if object 
+          (properties-object-description-on object properties-description stream)  
+        (format stream "error not found"))
+      (force-output stream))))
+
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-default)) message administrator stream)
   (let* ((language-name (first (content message)))
          (result (program (subject (default-object-for language-name)))))
@@ -89,3 +98,71 @@
          (system-get 'rgb-default-3)
          (system-get 'rgb-default-4)
          (system-get 'rgb-default-5))))
+
+(defmethod default-object-for ((o (eql 'vrp-list-language)))
+  (system-get 'DEFAULT-VRP-EVALUATOR))
+
+;; Examples extensions
+(defvar *interface-tasks*)
+
+(defmethod initialize-default-web-interface-objects ()
+  ;; Create task register
+  (setf *interface-tasks* (make-hash-table :test 'equals))
+  ;; Create a VRP default task
+  (let ((task (make-instance 'search-task)))
+    (setf (name task) 'default-vrp-task)
+    (set-value-for-property-named task 'objective-class 'ENTITY-SAMPLE-VRP)
+    (add-task (name task) task)))
+
+(defun properties-object-description-on (object properties-list stream)
+  (dolist (i properties-list)
+    (let ((property (property-named object i)))
+      (format stream
+              "~A|~A|~A||" 
+              (name property)
+              (data-type property)
+              (get-value-for-property-named object i)))))
+
+(defun properties-object-description-to (object description)
+  (dolist (i description)
+    (apply-variation object (read-from-string (second i)) (list (first i)))))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-task-using)) message administrator stream)
+  (let* ((name (first (content message)))
+         (properties-description (second (content message)))
+         (task (copy-cyclic (task-get name))))
+    (setf (name task) (symbol-name (gensym)))
+    (add-task (name task) task)
+    (properties-object-description-to task properties-description)
+    (format stream "Task started|~A" (name task))
+    (force-output stream)))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-delete-task)) message administrator stream)
+  (let* ((name (first (content message)))
+         (task (task-get (symbol-name name))))
+    (kill-task task)
+    (rem-task (symbol-name name))
+    (format stream "Task deleted")
+    (force-output stream)))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-property-value)) message administrator stream)
+  (let* ((name (first (content message)))
+         (properties (second (content message)))
+         (object (task-get (symbol-name name))))
+    (dolist (i properties)
+      (format stream "~A|" (get-value-from-property-named object i)))
+    (force-output stream)))
+    
+(defun add-task (key value)
+  (setf (gethash key *interface-tasks*) value))
+
+(defun rem-task (key)
+  (remhash key *interface-tasks*))
+
+(defun task-get (key)
+  (let ((result (gethash key *interface-tasks*)))
+    (if result result
+      (progn 
+        (error "Task requested not found.")
+        result))))
+
