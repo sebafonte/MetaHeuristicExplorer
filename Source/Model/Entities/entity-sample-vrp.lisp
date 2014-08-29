@@ -14,8 +14,46 @@
   "Answer the default population initializer class name of <object>."
   (system-get 'sample-vrp-initializer))
 
-(defmethod compute-object-interface-pixmap-step
-           ((o entity-sample-vrp) subtask pixmap width heigth render-precision)
+(defmethod lambda-default-fitness-comparer ((a entity-sample-vrp) (b entity-sample-vrp))
+  (< (fitness a) (fitness b)))
+
+(defmethod lambda-default-fitness-value-comparer ((a entity-sample-vrp) fitness-value)
+  (< (fitness a) fitness-value))
+
+(defmethod prepare-children-from ((o entity-sample-vrp) children algorithm)
+  "Prepares <o> to behave like <children>."
+  (declare (ignore algorithm))
+  (setf (program o) (program children)))
+
+(defmethod possible-languages ((o entity-sample-vrp))
+  (list 
+   (system-get 'vrp-default-language)))
+
+(defmethod drawablep ((o entity-sample-vrp))
+  "Answer whether <o> can be displayed on the GUI."
+  t)
+
+(defun minimum-vrp-x (o evaluator)
+  "Answer minimum x coordinate for <evaluator>."
+  (declare (ignore o))
+  (reduce 'min (mapcar (lambda (x) (car x)) (cities-description evaluator))))
+
+(defun minimum-vrp-y (o evaluator)
+  "Answer minimum y coordinate for <evaluator>."
+  (declare (ignore o))
+  (reduce 'min (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
+
+(defun maximum-vrp-x (o evaluator)
+  "Answer maximum x coordinate for <evaluator>."
+  (declare (ignore o))
+  (reduce 'max (mapcar (lambda (x) (car x)) (cities-description evaluator))))
+
+(defun maximum-vrp-y (o evaluator)
+  "Answer maximum y coordinate for <evaluator>."
+  (declare (ignore o))
+  (reduce 'max (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
+
+(defmethod compute-object-interface-pixmap-step ((o entity-sample-vrp) subtask pixmap width heigth render-precision)
   "Computes pixel values into <pixmap> of <o>."
   (declare (ignore render-precision))
   (let* ((bgra-vector (make-array (* heigth width 4) :element-type '(unsigned-byte 8)))
@@ -41,26 +79,6 @@
             (aref bgra y x 1) 0
             (aref bgra y x 2) 0
             (aref bgra y x 3) 255))))
-
-(defun minimum-vrp-x (o evaluator)
-  "Answer minimum x coordinate for <evaluator>."
-  (declare (ignore o))
-  (reduce 'min (mapcar (lambda (x) (car x)) (cities-description evaluator))))
-
-(defun minimum-vrp-y (o evaluator)
-  "Answer minimum y coordinate for <evaluator>."
-  (declare (ignore o))
-  (reduce 'min (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
-
-(defun maximum-vrp-x (o evaluator)
-  "Answer maximum x coordinate for <evaluator>."
-  (declare (ignore o))
-  (reduce 'max (mapcar (lambda (x) (car x)) (cities-description evaluator))))
-
-(defun maximum-vrp-y (o evaluator)
-  "Answer maximum y coordinate for <evaluator>."
-  (declare (ignore o))
-  (reduce 'max (mapcar (lambda (x) (cadr x)) (cities-description evaluator))))
 
 (defun route-color-for-index (index)
   "Answer a rgb-color instance for <index>."
@@ -90,25 +108,6 @@
          (depot-x-pos (floor (+ center-x x)))
          (depot-y-pos (floor (+ center-y y))))
     (draw-centered-quad depot-x-pos depot-y-pos bgra 0 0 255 8)))
-
-(defmethod lambda-default-fitness-comparer ((a entity-sample-vrp) (b entity-sample-vrp))
-  (< (fitness a) (fitness b)))
-
-(defmethod lambda-default-fitness-value-comparer ((a entity-sample-vrp) fitness-value)
-  (< (fitness a) fitness-value))
-
-(defmethod drawablep ((o entity-sample-vrp))
-  "Answer whether <o> can be displayed on the GUI."
-  t)
-
-(defmethod prepare-children-from ((o entity-sample-vrp) children algorithm)
-  "Prepares <o> to behave like <children>."
-  (declare (ignore algorithm))
-  (setf (program o) (program children)))
-
-(defmethod possible-languages ((o entity-sample-vrp))
-  (list 
-   (system-get 'vrp-default-language)))
 
 (defmethod draw-cities-in-pixmap ((o entity-sample-vrp) subtask pixmap width heigth bgra)
   "Draw cities description in <pixmap> for <subtask>."

@@ -132,8 +132,9 @@
          (properties-description (second (content message)))
          (task (copy-cyclic (task-get name))))
     (setf (name task) (symbol-name (gensym)))
-    (add-task (name task) task)
     (properties-object-description-to task properties-description)
+    (add-task (name task) task)
+    (execute-task (system-get 'global-running-image-planifier) task)
     (format stream "Task started|~A" (name task))
     (force-output stream)))
 
@@ -150,7 +151,7 @@
          (properties (second (content message)))
          (object (task-get (symbol-name name))))
     (dolist (i properties)
-      (format stream "~A|" (get-value-from-property-named object i)))
+      (format stream "~A|" (get-value-for-property-named object i)))
     (force-output stream)))
     
 (defun add-task (key value)
