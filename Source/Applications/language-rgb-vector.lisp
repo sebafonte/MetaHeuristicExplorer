@@ -1,19 +1,19 @@
 
 (defparameter *lisp-rgb-vector-tokens*
   '(;; 1 argument operators
-    (vec-abs :1-ary-operator)
-    (vec-sin :1-ary-operator)
-    (vec-cos :1-ary-operator)
-    (vec-tan :1-ary-operator)
+    (vecabs :1-ary-operator)
+    (vecsqr :1-ary-operator)
+    (vecsin :1-ary-operator)
+    (veccos :1-ary-operator)
+    (vectan :1-ary-operator)
     ;; 2 argument operators
-    (vec-+ :2-ary-operator)
-    (vec-- :2-ary-operator)
-    (vec-* :2-ary-operator)
-    (vec-/- :2-ary-operator)
+    (vecadd :2-ary-operator)
+    (vecsubstract :2-ary-operator)
+    (vecmultiply :2-ary-operator)
+    (vecdiv :2-ary-operator)
     ;; 3 argument operators
-    (color-map :3-ary-operator)
-    (cvec3 :3-ary-operator)))
-
+    (veccolormap :3-ary-operator)
+    (createvector :create-vector)))
 
 (defun rgb-vector-expression-lexer (grammar)
   (let ((symbol (pop *parser-input*)))
@@ -45,6 +45,10 @@
                 `(:exp ,$1))
                ((vector :open :create-vector scalar scalar scalar :close)
                 `(:vector (,$2 ,$3 ,$4 ,$5)))
+               ((scalar constant)
+                `(:scalar ,$1))
+               ((scalar var)
+                `(:scalar ,$1))
                ((constant :constant)
                 `(:constant ,$1))
                ((var :var)
@@ -62,23 +66,33 @@
     (constant :constant)
     (var :var)))
 
-(make-instance 'context-free-grammar
-               :name 'lisp-rgb-vector-images-grammar
-               :lexer 'rgb-vector-expression-lexer
-               :parser-initializer 'initialize-rgb-vector-expression-parser
-               :productions (rgb-vector-expression-grammar-productions)
-               :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :exp :vector))
+(system-add
+ (make-instance 'context-free-grammar
+                :name 'lisp-rgb-vector-images-grammar
+                :lexer 'rgb-vector-expression-lexer
+                :parser-initializer 'initialize-rgb-vector-expression-parser
+                :productions (rgb-vector-expression-grammar-productions)
+                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :exp :vector)))
 
-(make-instance 'cfg-tree-language 
-               :name 'rgb-color-images-vector
-               :description "RGB images vector"
-               :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
-               :constants-strategy (system-get-copy 'default-ephemeral-constant-0-1d)
-               :max-size 40
-               :tokens *lisp-rgb-images-expression-tokens*
-               :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1) (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2))
-               :terminals '(x y :constant)
-               :variables '(x y)
-               :valid-new-expresion-function 'create-new-random-valid
-               :simplification-function 'simplify-strategy
-               :operators (default-genetic-operators-probability-lisp-expression))
+(system-add
+ (make-instance 'cfg-tree-language 
+                :name 'rgb-color-images-vector
+                :description "RGB images vector"
+                :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
+                :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
+                :max-size 40
+                :tokens *lisp-rgb-vector-tokens*
+                :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1) (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1))
+                :terminals '(x y :constant)
+                :variables '(x y)
+                :valid-new-expresion-function 'create-new-random-valid
+                :simplification-function 'simplify-strategy
+                :operators (default-genetic-operators-probability-lisp-expression)))
+
+#|
+ (let* ((language (copy-cyclic (system-get 'rgb-color-images-vector)))
+        (max-size 30))
+    (setf (max-size language) max-size)
+    (let ((result (create-random-from-production language '(start) max-size nil)))
+      (format nil "~A | ~A" result (infix-coverted-string result))))
+|#

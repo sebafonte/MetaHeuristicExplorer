@@ -133,7 +133,7 @@
                   :max-size 30
                   :tokens *lisp-rgb-images-expression-with-subroutines-tokens*
                   :functions '((vec-+ 2) (vec-- 2) (vec-* 2) (vec-/- 2) (vec-sin 1) (vec-cos 1) 
-                                     (color-map-1 2) (color-map-3 3) (vec-inoise-x-y 2) (vec-perlin-x-y 2))
+                               (color-map-1 2) (color-map-3 3) (vec-inoise-x-y 2) (vec-perlin-x-y 2))
                   :terminals '(x y :constant)
                   :variables '(x y)
                   :valid-new-expresion-function 'create-new-random-valid
