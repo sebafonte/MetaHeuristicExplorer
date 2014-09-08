@@ -89,9 +89,11 @@
 
 (defun message-dispatch-function (stream administrator)
   "Executes actions for message on <stream> with <administrator>."
-  (let* ((message-text (read-line stream nil nil))
-         (message (eval (read-from-string message-text))))
-    (dispatch-message administrator message stream)))
+  (handler-case 
+      (let* ((message-text (read-line stream nil nil))
+             (message (eval (read-from-string message-text))))
+        (dispatch-message administrator message stream))
+    (error (error) (handle-transfer-error error))))
 
 (defmethod descriptor-with ((a connection-administrator) ip-address port)
   "Answer the connection-descriptor of <a> with <ip-address> and <port>."
@@ -204,7 +206,5 @@
         (setf (state connection) nil))))
 
 (defmethod dispatch-message ((a connection-administrator) message stream)
-  (handler-case 
-      (dispatch-message-name (name message) message a stream)
-    (error (error) (handle-transfer-error error))))
+  (dispatch-message-name (name message) message a stream))
 
