@@ -28,6 +28,13 @@
   ())
 
 
+(defmethod append-values ((a print-appender) &rest values) 
+  (let ((*print-level* 64)
+        (*print-length* 10000000))
+    (dolist (i values)
+      (format nil "~a " i))
+    (format nil "~%")))
+
 (defclass msgbox-appender ()
   ())
 

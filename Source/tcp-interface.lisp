@@ -1,7 +1,7 @@
 
 ;;; Web interface
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-languages)) message administrator stream)
-  (format stream "lisp-math-function-x lisp-math-function-xy rgb-color-images-vector")
+  (format stream "lisp-math-function-x lisp-math-function-xy rgb-color-images-vector rgb-color-images-vector-time")
   (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-default)) message administrator stream)

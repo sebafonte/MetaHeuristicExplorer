@@ -66,29 +66,6 @@
     (constant :constant)
     (var :var)))
 
-(system-add
- (make-instance 'context-free-grammar
-                :name 'lisp-rgb-vector-images-grammar
-                :lexer 'rgb-vector-expression-lexer
-                :parser-initializer 'initialize-rgb-vector-expression-parser
-                :productions (rgb-vector-expression-grammar-productions)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :exp :vector)))
-
-(system-add
- (make-instance 'cfg-tree-language 
-                :name 'rgb-color-images-vector
-                :description "RGB images vector"
-                :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
-                :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
-                :max-size 40
-                :tokens *lisp-rgb-vector-tokens*
-                :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1) (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1))
-                :terminals '(x y :constant)
-                :variables '(x y)
-                :valid-new-expresion-function 'create-new-random-valid
-                :simplification-function 'simplify-strategy
-                :operators (default-genetic-operators-probability-lisp-expression)))
-
 #|
  (let* ((language (copy-cyclic (system-get 'rgb-color-images-vector)))
         (max-size 30))

@@ -13,5 +13,5 @@
   (load-application-file "Applications\\intro-sequencer.lisp")
   (load-application-file "Applications\\intro-definition-language.lisp")
   (load-application-file "Applications\\pane-intro-sequencer.lisp")
-  (load-application-file "Applications\\language-rgb-vector.lisp")
+;  (load-application-file "Applications\\language-rgb-vector.lisp")
   )
