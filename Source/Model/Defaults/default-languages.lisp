@@ -313,6 +313,20 @@
                   :variables '(x y time)
                   :valid-new-expresion-function 'create-new-random-valid
                   :simplification-function 'simplify-strategy
+                  :operators (default-genetic-operators-probability-lisp-expression))
+   (make-instance 'cfg-tree-language 
+                  :name 'rgb-sound-vector
+                  :description "RGB sound vector"
+                  :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
+                  :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
+                  :max-size 40
+                  :tokens *lisp-rgb-vector-tokens*
+                  :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1) (vecsin 1) (veccos 1) (vectan 1) 
+                               (veccolormap 2) (createvector 1))
+                  :terminals '(x y :constant)
+                  :variables '(x y va vb vc vd)
+                  :valid-new-expresion-function 'create-new-random-valid
+                  :simplification-function 'simplify-strategy
                   :operators (default-genetic-operators-probability-lisp-expression)))
   
   ;; Specialize some languages

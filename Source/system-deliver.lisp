@@ -80,6 +80,7 @@
             "Model\\Entities\\entity-linear-ordering-list.lisp"
             "Model\\Entities\\entity-sample-vrp.lisp"
             "Model\\Languages\\entity-language.lisp"
+            "Model\\Languages\\language-rgb-vector.lisp"
             ;; Search algorithms
             "Model\\Search algorithms\\search-algorithm.lisp"
             "Model\\Search algorithms\\random-tree-creation-strategy.lisp"

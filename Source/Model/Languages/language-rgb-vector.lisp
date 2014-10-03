@@ -73,3 +73,37 @@
     (let ((result (create-random-from-production language '(start) max-size nil)))
       (format nil "~A | ~A" result (infix-coverted-string result))))
 |#
+
+(defun vecabs (x)
+  (to-array (list (abs (aref x 0)) (abs y) (abs z))))
+
+(defun vecsqr (x)
+  (to-array (list (sqr (aref x 0)) (sqr y) (sqr z))))
+
+(defun vecsin (x)
+  (to-array (list (sin (aref x 0)) (sin (aref x 1)) (sin (aref x 2)))))
+
+(defun veccos (x)
+  (to-array (list (cos (aref x 0)) (cos y) (cos z))))
+
+(defun vectan (x)
+  (to-array (list (tan (aref x 0)) (tan y) (tan z))))
+
+(defun vecadd (x y)
+  (to-array (list (+ (aref x 0) (aref y 0)) (+ (aref x 1) (aref y 1)) (+ (aref x 2) (aref y 2)))))
+	
+(defun vecsubstract (x y)
+  (to-array (list (- (aref x 0) (aref y 0)) (- (aref x 1) (aref y 1)) (- (aref x 2) (aref y 2)))))
+	
+(defun vecmultiply (x y)
+  (to-array (list (* (aref x 0) (aref y 0)) (* (aref x 1) (aref y 1)) (* (aref x 2) (aref y 2)))))
+	
+(defun vecdiv (x y)
+  (to-array (list (/- (aref x 0) (aref y 0)) (/- (aref x 1) (aref y 1)) (/- (aref x 2) (aref y 2)))))
+	
+(defun veccolormap (x y z)
+  (to-array (list (/- (aref x 0) 10.0) (/- (aref y 0) 10.0) (/- (aref z 0) 10.0))))
+	
+(defun createvector (x y z)
+  (to-array (list x y z)))
+
