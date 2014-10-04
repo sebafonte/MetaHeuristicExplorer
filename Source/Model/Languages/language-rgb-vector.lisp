@@ -75,19 +75,19 @@
 |#
 
 (defun vecabs (x)
-  (to-array (list (abs (aref x 0)) (abs y) (abs z))))
+  (to-array (list (abs (aref x 0)) (abs (aref x 1)) (abs (aref x 2)))))
 
 (defun vecsqr (x)
-  (to-array (list (sqr (aref x 0)) (sqr y) (sqr z))))
+  (to-array (list (sqr (aref x 0)) (sqr (aref x 1)) (sqr (aref x 2)))))
 
 (defun vecsin (x)
   (to-array (list (sin (aref x 0)) (sin (aref x 1)) (sin (aref x 2)))))
 
 (defun veccos (x)
-  (to-array (list (cos (aref x 0)) (cos y) (cos z))))
+  (to-array (list (cos (aref x 0)) (cos (aref x 1)) (cos (aref x 2)))))
 
 (defun vectan (x)
-  (to-array (list (tan (aref x 0)) (tan y) (tan z))))
+  (to-array (list (tan (aref x 0)) (tan (aref x 1)) (tan (aref x 2)))))
 
 (defun vecadd (x y)
   (to-array (list (+ (aref x 0) (aref y 0)) (+ (aref x 1) (aref y 1)) (+ (aref x 2) (aref y 2)))))
