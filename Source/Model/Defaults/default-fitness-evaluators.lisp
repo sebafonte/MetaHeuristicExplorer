@@ -94,20 +94,20 @@
                   :measure-start 0
                   :measure-end 10
                   :ponderation 1)
-   ;; Evaluators for entity-image-rgb
+   ;; Evaluators for entity-image-rgb / image
    (make-instance 'entity-image-rgb-evaluator
                   :name 'entity-rgb-evaluator
                   :description "No evaluation test evaluator"
                   :fitness-function 'evaluate-no-evaluation)
-   ;; Evaluators for seamless image objects 
    (make-instance 'entity-image-seamless-evaluator
                   :name 'entity-seamless-basic
                   :description "Seamless basic"
                   :fitness-function 'evaluar-imagen-seamless)
    (make-instance 'entity-image-similarity-rgb-evaluator
                   :name 'entity-image-similarity-pixel-distance
-                  :description ""
-                  :fitness-function 'evaluar-imagen-seamless)
+                  :description "Pixel similarity"
+                  :image-file "d:\\temp\\testing0.bmp"
+                  :fitness-function 'distance-pixel-abs)
    ;; Evaluators for entity-linear-ordering
    (make-instance 'entity-linear-ordering-evaluator
                   :name 'entity-linear-ordering-evaluator

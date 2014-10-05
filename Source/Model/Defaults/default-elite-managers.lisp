@@ -7,8 +7,7 @@
                   :max-size 1
                   :value-function 
                   (lambda (a best object)
-                    (if (> (fitness object)
-                           (fitness (best-individual a)))
+                    (if (better-than object (best-individual a))
                         (setf (best-individual a) object))))
    ;; Single, first fitness and then size
    (make-instance 'elite-manager
@@ -17,8 +16,7 @@
                   :value-function 
                   (lambda (a best object)
                     (let ((best (best-individual a)))
-                      (if (or (> (fitness object)
-                                 (fitness best))
+                      (if (or (> (better-than object best))
                               (and (= (fitness best) 
                                       (fitness object))
                                    (< (tree-size (program object))

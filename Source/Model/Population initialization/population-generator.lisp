@@ -4,10 +4,10 @@
    (description :initarg :description :accessor description)))
 
 
-(defmethod initialize-properties :after ((object population-generator))
+(defmethod initialize-properties :after ((o population-generator))
   "Initialize <object> properties."
   (add-properties-from-values
-   object
+   o
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :default-value 'population-generator :editor 'symbol-editor)))
 

@@ -13,20 +13,21 @@
 
 (defclass entity-image-similarity-rgb-evaluator (entity-image-rgb-evaluator)
   ((distance-function :initarg :distance-function :accessor distance-function)
-   (image-file :initarg :image-file :accessor image-file)
+   (image-file :initform nil :initarg :image-file :accessor image-file)
    (image-data :accessor image-data)
    (scale :initform 1.0 :initarg :scale :accessor scale)
    (image-length :accessor image-length)))
 
 
 (defmethod initialize-instance :after ((o entity-image-similarity-rgb-evaluator) &rest args)
-  (let ((image (gp:read-external-image (image-file o)))
-        (data-length))
-    (setf (image-data o) (subseq (slot-value image 'graphics-ports::data) 54)
-          data-length (/ (length (image-data o)) 3)
-          (image-length o) (floor data-length))
-    (unless (= (ceiling data-length) (floor data-length))
-      (error "Invalid bmp format."))))
+  (when (image-file o)
+    (let ((image (gp:read-external-image (image-file o)))
+          (data-length))
+      (setf (image-data o) (subseq (slot-value image 'graphics-ports::data) 54)
+            data-length (/ (length (image-data o)) 3)
+            (image-length o) (floor data-length))
+      (unless (= (ceiling data-length) (floor data-length))
+        (error "Invalid bmp format.")))))
 
 (defmethod initialize-properties :after ((o entity-image-similarity-rgb-evaluator))
   "Initialize <o> properties."
@@ -57,6 +58,37 @@
         (let ((result (funcall function))
               (index (+ (* i 3) (* j 3 image-x))))
           (incf error
+                (+ (abs (- (/ (aref data index) 256) (crop 0 1 (aref result 2))))
+                   (abs (- (/ (aref data (1+ index)) 256) (crop 0 1 (aref result 1))))
+                   (abs (- (/ (aref data (+ index 2)) 256) (crop 0 1 (aref result 0)))))))))
+    (setf (fitness object) error)))
+
+
+#|
+(defmethod distance-pixel-abs ((evaluator entity-image-similarity-rgb-evaluator) (object entity-image-rgb))
+  "Evaluate using absolute difference with target values."
+  (let* ((image (gp:read-external-image (image-file evaluator)))
+         (function (compiled-program object)) 
+         (data (image-data evaluator))
+         (error 0)
+         (x 0)
+         (y 0)
+         (image-x (floor (sqrt (image-length evaluator))))
+         (image-y (floor image-x)))
+    (declare (special x) (special y) (number x) (number y) (number error))
+    (dotimes (i image-x)
+      (dotimes (j image-y)
+        (setf y (* 10 j (/ (scale evaluator) image-y))
+              x (* 10 i (/ (scale evaluator) image-x)))
+        (let ((result (funcall function))
+              (index (+ (* i 3) (* j 3 image-x))))
+          (setf (aref (slot-value image 'graphics-ports::data) (+ 54 index))
+                (floor (* 255 (crop 0 1 (aref result 2))))
+                (aref (slot-value image 'graphics-ports::data) (+ 55 index)) 
+                (floor (* 255 (crop 0 1 (aref result 1))))
+                (aref (slot-value image 'graphics-ports::data) (+ 56 index)) 
+                (floor (* 255 (crop 0 1 (aref result 0)))))
+          (incf error
               (+ (abs (- (/ (aref data (+ index 0)) 256) (crop 0 1 (aref result 2))))
                  (abs (- (/ (aref data (+ index 1)) 256) (crop 0 1 (aref result 1))))
                  (abs (- (/ (aref data (+ index 2)) 256) (crop 0 1 (aref result 0))))))
@@ -73,18 +105,25 @@
                    (MY-ROUND-TO-2 (abs (- (/ (aref data (+ index 2)) 256) (crop 0 1 (aref result 0))))))
           |#
           )))
+    (gp:write-external-image image "d:\\temp\\resultx.bmp")
     (setf (fitness object) error)))
+|#
 
 (defun test-rgb-evaluator (path exp)
-  (evaluate (make-instance 'entity-image-similarity-rgb-evaluator 
-                           :name 'similarity-1 
-                           :description "Similar to test.jpg" 
-                           :image-file path
-                           :scale 1.0)
-            (make-instance 'entity-image-rgb
-                           :expresion exp)))
+  (let ((evaluator (make-instance 'entity-image-similarity-rgb-evaluator 
+                                  :name 'similarity-1 
+                                  :description "Similar to test.jpg" 
+                                  :image-file path
+                                  :scale 1.0))
+        (o (make-instance 'entity-image-rgb
+                          :expresion exp)))
+  (time (evaluate evaluator o))))
 
 #|
+
+(test-rgb-evaluator
+ "d:\\temp\\gg.bmp"
+'(VECSQR (VECADD (CREATEVECTOR X 0.616324 0.55747384) (VECDIV (VECSQR (VECABS (CREATEVECTOR 0.43280947 0.22879288 0.3218923))) (VECADD (VECSIN (CREATEVECTOR Y Y Y)) (VECABS (VECSIN (CREATEVECTOR Y X X))))))))
 
 (test-rgb-evaluator
  "d:\\temp\\gg.bmp"

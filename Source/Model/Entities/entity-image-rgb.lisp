@@ -2,6 +2,10 @@
   ())
 
 
+(defmethod lambda-default-fitness-comparer ((a entity-image-rgb) (b entity-image-rgb))
+  "Answer whether <a> is better than <b>."
+  (< (fitness a) (fitness b)))
+
 (defmethod compute-object-interface-pixmap-normal ((o entity-image-rgb) subtask pixmap width heigth)
   "Compute pixmap values into <pixmap> of <o>."
   (let* ((evaluator (fitness-evaluator subtask))
@@ -36,8 +40,7 @@
       (gp:free-image-access access)
       image))
 
-(defmethod compute-object-interface-pixmap-step
-           ((o entity-image-rgb) subtask pixmap width heigth render-precision)
+(defmethod compute-object-interface-pixmap-step ((o entity-image-rgb) subtask pixmap width heigth render-precision)
   "Compute pixmap values into <pixmap> of <o>."
   (let* ((evaluator (fitness-evaluator subtask))
          (program (compiled-program o))
@@ -83,12 +86,13 @@
 (defmethod default-fitness-evaluators ((object entity-image-rgb))
   "Answer the default classes that can evaluate object fitness."
   (list 
-   (system-get 'entity-rgb-evaluator)))
+   (system-get 'entity-rgb-evaluator)
+   (system-get 'entity-image-similarity-pixel-distance)))
 
 (defmethod possible-languages ((o entity-image-rgb))
   (list 
-   (system-get 'rgb-color-images)
-   (system-get 'entity-seamless-basic)))
+   (system-get 'rgb-color-images-vector)
+   (system-get 'rgb-color-images)))
 
 #|
 (defmethod constant-p ((o entity-image-rgb) &optional (check-genotype t) (check-phenotype t))

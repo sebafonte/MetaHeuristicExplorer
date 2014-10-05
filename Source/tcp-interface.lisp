@@ -48,6 +48,17 @@
       (format stream "~A | ~A" result (infix-coverted-string result))
       (force-output stream))))
 
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-mutate-add-var)) message administrator stream)
+  (let* ((language (copy-cyclic (system-get (first (content message)))))
+         (object (second (content message)))
+         (operator (system-get 'mutate-point-add-var))
+         (max-size (third (content message))))
+    (setf (max-size language) max-size)
+    (let ((result (mutate-cfg-var object language operator)))
+      (format stream "~A | ~A" result (infix-coverted-string result))
+      (force-output stream))))
+
+
 ;; Infix converter (#TEMP)
 (defun infix-converter (o buffer)
   (if (consp o)
@@ -112,6 +123,12 @@
   (let ((task (make-instance 'search-task)))
     (setf (name task) 'default-vrp-task)
     (set-value-for-property-named task 'objective-class 'ENTITY-SAMPLE-VRP)
+    (add-task (name task) task))
+  ;; Create rgb image difference task
+  (let ((task (make-instance 'search-task)))
+    (setf (name task) 'default-image-task
+          (fitness-evaluator task) (system-get 'entity-image-similarity-pixel-distance))
+    (set-value-for-property-named task 'objective-class 'entity-image-rgb)
     (add-task (name task) task)))
 
 (defun properties-object-description-on (object properties-list stream)
@@ -153,7 +170,7 @@
     (dolist (i properties)
       (format stream "~A|" (get-value-for-property-named object i)))
     (force-output stream)))
-    
+
 (defun add-task (key value)
   (setf (gethash key *interface-tasks*) value))
 
