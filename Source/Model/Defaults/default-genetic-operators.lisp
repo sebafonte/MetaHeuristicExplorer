@@ -181,6 +181,11 @@
    (value :initarg :value :accessor value)))
 
 
+(defun default-cfg-operators-probability ()
+  (list 
+   (list (system-get 'crossover-cfg)                   0.5)
+   (list (system-get 'mutate-cfg)                      0.5)))
+
 (defun default-genetic-operators-probability-lisp-expression ()
   "Answer a structure with default operations with each normalized probability."
   (list (list (system-get 'crossover)                  0.0)

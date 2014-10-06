@@ -13,15 +13,33 @@
 
 (defclass entity-image-similarity-rgb-evaluator (entity-image-rgb-evaluator)
   ((distance-function :initarg :distance-function :accessor distance-function)
-   (image-file :initform nil :initarg :image-file :accessor image-file)
-   (image-data :accessor image-data)
+   (image-file :initarg :image-file :accessor image-file)
+   (image-data :initarg :image-data :accessor image-data)
+   (points :initarg :points :accessor points)
    (scale :initform 1.0 :initarg :scale :accessor scale)
-   (image-length :accessor image-length)))
+   (image-length :initarg :image-length :accessor image-length)))
 
 
 (defmethod initialize-instance :after ((o entity-image-similarity-rgb-evaluator) &rest args)
+  (when (slot-boundp o 'image-file)
+    (initialize-fitness-data o)))
+
+(defmethod initialize-properties :after ((o entity-image-similarity-rgb-evaluator))
+  "Initialize <o> properties."
+  (add-properties-from-values
+   o
+   (:name 'points :label "Points" :default-value 100
+    :accessor-type 'accessor-accessor-type :data-type 'number :editor 'list-editor)
+   (:name 'image-file :label "Image file" :default-value "1.bmp" :accessor-type 'accessor-accessor-type
+    :data-type 'file :editor 'list-editor)
+   (:name 'fitness-function :label "Fitness function" :default-value 'distance-pixel-abs
+    :possible-values (possible-fitness-functions o) :accessor-type 'accessor-accessor-type 
+    :data-type 'symbol :editor 'list-editor)))
+
+(defmethod initialize-fitness-data ((o entity-image-similarity-rgb-evaluator))
+  "Initialize <o> fitness data."
   (when (image-file o)
-    (let ((image (gp:read-external-image (image-file o)))
+    (let ((image (gp:read-external-image (format nil "d:\\temp\\~a" (image-file o))))
           (data-length))
       (setf (image-data o) (subseq (slot-value image 'graphics-ports::data) 54)
             data-length (/ (length (image-data o)) 3)
@@ -29,13 +47,13 @@
       (unless (= (ceiling data-length) (floor data-length))
         (error "Invalid bmp format.")))))
 
-(defmethod initialize-properties :after ((o entity-image-similarity-rgb-evaluator))
-  "Initialize <o> properties."
-  (add-properties-from-values
-   o
-   (:name 'fitness-function :label "Fitness function" :default-value 'distance-pixel-abs
-    :possible-values (possible-fitness-functions o) :accessor-type 'accessor-accessor-type 
-    :data-type 'symbol :editor 'list-editor)))
+(defmethod ensure-fitness-data-initialized ((o entity-image-similarity-rgb-evaluator) algorithm)
+  (when (null (image-data o))
+    (initialize-fitness-data o)))
+
+(defmethod reset-temporary-data ((o entity-image-similarity-rgb-evaluator))
+  "Clear temporary data used on <evaluator>."
+  (setf (image-file o) nil))
                                                                
 (defmethod possible-fitness-functions ((o entity-image-similarity-rgb-evaluator))
   "Answer <o> possible fitness functions."

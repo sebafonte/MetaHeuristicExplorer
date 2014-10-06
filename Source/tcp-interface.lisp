@@ -5,13 +5,13 @@
   (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-default)) message administrator stream)
-  (let ((name (first (content message)))
-        (properties-description (second (content message))))
-    (let ((object (task-get name)))
-      (if object 
-          (properties-object-description-on object properties-description stream)  
-        (format stream "error not found"))
-      (force-output stream))))
+  (let* ((name (first (content message)))
+         (properties-description (second (content message)))
+         (object (task-get name)))
+    (if object 
+        (properties-object-description-on object properties-description stream)  
+      (format stream "error not found"))
+    (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-default)) message administrator stream)
   (let* ((language-name (first (content message)))
@@ -127,7 +127,10 @@
   ;; Create rgb image difference task
   (let ((task (make-instance 'search-task)))
     (setf (name task) 'default-image-task
-          (fitness-evaluator task) (system-get 'entity-image-similarity-pixel-distance))
+          (population-size (algorithm task)) 20
+          (max-generations (algorithm task)) 50
+          (fitness-evaluator task) (system-get 'entity-image-similarity-pixel-distance)
+          (initialization-method (algorithm task)) (system-get 'random-trees-cfg-initializer))
     (set-value-for-property-named task 'objective-class 'entity-image-rgb)
     (add-task (name task) task)))
 
@@ -136,8 +139,8 @@
     (let ((property (property-named object i)))
       (format stream
               "~A|~A|~A||" 
-              (name property)
-              (data-type property)
+              i
+              (if property (data-type property))
               (get-value-for-property-named object i)))))
 
 (defun properties-object-description-to (object description)
@@ -168,7 +171,13 @@
          (properties (second (content message)))
          (object (task-get (symbol-name name))))
     (dolist (i properties)
-      (format stream "~A|" (get-value-for-property-named object i)))
+      (let ((value))
+        (let ((property (property-named object i)))
+          (setf value 
+                (if property
+                    (get-value-for-property-named object i)
+                  (funcall i object)))
+          (format stream "~A|" value))))
     (force-output stream)))
 
 (defun add-task (key value)
@@ -184,3 +193,18 @@
         (error "Task requested not found.")
         result))))
 
+(defun task-evaluations (o)
+  (if (children o)
+      (evaluations (fitness-evaluator (task-first-subtask o)))
+    0))
+  
+(defun task-first-subtask (o)
+  (first (children o)))
+
+(defun task-best-program-rgb (o)
+  (if (first (children o))
+      (let ((best (best-individual (first (children o)))))
+        (if best 
+            (let ((result (program best)))
+              (format nil "~A" (infix-coverted-string result)))))))
+  

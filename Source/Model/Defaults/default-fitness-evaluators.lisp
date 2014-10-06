@@ -106,7 +106,6 @@
    (make-instance 'entity-image-similarity-rgb-evaluator
                   :name 'entity-image-similarity-pixel-distance
                   :description "Pixel similarity"
-                  :image-file "d:\\temp\\testing0.bmp"
                   :fitness-function 'distance-pixel-abs)
    ;; Evaluators for entity-linear-ordering
    (make-instance 'entity-linear-ordering-evaluator

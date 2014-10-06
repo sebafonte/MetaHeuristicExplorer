@@ -298,8 +298,8 @@
                                (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1))
                   :terminals '(x y :constant)
                   :variables '(x y)
-                  :valid-new-expresion-function 'create-new-random-valid
-                  :operators (default-genetic-operators-probability-lisp-expression)))
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
+                  :operators (default-cfg-operators-probability)))
   (system-add
    (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images-vector-time
@@ -312,9 +312,8 @@
                                (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1))
                   :terminals '(x y :constant)
                   :variables '(x y time)
-                  :valid-new-expresion-function 'create-new-random-valid
-                  :simplification-function 'simplify-strategy
-                  :operators (default-genetic-operators-probability-lisp-expression))
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
+                  :operators (default-cfg-operators-probability))
    (make-instance 'cfg-tree-language 
                   :name 'rgb-sound-vector
                   :description "RGB sound vector"
@@ -326,9 +325,8 @@
                                (veccolormap 2) (createvector 1))
                   :terminals '(x y :constant)
                   :variables '(x y va vb vc vd)
-                  :valid-new-expresion-function 'create-new-random-valid
-                  :simplification-function 'simplify-strategy
-                  :operators (default-genetic-operators-probability-lisp-expression)))
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
+                  :operators (default-cfg-operators-probability)))
   
   ;; Specialize some languages
   (specialize-language-from 

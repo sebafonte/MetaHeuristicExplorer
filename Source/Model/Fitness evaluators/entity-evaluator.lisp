@@ -33,12 +33,12 @@
 (defmethod ensure-fitness-data-initialized ((o entity-evaluator) algorithm)
   nil)
 
-(defmethod destination-object ((o entity-evaluator))
-  (make-instance (objective-class o) :expresion (target-program o)))
-
 (defmethod reset-temporary-data ((o entity-evaluator))
   "Clear temporary data used on <evaluator>."
   nil)
+
+(defmethod destination-object ((o entity-evaluator))
+  (make-instance (objective-class o) :expresion (target-program o)))
 
 (defmethod objective-class ((o entity-evaluator))
   'entity)

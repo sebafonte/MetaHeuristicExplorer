@@ -132,7 +132,11 @@
       :editor 'configurable-copy-list-editor :category "Objective" :data-type 'model
       :dependency (make-possible-class-dependency 'objective-class)
       :default-value-function (lambda (objective-class) (copy-cyclic (first (default-fitness-evaluators (make-instance objective-class)))))
-      :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class)))))))
+      :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class))))
+     (:name 'task-first-subtask :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
+      :data-type 'object :read-only t :getter 'task-first-subtask)
+     (:name 'task-evaluations :label "Evaluations" :accessor-type 'accessor-accessor-type 
+      :data-type 'object :read-only t :getter 'task-evaluations))))
 
 (defun task-running-time (task)
   "Answer the running time for <task>."
@@ -358,3 +362,4 @@
   (if exp
       (make-instance o :expresion exp)
     (make-instance o)))
+
