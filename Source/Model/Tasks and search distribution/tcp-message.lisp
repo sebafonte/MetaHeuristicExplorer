@@ -101,15 +101,15 @@
                 (make-tcp-message-string 'message-result (simplified-copy task))))
       (force-output stream))))
 
+;; #TODO: Add a "incoming tasks planifier" to accept all tasks or delegate on other locally known hosts
 (defmethod dispatch-message-name ((message-name (eql 'message-send-subtask)) message administrator stream)
   (let ((subtask (content message)))
     (appendf *search-subtasks* (list subtask))
-    ;; #TODO: Add a "incoming tasks planifier" to accept all tasks or delegate on other locally known hosts
     (let ((error))
       (handler-case
           (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
         (error (function) (setf error function) nil))
-      (format stream 
+      (format stream
               (if error
                   (make-tcp-message-string 'message-error (error-description error))
                 (make-tcp-message-string 'message-result (simplified-copy subtask))))

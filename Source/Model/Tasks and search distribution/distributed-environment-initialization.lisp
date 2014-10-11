@@ -7,7 +7,7 @@
   (dotimes (i *max-images-per-host*)
     (let ((candidate-port (+ 20000 i)))
       (with-open-stream
-          (stream (comm:open-tcp-stream "127.0.0.1" candidate-port))
+          (stream (comm:open-tcp-stream "127.0.0.1" candidate-port :timeout *tcp-default-timeout*))
         (if (null stream)
             (return-from query-running-image-port candidate-port)
           (progn 
@@ -49,7 +49,7 @@
                     :name 'global-coevolution-running-image-planifier
                     :description "Coevolution"
                     :max-simultaneous-processes 1024
-                    :connection-administrator administrator)					
+                    :connection-administrator administrator)
      (make-instance 'equitative-planifier 
                     :name 'global-local-planifier
                     :remote nil
@@ -62,6 +62,13 @@
                     :remote t
                     :local nil
                     :running-image nil
+                    :description "Remote"
+                    :connection-administrator administrator)
+     (make-instance 'equitative-planifier
+                    :name 'global-all-planifier
+                    :remote t
+                    :local t
+                    :running-image t
                     :description "Remote"
                     :connection-administrator administrator)
      (make-instance 'random-task-planifier 
@@ -83,5 +90,6 @@
         (system-get 'global-local-planifier)
         (system-get 'global-random-task-planifier)
         (system-get 'global-remote-planifier)
+		(system-get 'global-all-planifier)
         (system-get 'global-equitative-planifier)
         (system-get 'global-balanced-planifier)))

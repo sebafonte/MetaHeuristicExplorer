@@ -40,23 +40,3 @@
 (defmethod check-connections-state ((environment distributed-environment))
   "Check connection state for connections of <environment>."
   (check-connections-state (connection-administrator environment)))
-
-;; #TODO: 
-(defun lambda-reset-task-planifier-class (object property)
-  (declare (ignore object property))
-  nil)
-
-(defmethod scan-neighbor ((environment distributed-environment))
-  "Scan for possible neighbor on <environment>."
-  (declare (ignore environment))
-  nil)
-
-(defmethod connect-to ((environment distributed-environment) (descriptor connection-descriptor))
-  "Perform actions for keep connected to <descriptor>."
-  (declare (ignore environment descriptor))
-  nil)
-
-(defmethod disconnect-from ((environment distributed-environment) (descriptor connection-descriptor))
-  "Perform actions for disconnect from <descriptor>."
-  (declare (ignore environment descriptor))
-  nil)

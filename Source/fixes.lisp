@@ -129,9 +129,9 @@
 ;; Only used to create random, there should not be a need to cache this using cfg
 (defmethod (setf functions) (value (o tree-language))
   (setf 
-   (slot-value 'functions o) value
+   (slot-value o 'functions) value
    (min-function-args o) (min-language-function-with-args (functions o))))
 
 (defmethod (setf functions) (value (o cfg-tree-language))
   (setf 
-   (slot-value 'functions o) value))
+   (slot-value o 'functions) value))
