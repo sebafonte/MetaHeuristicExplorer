@@ -20,15 +20,15 @@
     :data-type 'list :editor 'file-prompter-editor :setter '(setf load-vrp-description-from-file))
    (:name 'cities-description :label "Cities description" :accessor-type 'accessor-accessor-type 
     :editor 'lisp-editor :data-type 'list-structure :default-value '((0 0) (0 3) (3 0)))
-   (:name 'solution-fitness :label "Fitness solución" :accessor-type 'accessor-accessor-type 
+   (:name 'solution-fitness :label "Solution fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 1 :max-value 1000000 :default-value 0 :editor 'number-editor)
    (:name 'vehicle-cost :label "Vehicle cost" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 1000000 :default-value 0 :editor 'number-editor)
    (:name 'return-to-depot :label "Return to depot" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value t :editor 'number-editor)
-   (:name 'min-fitness :label "Minimum fitness" :accessor-type 'accessor-accessor-type
+   (:name 'min-fitness :label "Min fitness" :accessor-type 'accessor-accessor-type
     :data-type 'number :min-value 0 :max-value 1000000 :default-value 0 :editor 'number-editor)
-   (:name 'max-fitness :label "Maximum fitness" :accessor-type 'accessor-accessor-type 
+   (:name 'max-fitness :label "Max fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 1000000 :default-value 200 :editor 'number-editor)
    (:name 'max-vehicles :label "Max vehicles" :accessor-type 'accessor-accessor-type
     :data-type 'integer :min-value 1 :max-value 1000 :default-value 3 :editor 'number-editor)
@@ -39,7 +39,7 @@
    (:name 'fitness-function :label "Fitness function" :default-value 'execute-simulation-mixed 
     :possible-values (possible-fitness-functions object) :accessor-type 'accessor-accessor-type 
     :data-type 'symbol :editor 'list-editor)
-   (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
+   (:name 'precision :label "Accuracy" :default-value 'float :possible-values '(number double-float float single-float)
     :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor)))
 
 (defmethod possible-fitness-functions ((o entity-sample-vrp-evaluator))

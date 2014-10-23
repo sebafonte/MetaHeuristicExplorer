@@ -54,7 +54,7 @@
 (defmethod reset-temporary-data ((o entity-image-similarity-rgb-evaluator))
   "Clear temporary data used on <evaluator>."
   (setf (image-file o) nil))
-                                                               
+
 (defmethod possible-fitness-functions ((o entity-image-similarity-rgb-evaluator))
   "Answer <o> possible fitness functions."
   '(distance-pixel-abs))
@@ -80,6 +80,11 @@
                    (abs (- (/ (aref data (1+ index)) 256) (crop 0 1 (aref result 1))))
                    (abs (- (/ (aref data (+ index 2)) 256) (crop 0 1 (aref result 0)))))))))
     (setf (fitness object) error)))
+
+(defmethod excluded-slot-name ((o entity-image-similarity-rgb-evaluator) slot-name)
+  "Answer <o> slot names which are going to be excluded from source description."
+  (or (equal slot-name 'properties-definition)
+      (equal slot-name 'image-data)))
 
 
 #|

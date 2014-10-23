@@ -14,7 +14,7 @@
     :data-type 'symbol :editor 'list-editor)
    (:name 'solution-fitness :label "Solution fitness" :accessor-type 'accessor-accessor-type 
     :data-type 'number :min-value 0 :max-value 10 :default-value 9.98 :editor 'number-editor)
-   (:name 'precision :label "Precision" :default-value 'float :possible-values '(number double-float float single-float)
+   (:name 'precision :label "Accuracy" :default-value 'float :possible-values '(number double-float float single-float)
     :accessor-type 'accessor-accessor-type :data-type 'symbol :editor 'list-editor)))
 
 (defmethod ensure-fitness-data-initialized ((o entity-function-evaluator) algorithm)

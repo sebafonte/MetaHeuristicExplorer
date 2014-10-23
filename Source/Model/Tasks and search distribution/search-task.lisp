@@ -133,8 +133,6 @@
       :dependency (make-possible-class-dependency 'objective-class)
       :default-value-function (lambda (objective-class) (copy-cyclic (first (default-fitness-evaluators (make-instance objective-class)))))
       :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class))))
-     (:name 'task-first-subtask :label "Fitness evaluator" :accessor-type 'accessor-accessor-type 
-      :data-type 'object :read-only t :getter 'task-first-subtask)
      (:name 'task-evaluations :label "Evaluations" :accessor-type 'accessor-accessor-type 
       :data-type 'object :read-only t :getter 'task-evaluations))))
 
@@ -240,10 +238,13 @@
   "Kills <task>."
   ;; Kill task mp:process 
   (when (process task)
-    (mp:process-kill (process task)))
+    (task-kill (process task)))
   ;; Kill subtasks mp:process
   (dolist (subtask (children task))
     (kill-task subtask)))
+
+(defmethod task-kill ((o mp:process))
+  (mp:process-kill (process o)))
 
 (defmethod resetear ((task search-task))
   "Reset <task>."

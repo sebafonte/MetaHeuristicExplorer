@@ -22,7 +22,9 @@
         (old-process (process task)))
     (setf (process task) nil)
     (dotimes (i (runs builder))
-      (appendf subtask-list (list (copy-cyclic task))))
+      (let ((value (copy-cyclic task)))
+        (setf (name value) (symbol-name (gensym)))
+        (appendf subtask-list (list value))))
     (setf (process task) old-process)
     subtask-list))
 
