@@ -90,7 +90,7 @@
 
 (defmethod dispatch-message-name ((message-name (eql 'message-send-task)) message administrator stream)
   (let ((task (content message)))
-    (appendf *search-subtasks* (subtasks task))
+    (append-elements *search-subtasks* (subtasks task))
     (let ((error))
       (handler-case 
           (execute-search task)
@@ -104,8 +104,9 @@
 ;; #TODO: Add a "incoming tasks planifier" to accept all tasks or delegate on other locally known hosts
 (defmethod dispatch-message-name ((message-name (eql 'message-send-subtask)) message administrator stream)
   (let ((subtask (content message)))
-    (appendf *search-subtasks* (list subtask))
+    (append-elements *search-subtasks* (list subtask))
     (let ((error))
+      (add-task (name subtask) subtask)
       (handler-case
           (execute-subtask-local (system-get 'global-running-image-planifier) subtask)
         (error (function) (setf error function) nil))

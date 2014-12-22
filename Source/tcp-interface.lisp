@@ -119,16 +119,26 @@
 (defmethod initialize-default-web-interface-objects ()
   ;; Create task register
   (setf *interface-tasks* (make-hash-table :test 'equals))
-  ;; Create a VRP default task
+  ;; Create a VRP default task 1
   (let ((task (make-instance 'search-task)))
-    (setf (name task) 'default-vrp-task)
+    (setf (name task) 'default-vrp-cw-task
+          (runs (task-builder task)) 1)
     (set-value-for-property-named task 'objective-class 'ENTITY-SAMPLE-VRP)
+    (add-task (name task) task))
+  ;; Create a VRP default task 2
+  (let ((task (make-instance 'search-task)))
+    (set-value-for-property-named task 'objective-class 'ENTITY-SAMPLE-VRP)
+    (setf (name task) 'default-vrp-pure-ga-task
+          (generation-method (initialization-method (algorithm task))) 'random-tour-variable-vehicles
+          (runs (task-builder task)) 5)
     (add-task (name task) task))
   ;; Create rgb image difference task
   (let ((task (make-instance 'search-task)))
     (setf (name task) 'default-image-task
           (population-size (algorithm task)) 20
           (max-generations (algorithm task)) 50
+          (task-planifier task) (system-get 'global-remote-planifier)
+          (runs (task-builder task)) 3
           (fitness-evaluator task) (system-get 'entity-image-similarity-pixel-distance)
           (initialization-method (algorithm task)) (system-get 'random-trees-cfg-initializer))
     (set-value-for-property-named task 'objective-class 'entity-image-rgb)
@@ -150,17 +160,20 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-task-using)) message administrator stream)
   (let* ((name (first (content message)))
          (properties-description (second (content message)))
+         (scheduler (third (content message)))
          (task (copy-cyclic (task-get name))))
     (setf (name task) (symbol-name (gensym)))
     (properties-object-description-to task properties-description)
+    (when scheduler
+      (setf (task-planifier task) (system-get scheduler)))
     (add-task (name task) task)
-    (execute-task (system-get 'global-running-image-planifier) task)
+    (execute-task (task-planifier task) task)
     (format stream "Task started|~A" (name task))
     (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-delete-task)) message administrator stream)
   (let* ((name (first (content message)))
-         (task (task-get (symbol-name name))))
+         (task (task-get name)))
     (kill-task task)
     (rem-task (symbol-name name))
     (format stream "Task deleted")
@@ -169,7 +182,8 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-property-value)) message administrator stream)
   (let* ((name (first (content message)))
          (properties (second (content message)))
-         (object (task-get (symbol-name name))))
+         (object (task-get name)))
+    (update-task-properties object)
     (dolist (i properties)
       (let ((value))
         (let ((property (property-named object i)))
@@ -180,6 +194,22 @@
           (format stream "~A|" value))))
     (force-output stream)))
 
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-property-value-2)) message administrator stream)
+  (let* ((name (first (content message)))
+         (properties (second (content message)))
+         (object (task-get name)))
+    (update-task-properties object)
+    (dolist (i properties)
+      (let ((value))
+        (let ((property (property-named object i)))
+          (setf value 
+                (if property
+                    (get-value-for-property-named object i)
+                  (funcall i object)))
+          (format stream "~S|" value))))
+    (format stream "~%")
+    (force-output stream)))
+
 (defun add-task (key value)
   (setf (gethash key *interface-tasks*) value))
 
@@ -188,18 +218,21 @@
 
 (defun task-get (key)
   (let ((result (gethash key *interface-tasks*)))
+    (when (and (null result) (symbolp key)) 
+      (setf result (gethash (symbol-name key) *interface-tasks*)))
     (if result result
       (progn 
         (error "Task requested not found.")
         result))))
 
 (defun task-evaluations (o)
-  (if (children o)
-      (evaluations (fitness-evaluator (task-first-subtask o)))
-    0))
-  
-(defun task-first-subtask (o)
-  (first (children o)))
+  (let ((evaluations 0))
+    (if (children o)
+        (progn 
+          (dolist (i (children o))
+            (incf evaluations (task-evaluations i)))
+          evaluations)
+      (evaluations (fitness-evaluator o)))))
 
 (defun task-best-program-rgb (o)
   (if (first (children o))
@@ -207,4 +240,64 @@
         (if best 
             (let ((result (program best)))
               (format nil "~A" (infix-coverted-string result)))))))
-  
+
+(defun task-best-program-vrp (o)
+  (if (first (children o))
+      (let ((best (best-individual (first (children o)))))
+        (if best 
+            (let ((result (program best)))
+              (format nil "~A" result))))))
+
+
+(defclass remote-task-descriptor (base-model)
+  ((host :initarg :host :accessor host)
+   (name :initarg :name :accessor name)))
+
+
+(defmethod task-kill ((o remote-task-descriptor))
+  (let ((message (make-instance 'tcp-message 
+                                :name 'message-web-interface-delete-task 
+                                :content (list (name o)))))
+    (with-open-stream
+        (stream (comm:open-tcp-stream (ip-address (host o)) (port (host o)) :timeout *tcp-default-timeout* :read-timeout *tcp-default-timeout*))
+    (if stream
+        (progn
+          (write-line (transportable-code-description message) stream)
+          (force-output stream)
+          (let ((result (read-line stream nil nil)))
+            ;; #TODO: Process return code
+            ;;(if result (read-from-string result))
+            ))
+      (signal-error-on planifier target task "Closed connection")))))
+
+(defun update-task-properties (task)
+  (when (eql (state task) 'running-remote)
+    ;; When running remote, query remote host for fitness and evaluation values
+    (let ((message (make-instance 'tcp-message 
+                                  :name 'message-web-interface-get-property-value-2 
+                                  :content (list
+                                              (name task)
+                                              (list 'fitness 'task-evaluations 'best-individual)))))
+      (with-open-stream
+          (stream (comm:open-tcp-stream
+                   (ip-address (host (process task))) 
+                   (port (host (process task))) 
+                   :timeout *tcp-default-timeout*))
+        (if stream
+            (progn
+              (write-line (transportable-code-description message) stream)
+              (force-output stream)
+                (let ((result (split-sequence "|" (read-line stream nil nil))))
+                  (setf tt task)
+                  (setf (fitness task) (first result)
+                        (evaluations (fitness-evaluator task)) (second result))))
+          (handle-transfer-error "Closed connection"))))
+    ;; Update child
+    (dolist (i (children task))
+      (update-task-properties i))))
+
+(defmethod check-remote-model-update ((o t))
+  nil)
+
+(defmethod check-remote-model-update ((o search-task))
+  (update-task-properties o))

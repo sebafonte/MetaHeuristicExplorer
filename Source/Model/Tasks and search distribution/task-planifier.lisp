@@ -76,7 +76,7 @@
          (list :priority (priority task))
          (lambda ()
            (let ((result-task))
-             (appendf *search-subtasks* (children task))
+             (append-elements *search-subtasks* (children task))
              (setf result-task (execute-task-local planifier task)))))))
 
 (defmethod execute-task-local ((planifier task-planifier) (task search-task))
@@ -89,7 +89,7 @@
   "Executes <task> on a remote client application."
   (let ((message (make-tcp-message 'message-send-task task)))
     (with-open-stream
-        (stream (comm:open-tcp-stream (ip-address target) (port target)))
+        (stream (comm:open-tcp-stream (ip-address target) (port target) :timeout *tcp-default-timeout*))
       (if stream
           (progn
             (write-line (transportable-code-description message) stream)
@@ -107,10 +107,11 @@
   (let* ((new-subtask (simplified-copy subtask))
          (message-string (make-tcp-message-string 'message-send-subtask new-subtask)))
     (with-open-stream
-        (stream (comm:open-tcp-stream (ip-address target) (port target)))
+        (stream (comm:open-tcp-stream (ip-address target) (port target) :timeout *tcp-default-timeout*))
       (if stream
           (progn
-            (setf (state subtask) 'TRANSFERING)
+            (setf (state subtask) 'TRANSFERING
+                  (process subtask) (make-instance 'remote-task-descriptor :name (name subtask) :host target))
             (write-line message-string stream)
             (force-output stream)
             (let ((initial-time (get-universal-time)))

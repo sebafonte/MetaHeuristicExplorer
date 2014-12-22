@@ -21,7 +21,7 @@
 (defmethod initialize-timer ((p pane-search-tasks))
   "Initialize <p> timer."
   (setf (timer p) (mp:make-timer (lambda () (safe-refresh-subtasks p))))
-  (mp:schedule-timer-milliseconds (timer p) 100 400))
+  (mp:schedule-timer-milliseconds (timer p) 100 (configuration-get interface-timer-refresh-rate)))
 
 (defmethod initialize-interface :after ((p pane-search-tasks))
   (initialize-timer p))
@@ -197,9 +197,8 @@
       (make-instance 'pane-subtasks
                      :mdi-interface interface
                      :model selected-task
-                     :subtasks (append (list nil) (children selected-task))))))
+                     :container (make-instance 'task-container :name 'selected-task-subtasks :elements (children selected-task))))))
 
-;; #TODO: Move this responsibility to pane
 (defmethod model-file-extension ((pane pane-search-tasks))
   "*.task")
 

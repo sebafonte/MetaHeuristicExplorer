@@ -22,13 +22,13 @@
 
 (defun menu-inspect-best-individual (interface subtask)
   "Open a new pane-entity-editor with <interface> best individual."
-  (declare (ignore subtask))
-  (when (selection interface)
+  (check-remote-model-update subtask)
+  (when subtask
     (open-editor-with
      interface 
      (make-instance 'object-in-search
-                    :object (best-individual (selection interface))
-                    :context (selection interface)))))
+                    :object (best-individual subtask)
+                    :context subtask))))
 
 (defun menu-inspect-best-individual-current (interface subtask)
   "Open a new pane-entity-editor with <interface> subtask best best individual."

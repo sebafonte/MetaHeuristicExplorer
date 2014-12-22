@@ -414,8 +414,7 @@
       (when (aref (individuals-array (parents p)) i) 
         (incf n)
         (setf individuals (push (aref (individuals-array (parents p)) i) individuals))))
-    (setf (size result) n
-          (individuals-array result) (to-array individuals))
+    (setf (individuals-array result) (to-array individuals))
     result))
 	
 (defmethod pane-explorer-create-new-child ((p pane-explorer) possible-parent &key operation)

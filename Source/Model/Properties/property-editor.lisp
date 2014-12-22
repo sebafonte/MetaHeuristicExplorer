@@ -10,7 +10,7 @@
 (defmethod update-value ((pe property-editor) (object base-model))
   "Updates the property associated with <pe> into <object>."
   (let ((old-value (handler-case (get-value-for-property object (property pe)) (error (function) nil))))
-    (when (not (eql (value pe) old-value))
+    (when (and (not (read-only (property pe))) (not (eql (value pe) old-value)))
       (set-value-for-property object (property pe) (value pe)))))
 
 (defmethod update-value :after ((pe property-editor) (object editable-probability-object-list-wrapper))

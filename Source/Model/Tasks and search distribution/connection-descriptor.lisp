@@ -71,7 +71,7 @@
   "Sends <object> through connection described by <descriptor>.
    Answer whether <object> has been sent."
   (with-open-stream
-      (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor)))
+      (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor) :timeout *tcp-default-timeout*))
     (if stream
       (progn 
         (write-line (transportable-code-description object) stream)
@@ -82,7 +82,7 @@
 (defmethod check-state ((descriptor connection-descriptor))
   "Answer whether <descriptor> is still responding (like a simple ping for the application)."
   (with-open-stream
-      (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor)))
+      (stream (comm:open-tcp-stream (ip-address descriptor) (port descriptor) :timeout *tcp-default-timeout*))
     (if stream
         (progn 
           (format stream (make-tcp-message-string 'message-port-ping nil))
@@ -110,7 +110,7 @@
   "Executes basic system benchmarksof hosts pointed by <c>."
   ;; Perform PING benchmark
   (with-open-stream
-      (stream (comm:open-tcp-stream (ip-address c) (port c)))
+      (stream (comm:open-tcp-stream (ip-address c) (port c) :timeout *tcp-default-timeout*))
     (when stream
       (let ((initial-time (get-internal-real-time)))
         (format stream (make-tcp-message-string 'message-ping nil))
@@ -119,7 +119,7 @@
         (setf (b-ping c) (- (get-internal-real-time) initial-time)))))
   ;; Perform CPU benchmark
   (with-open-stream
-      (stream (comm:open-tcp-stream (ip-address c) (port c)))
+      (stream (comm:open-tcp-stream (ip-address c) (port c) :timeout *tcp-default-timeout*))
     (when stream
       (format stream (make-tcp-message-string 
                       'message-run-performance-test 
@@ -130,7 +130,7 @@
         (initial-time))
     ;; Perform TX benchmark
     (with-open-stream
-        (stream (comm:open-tcp-stream (ip-address c) (port c)))
+        (stream (comm:open-tcp-stream (ip-address c) (port c) :timeout *tcp-default-timeout*))
       (setf message-string (make-tcp-message-string 
                             'message-tx-performance-test 
                             (create-sample-performance-test-file)))
@@ -143,7 +143,7 @@
                               (/ (length message-string) (- (get-internal-real-time) initial-time))) 'float))))
     ;; Perform RX benchmark
     (with-open-stream
-        (stream (comm:open-tcp-stream (ip-address c) (port c)))
+        (stream (comm:open-tcp-stream (ip-address c) (port c) :timeout *tcp-default-timeout*))
       (setf initial-time (get-internal-real-time))
       (setf message-string (make-tcp-message-string 'message-rx-performance-test nil))
       (format stream message-string)

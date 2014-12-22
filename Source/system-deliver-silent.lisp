@@ -81,6 +81,7 @@
             "Model\\Entities\\entity-sample-vrp.lisp"
             "Model\\Languages\\entity-language.lisp"
             "Model\\Languages\\language-rgb-vector.lisp"
+            "Model\\Languages\\language-rgb-vector-composite.lisp"
             ;; Search algorithms
             "Model\\Search algorithms\\search-algorithm.lisp"
             "Model\\Search algorithms\\random-tree-creation-strategy.lisp"
@@ -183,10 +184,11 @@
             "Model\\Local search methods\\pattern-simplification-optimization.lisp"
             "Model\\Local search methods\\local-optimizations.lisp"
             ;; Search tasks
+            "Model\\Tasks and search distribution\\task-container.lisp"
             "Model\\Tasks and search distribution\\search-task.lisp"
             "Model\\Tasks and search distribution\\print-tasks.lisp"
             ;; Fitness evaluators
-            "Model\\Fitness evaluators\\entity-evaluator.lisp"       
+            "Model\\Fitness evaluators\\entity-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-maximization-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-evaluator.lisp"
             "Model\\Fitness evaluators\\entity-function-x-evaluator.lisp"
@@ -212,7 +214,7 @@
             "Model\\randomized-nearest-neighbor-generator.lisp"
             "Model\\Fitness evaluators\\search-task-objective-fitness-evaluator.lisp"
             "Model\\Fitness evaluators\\search-algorithm-objective-fitness-evaluator.lisp"
-            "Model\\system-environment.lisp"            
+            "Model\\system-environment.lisp"
             "Model\\Defaults\\default-elite-managers.lisp"
             "Model\\Defaults\\default-fitness-evaluators.lisp"
             ;; Tasks and search distribution
@@ -395,5 +397,4 @@
   (initialize-command-line-settings)
   (initialize-gui-logger)
   (initialize-default-web-interface-objects))
-
 

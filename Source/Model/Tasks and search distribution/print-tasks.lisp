@@ -20,16 +20,16 @@
 (defun print-subtasks (&optional &key print-population)
   "Print sysem subtasks state info."
   (declare (ignore print-population))
-  (dolist (p *search-subtasks*)
+  (dolist (p (elements *search-subtasks*))
     (print-state p)))
 
 (defun print-subtasks-result (&optional &key print-exp)
   "Print sysem subtasks result info."
-  (if *search-subtasks*
+  (when (elements *search-subtasks*)
     (let ((best-of-all)
           (best)
           (good 0))
-      (dolist (p *search-subtasks*)
+      (dolist (p (elements *search-subtasks*))
         (setf best (best-individual (algorithm p)))
         (if (>= (fitness best) (solution-fitness (algorithm p))) (incf good))
         (if (or (not best-of-all) (< (fitness best-of-all) (fitness best)))
@@ -42,7 +42,7 @@
                 (if print-exp (program best) "")))
       ;; Print subtasks result (general)
       (format t "~%Subtasks: ~A (~A good)~%Best fitness: ~A -   ~A~%~%"
-              (length *search-subtasks*)
+              (length (elements *search-subtasks*))
               good
               (program best-of-all)
               (fitness best-of-all)))))
@@ -50,7 +50,7 @@
 (defun print-subtasks-fitness ()
   "Print sysem subtasks fitness info."
   (print "")
-  (dolist (i *search-subtasks*)
+  (dolist (i (elements *search-subtasks*))
     (if (>= (fitness (best-individual (algorithm i)))  
            (solution-fitness (algorithm i))) 
         (print (program (best-individual (algorithm i)))))))

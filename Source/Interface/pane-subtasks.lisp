@@ -1,7 +1,7 @@
 
 (defclass pane-subtasks (base-pane)
-  ((model :initarg :model :accessor model)
-   (subtasks :initarg :subtasks :initform '(nil) :accessor subtasks)
+  ((container :initarg :container :accessor container)
+   (model :initarg :model :accessor model)
    (timer :initform nil :accessor timer)))
 
 
@@ -11,7 +11,7 @@
 (defmethod initialize-timer ((p pane-subtasks))
   "Initialize <p> timer."
   (setf (timer p) (mp:make-timer (lambda () (safe-refresh-subtasks p))))
-  (mp:schedule-timer-milliseconds (timer p) 100 400))
+  (mp:schedule-timer-milliseconds (timer p) 100 (configuration-get interface-timer-refresh-rate)))
 
 (defmethod destroy ((p pane-subtasks))
   "Perform actions when destroying <p>."
@@ -21,12 +21,19 @@
   "Refresh <p> subtasks in another mp:process."
   (mp:process-run-function "Refresh subtasks" nil (lambda () (refresh-subtasks p))))
 
+(defmethod refresh-remote-properties (tasks)
+  (when (configuration-get refresh-remote-properties)
+    (dolist (i tasks)
+      (check-remote-model-update i))))
+
 (defmethod refresh-subtasks ((p pane-subtasks))
   "Callback to refresh <p> subtasks."
   (when (interface p)
     (let* ((interface (interface p))
            (subtasks (subtasks interface))
            (elements (elements p)))
+      (refresh-remote-properties elements)
+      ;; Refresh lists
       (capi:execute-with-interface
        interface
        (lambda ()
@@ -53,10 +60,10 @@
         (columns-description interface)))
   
 (defmethod elements ((p pane-subtasks))
-  (cdr (subtasks p)))
+  (elements (container p)))
 
 (defmethod (setf elements) (value (p pane-subtasks))
-  (setf (cdr (subtasks p)) value))
+  (set-elements (container p) value))
 
 (defmethod interface-class ((p pane-subtasks))
   "Answer <p> interface class."
@@ -180,6 +187,7 @@
 (defun menu-inspect-best-individual (interface data)
   "Open a new pane-editor-entity with best <interface> individual."
   (declare (ignore data))
+  (check-remote-model-update data)
   (when (selection interface)
     (open-editor-with
      interface 
@@ -334,7 +342,7 @@
                                       :valuable-y-list '(lambda (o) (structure-size (value-for o :best-individual)))
                                       :datasource-list '(lambda (o) (log-data-for-criteria (log-data o) :best-individual)))
               :mdi-interface interface)))))
-  
+
 (defun menu-medium-population-size-vs-time (interface data)
   "Open a graphic of medium population size of algorithm vs. time."
   (declare (ignore data))
@@ -352,7 +360,7 @@
                                       :valuable-y-list '(lambda (o) (value-for o :medium-size))
                                       :datasource-list '(lambda (o) (log-data-for-criteria (log-data o) :medium-size)))
               :mdi-interface interface)))))
-  
+
 (defun menu-diversity-vs-time (interface data)
   "Open a graphic of diversity vs. time."
   (declare (ignore data))
@@ -414,7 +422,7 @@
           nil)))
 
 (defmethod default-column-names ((i interface-pane-subtasks))
-  '(name state best-fitness best-size progress-indicator))
+  '(name state best-fitness best-size progress-indicator task-evaluations))
 
 (defmethod initialize-instance :after ((i interface-pane-subtasks) &key)
   ;; Set properties for default columns
@@ -598,8 +606,8 @@
   (dolist (i (elements (pane interface))) 
     (kill-task i))
   ;; Clear pane subtask list
-  (setf (subtasks (pane interface)) (list nil)
-        (elements (pane interface)) nil)
+  (clear-elements (container (pane interface)))
+  (setf (elements (pane interface)) nil)
   ;; Refresh interface
   (capi:apply-in-pane-process
    (subtasks interface) #'(setf capi:collection-items) nil (subtasks interface))

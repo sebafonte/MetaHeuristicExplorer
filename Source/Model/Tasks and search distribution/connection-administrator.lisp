@@ -111,7 +111,7 @@
       (let ((candidate-port (+ *base-port* i)))
         (if (not (= candidate-port local-server-port))
             (with-open-stream
-                (stream (comm:open-tcp-stream "127.0.0.1" candidate-port))
+                (stream (comm:open-tcp-stream "127.0.0.1" candidate-port :timeout *tcp-default-timeout*))
               (if stream
                   (progn
                     (appendf candidate-ports 

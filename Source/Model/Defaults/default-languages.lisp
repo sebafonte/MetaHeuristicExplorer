@@ -302,6 +302,20 @@
                   :operators (default-cfg-operators-probability)))
   (system-add
    (make-instance 'cfg-tree-language 
+                  :name 'rgb-color-images-vector-composite
+                  :description "RGB images vector composite"
+                  :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
+                  :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
+                  :max-size 40
+                  :tokens *lisp-rgb-composite-vector-tokens*
+                  :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1)
+                               (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1) (vecfa 2) (vecfb 2) (vecfc 2))
+                  :terminals '(x y :constant)
+                  :variables '(x y)
+                  :valid-new-expresion-function 'create-new-first-parent-program-copy
+                  :operators (default-cfg-operators-probability)))
+  (system-add
+   (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images-vector-time
                   :description "RGB images vector time"
                   :grammar (system-get-copy 'lisp-rgb-vector-images-grammar)
@@ -327,7 +341,6 @@
                   :variables '(x y va vb vc vd)
                   :valid-new-expresion-function 'create-new-first-parent-program-copy
                   :operators (default-cfg-operators-probability)))
-  
   ;; Specialize some languages
   (specialize-language-from 
    (system-get 'evolutive-algorithm-language-x-y)

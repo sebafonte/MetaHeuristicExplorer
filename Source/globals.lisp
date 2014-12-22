@@ -1,8 +1,8 @@
 
-;; #TODO: Refactor
-(defparameter *search-subtasks* '(nil))
-(defparameter *search-subtasks-remote* '())
-(defparameter *search-tasks* '(nil))
+;; Task containers
+(defvar *search-tasks*)
+(defvar *search-subtasks*)
+(defvar *search-subtasks-remote*)
 
 ;; Global texture manager
 (defparameter *texture-manager* nil)

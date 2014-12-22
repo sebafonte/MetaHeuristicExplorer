@@ -15,7 +15,7 @@
 (defun open-pane-search-tasks (interface data)
   "Open a 'pane-search-tasks on <interface>."
   (declare (ignore data))
-  (make-instance 'pane-search-tasks :mdi-interface interface :subtasks *search-tasks*))
+  (make-instance 'pane-search-tasks :mdi-interface interface :container *search-tasks*))
 
 (defun open-pane-editor-entity (interface data)
    "Open a 'pane-editor-entity on <interface>."
@@ -212,11 +212,10 @@
   (declare (ignore data interface))
   "Perform actions to reset system."
   ;; Delete all tasks
-  (setf *search-tasks* nil
-        *search-subtasks* nil)
-  ;; Reset task planifier
+  (clear-elements *search-tasks*)
+  (clear-elements *search-subtasks*)
+  ;; Reset task planifier, #TODO: check why it's two times
   (reset-task-environment-settings)
-  ;; #TODO: Ver: Again?!
   (reset-task-environment-settings)
   ;; Run GC
   (mark-and-sweep 3))
@@ -232,7 +231,7 @@
 
 (defun reset-host-connection (c)
   (with-open-stream       
-      (stream (comm:open-tcp-stream (ip-address c) (port c)))
+      (stream (comm:open-tcp-stream (ip-address c) (port c) :timeout *tcp-default-timeout*))
     (when stream
       (format stream (make-tcp-message-string 'message-clean-image nil))
       (force-output stream))))

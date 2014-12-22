@@ -38,7 +38,8 @@
   (initialize-graphics-updater)
   (initialize-stack)
   (initialize-image-vector-functions)
-  (initialize-default-search-task-object-templates))
+  (initialize-default-search-task-object-templates)
+  (initialize-tasks-containers))
 
 (defun application-relative-pathname (file)
   (let* ((executable-name (car sys:*line-arguments-list*))
@@ -147,3 +148,8 @@
   ;; #DEBUG:
   (let ((length (hcl:extend-current-stack 0)))
     (hcl:extend-current-stack 1000)))
+
+(defun initialize-tasks-containers ()
+  (setf *search-tasks* (make-instance 'task-container :name 'local-tasks)
+        *search-subtasks* (make-instance 'task-container :name 'local-subtasks)
+        *search-subtasks-remote* (make-instance 'task-container :name 'remote-subtasks)))

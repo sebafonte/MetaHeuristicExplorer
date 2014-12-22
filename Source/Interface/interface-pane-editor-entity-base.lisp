@@ -16,11 +16,11 @@
   (setf (owner (pane-image i)) i))
 
 (defmethod destroy-interface :before ((i interface-pane-editor-entity-base))
-  "Perform actions when <interface> is destroyed."
+  "Perform actions when <i> is destroyed."
   (setf *interface-editors* (reject *interface-editors* (lambda (object) (equal object i)))))
 
 (defmethod destroy-interface ((i interface-pane-editor-entity-base))
-  "Perform actions when <interface> is destroyed."
+  "Perform actions when <i> is destroyed."
   (destroy-interface-pixmap i))
 
 (defmethod set-editor-tab-to ((i interface-pane-editor-entity-base) name)
@@ -86,7 +86,7 @@
   (let ((index-subtree (capi:choice-selection (pane-graph i)))
         (object (model (pane i))))
     (multiple-value-bind (accepted-p input) 
-        (prompt-for-sub-expression "Ingrese una expresión")
+        (prompt-for-sub-expression "Enter expression")
       (when accepted-p
         (setf (program object) 
               (replace-internal-subtree 
@@ -97,7 +97,7 @@
         (set-model i object)))))
 
 (defmethod pane-entity-view-introns (interface data)
-  "Shows introns on interface graph pane."
+  "Shows introns on <interface>."
   (let* ((object (model (pane interface)))
          (editor (make-instance 'pane-editor-entity 
                                 :model object 

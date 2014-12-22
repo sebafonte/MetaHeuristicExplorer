@@ -83,9 +83,8 @@
      (:name 'benchmarker :label "Log data" :accessor-type 'accessor-accessor-type :editor 'button-editor :category "Result")
      (:name 'best-fitness :label "Fitness" :accessor-type 'valuable-accessor-type :read-only t
       :getter '(lambda (task) 
-                 (if (best-individual task)
-                     (my-round-to-3 (fitness (best-individual task)))
-                   0))
+                 (let ((best (best-individual task)))
+                   (if best (my-round-to-3 (fitness best)) 0)))
       :category "Result")
      (:name 'best-size :label "Best size" :accessor-type 'valuable-accessor-type 
       :getter '(lambda (object)  
@@ -244,7 +243,7 @@
     (kill-task subtask)))
 
 (defmethod task-kill ((o mp:process))
-  (mp:process-kill (process o)))
+  (mp:process-kill o))
 
 (defmethod resetear ((task search-task))
   "Reset <task>."
@@ -300,16 +299,17 @@
     (best-individual (algorithm task))))
 
 (defmethod best-individual-subtasks ((task search-task))
-  "Answer the best individual and the owner subtask in <task> subtasks."
+  "Answer the best individual and owner subtask in <task> subtasks."
   (let ((best-individual)
         (owner-subtask))
     (dolist (subtask (children task))
-      (let ((best-individual-subtask (if (algorithm subtask) (best-individual (algorithm subtask)))))
-        (if (or (null best-individual)
-                (and best-individual-subtask
-                     (better-than best-individual-subtask best-individual)))
-            (setf best-individual best-individual-subtask
-                  owner-subtask subtask))))
+      (let* ((algorithm (algorithm subtask))
+             (best-individual-subtask (if algorithm (best-individual algorithm))))
+        (when (or (null best-individual)
+                  (and best-individual-subtask
+                       (better-than best-individual-subtask best-individual)))
+          (setf best-individual best-individual-subtask
+                owner-subtask subtask))))
       (values best-individual owner-subtask)))
 
 (defmethod best-individuals ((task search-task) n)

@@ -11,6 +11,7 @@
    (compact-tcp-messages :initarg :compact-tcp-messages :accessor compact-tcp-messages)
    (main-server :initarg :main-server :accessor main-server)
    ;; GUI
+   (prompt-for-task-name :initarg :prompt-for-task-name :accessor prompt-for-task-name)
    (animation-enabled :initarg :animation-enabled :accessor animation-enabled)
    (panes-history-level :initarg :panes-history-level :accessor panes-history-level)
    (visualization-mode :initarg :visualization-mode :accessor visualization-mode)
@@ -20,6 +21,7 @@
    (ip-update-timer-delta :initarg :ip-update-timer-delta :accessor ip-update-timer-delta)
    (pane-positioner-main :initarg :pane-positioner-main :accessor pane-positioner-main)
    (pane-positioner-children :initarg :pane-positioner-children :accessor pane-positioner-children)
+   (refresh-remote-properties :initarg :refresh-remote-properties :accessor refresh-remote-properties)
    ;; Integrated applications specific
    (time-variable-step :initarg time-variable-step :accessor time-variable-step)
    (image-steps :initarg :image-steps :accessor image-steps)   
@@ -88,6 +90,9 @@
     :category "Network")
    (:name 'ip-update-timer-delta :label "Server ping time" :accessor-type 'accessor-accessor-type 
     :data-type 'integer :default-value 300000 :editor 'integer-editor :update-callback 'save-property-state
+    :category "Network")
+   (:name 'refresh-remote-properties :label "Refresh remote properties" :accessor-type 'accessor-accessor-type 
+    :data-type 'boolean :default-value t :editor 'boolean-editor :update-callback 'save-property-state
     :category "Network")
    ;; Integrated applications specific
    (:name 'time-variable-step :label "Time var step" :accessor-type 'accessor-accessor-type :category "Graphics"

@@ -10,7 +10,9 @@
 (defmethod apply-command-line-parameters ((c command-line-interpreter))
   (let* ((command-line system:*line-arguments-list*)
          (exit-argument (argument-from-key-equal command-line ":exit" 1)))
-    (apply-command c command-line)
+    (handler-case
+        (apply-command c command-line)
+      (error (error) (handle-command-error error)))
     (when (and exit-argument (eval (read-from-string exit-argument)))
       (force-exit-image))))
 
