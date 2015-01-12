@@ -301,3 +301,82 @@
 
 (defmethod check-remote-model-update ((o search-task))
   (update-task-properties o))
+
+(defun create-lisp-cfg-language (functions variables constants)
+  (let ((grammar (make-instance 'context-free-grammar
+                                 :name 'generic-tree-cfg-grammar 
+                                 :lexer 'lisp-math-expression-lexer
+                                 :parser-initializer 'initialize-lisp-math-expression-parser
+                                 :productions (lisp-math-grammar-productions)
+                                 :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :expresion))))
+    (make-instance 'cfg-tree-language 
+                   :name 'generic-tree-cfg-language
+                   :description "Generic tree CFG"
+                   :grammar grammar
+                   :simplification-patterns *lisp-math-expression-simplification-patterns*
+                   :constants-strategy constants
+                   :functions (entity-function-default-functions-info)
+                   :terminals (append variables (list :constant))
+                   :variables variables
+                   :tokens *lisp-math-expression-tokens*
+                   :valid-new-expresion-function 'create-new-random-valid
+                   :simplification-function 'simplify-strategy
+                   :operators (default-genetic-operators-probability-lisp-expression))))
+
+#|
+(defmethod dispatch-message-name ((message-name (eql 'message-prepare-lisp-cfg-language)) message administrator stream)
+  (let* ((functions (first (content message)))
+         (variables (second (content message)))
+         (constants (third (content message)))
+         (language (create-lisp-cfg-language functions variables constants)))
+    (setf (name language) (symbol-name (gensym)))
+    (system-add language)
+    (format stream "~A" (name language))
+    (force-output stream))) 
+|#
+
+(defmethod dispatch-message-name ((message-name (eql 'message-create-random-lisp-cfg-language)) message administrator stream)
+  (let* ((functions (first (content message)))
+         (constants (system-get (second (content message))))         
+         (variables (third (content message)))
+         (max-size (fourth (content message)))
+         (language (create-lisp-cfg-language
+                    (or functions (entity-function-default-functions-info))
+                    variables 
+                    constants)))
+    (setf (max-size language) max-size)
+    (let ((result (create-random-from-production language '(start) max-size nil)))
+      (format stream "~A | ~A" result (infix-coverted-string result))
+      (force-output stream))))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-mutate-lisp-cfg-language)) message administrator stream)
+  (let* ((functions (first (content message)))
+         (constants (system-get (second (content message))))
+         (variables (third (content message)))
+         (max-size (fourth (content message)))
+         (object (fifth (content message)))
+         (operator (system-get 'mutate-cfg))
+         (language (language (create-lisp-cfg-language
+                    (or functions (entity-function-default-functions-info))
+                    variables 
+                    constants))))
+    (setf (max-size language) max-size)
+    (let ((result (mutate-cfg object language operator)))
+      (format stream "~A | ~A" result (infix-coverted-string result))
+      (force-output stream))))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-crossover-lisp-cfg-language)) message administrator stream)
+  (let* ((functions (first (content message)))
+         (constants (system-get (second (content message))))         
+         (variables (third (content message)))
+         (max-size (fourth (content message)))
+         (object-a (fifth (content message)))
+         (object-b (sixth (content message)))
+         (language (language (create-lisp-cfg-language
+                    (or functions (entity-function-default-functions-info))
+                    variables 
+                    constants))))
+    (setf (max-size language) max-size)
+    (let ((result (directed-crossover-cfg object-a object-b language operator)))
+      (format stream "~A | ~A" result (infix-coverted-string result))
+      (force-output stream))))
