@@ -195,7 +195,7 @@
         (list (system-get 'branch-delete-cfg)          0.0)
         (list (system-get 'mutate)                     0.0)
         (list (system-get 'mutate-point)               0.2)
-        (list (system-get 'mutate-koza)                0)
+        (list (system-get 'mutate-koza)                0.0)
         (list (system-get 'mutate-cfg)                 0.1)
         (list (system-get 'mutate-reuse-cfg)           0.0)
         (list (system-get 'mutate-production-cfg)      0.0)

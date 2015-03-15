@@ -66,7 +66,7 @@
   (appendf (appenders *logger*) (list (make-instance 'print-appender))))
 
 (defun default-log-file-name ()
-  (or (log-file-from-command) "d:\\temp\\log.txt"))
+  (or (log-file-from-command) "log.txt"))
 
 (defun log-file-from-command ()
   (let ((value (argument-from-key system:*line-arguments-list* ":log" 1)))

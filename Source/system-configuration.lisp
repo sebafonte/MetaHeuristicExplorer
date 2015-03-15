@@ -55,7 +55,7 @@
   (add-properties-from-values
    o
    (:name 'name :label "Name" :accessor-type 'accessor-accessor-type :default-value "System configuration" 
-    :data-type 'string :editor 'text-editor :read-only t)
+    :data-type 'string :editor 'text-editor :read-only t :visible nil)
    (:name 'compact-tcp-messages :label "Compact tcp messages" :accessor-type 'accessor-accessor-type 
     :data-type 'boolean :default-value nil :editor 'boolean-editor :update-callback 'save-property-state
     :category "Network")

@@ -333,11 +333,16 @@
     (system-add language)
     (format stream "~A" (name language))
     (force-output stream))) 
+
+(make-instance 'tcp-message :name (quote message-create-random-lisp-cfg-language
+) :content (list (quote nil) (quote default-fixed-set-numerical-1) (list (quote
+x)  (quote y)  (quote time)) 30))
 |#
+
 
 (defmethod dispatch-message-name ((message-name (eql 'message-create-random-lisp-cfg-language)) message administrator stream)
   (let* ((functions (first (content message)))
-         (constants (system-get (second (content message))))         
+         (constants (system-get (second (content message))))
          (variables (third (content message)))
          (max-size (fourth (content message)))
          (language (create-lisp-cfg-language
@@ -367,7 +372,7 @@
 
 (defmethod dispatch-message-name ((message-name (eql 'message-crossover-lisp-cfg-language)) message administrator stream)
   (let* ((functions (first (content message)))
-         (constants (system-get (second (content message))))         
+         (constants (system-get (second (content message))))
          (variables (third (content message)))
          (max-size (fourth (content message)))
          (object-a (fifth (content message)))
