@@ -298,3 +298,11 @@
 
 (defun between (value min max)
   (and (<= value max) (>= value min)))
+
+(defun name-intern (symbol)
+  (intern 
+   (string-upcase (if (symbolp symbol)
+                      (if (keywordp symbol)
+                          (symbol-name symbol)
+                        symbol)
+                    symbol))))

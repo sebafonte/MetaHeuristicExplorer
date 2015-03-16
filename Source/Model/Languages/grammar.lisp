@@ -190,11 +190,11 @@
       ;; Add to productions if found, reset
       (if (find-if (lambda (b) (equal (car b) (car i))) functions)
           (progn 
-            (appendf result (list (list (intern (second i)) (intern (first i)))))
-            (appendf result (list (list (intern (first i)) (intern (second i) :keyword))))
+            (appendf result (list (list (name-intern (second i)) (name-intern (first i)))))
+            (appendf result (list (list (name-intern (first i)) (intern (name-intern (second i)) :keyword))))
             (setf (gethash (second i) not-found-table) t))))
     ;; Add missing productions
     (dolist (k (keys not-found-table))
       (if (not (gethash k not-found-table))
-          (appendf result (list (list (intern k) (intern k))))))
+          (appendf result (list (list (name-intern k) (name-intern k))))))
     result))
