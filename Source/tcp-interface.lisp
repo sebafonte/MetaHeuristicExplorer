@@ -288,7 +288,6 @@
               (write-line (transportable-code-description message) stream)
               (force-output stream)
                 (let ((result (split-sequence "|" (read-line stream nil nil))))
-                  (setf tt task)
                   (setf (fitness task) (first result)
                         (evaluations (fitness-evaluator task)) (second result))))
           (handle-transfer-error "Closed connection"))))

@@ -156,8 +156,8 @@
   (setf (state task) 'finished))
 
 (defmethod execute-planified-search ((task search-task))
-  "Execute children of <task> using it's asociated planiifer.
-   #NOTE / #TODO: Now is using lispworks planification."
+  "Execute children of <task> using it's asociated planifier.
+   #NOTE / #TODO: Now using Lispworks planification."
   (execute-task-subtasks (task-planifier task) task)
   (mp:process-wait 
    "Waiting for children completion."
@@ -240,14 +240,17 @@
     (task-kill (process task)))
   ;; Kill subtasks mp:process
   (dolist (subtask (children task))
-    (kill-task subtask)))
+    (kill-task subtask))
+  ;; Change task state
+  (unless (eql (state task) 'FINISHED)
+    (setf (state task) 'KILLED)))
 
 (defmethod task-kill ((o mp:process))
   (mp:process-kill o))
 
-(defmethod resetear ((task search-task))
+(defmethod reset ((task search-task))
   "Reset <task>."
-  (resetear (algorithm task))
+  (reset (algorithm task))
   (mp:process-reset (process task)))
 
 (defmethod is-completed ((task search-task))

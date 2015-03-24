@@ -154,7 +154,7 @@
 (defun reset-search-subtasks (data interface)
   "Reset selected subtask on <interface>."
   (declare (ignore data))
-  (resetear (selection interface)))
+  (reset (selection interface)))
 
 ;; #TODO: It should open an 'pane-editor-entity maybe (#CHECK)
 (defun menu-view-population (interface data)

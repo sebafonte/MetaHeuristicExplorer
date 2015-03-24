@@ -113,35 +113,32 @@
              (MAKE-TASK
               (MAKE-BUILDER-IT 1)
               (MAKE-ALG-GG 100 53 (MAKE-SM-TOURNAMENT 5) (MAKE-EM 5))
-              (MAKE-LG-OBJ 40 0 10)
-              (MAKE-GN-RND-OBJ 1)
-              (MAKE-FE-OBJ 1))
+              (MAKE-LG 40 0 10)
+              (MAKE-GN-RND 1)
+              (MAKE-FE))
              (MAKE-TASK
               (MAKE-BUILDER-IT 1)
               (MAKE-ALG-GG 100 53 (MAKE-SM-TOURNAMENT 5) (MAKE-EM 5))
-              (MAKE-LG-OBJ 40 0 10)
-              (MAKE-GN-RND-OBJ 1)
-              (MAKE-FE-OBJ 1))))
+              (MAKE-LG 40 0 10)
+              (MAKE-GN-RND 1)
+              (MAKE-FE))))
        (t2 '(BEST-OF-TASKS
              (MAKE-TASK
               (MAKE-BUILDER-IT 5)
               (MAKE-ALG-GG 10 54 (MAKE-SM-TOURNAMENT 4) (MAKE-EM 4))
-              (MAKE-LG-OBJ 40 0 10)
-              (MAKE-GN-RND-OBJ 1)
-              (MAKE-FE-OBJ 1))
+              (MAKE-LG 40 0 10)
+              (MAKE-GN-RND 1)
+              (MAKE-FE))
              (MAKE-TASK
               (MAKE-BUILDER-IT 10)
               (MAKE-ALG-GG 20 55 (MAKE-SM-TOURNAMENT 3) (MAKE-EM 3))
-              (MAKE-LG-OBJ 40 0 10)
-              (MAKE-GN-RND-OBJ 1)
-              (MAKE-FE-OBJ 1)))))
-  (setf (context algorithm) (process task))
-  (setf (language (process task)) language)  
-  (setf (max-size language) 200)
+              (MAKE-LG 40 0 10)
+              (MAKE-GN-RND 1)
+              (MAKE-FE)))))
+  (setf (context algorithm) (process task)
+	    (language (process task)) language
+        (max-size language) 200)
   (dotimes (i 100)
     (let ((new-value (directed-crossover-cfg t1 t2 algorithm operator)))
       (setf (gethash new-value table) (tree-size new-value))))
   table)
- 
-     
-   

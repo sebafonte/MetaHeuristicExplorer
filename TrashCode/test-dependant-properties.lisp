@@ -12,7 +12,7 @@
 (defmethod test-dependant-property-inner ((o test-properties))
   "Verifies whether inheritance of properties behaves correctly."
   (let* ((object (make-instance 'test-properties-dependant-class-b))
-         (get-property-named object 'objetive-class))
+         (get-property-named object 'objective-class))
     (check (valid-value-p object property))
     (set-value-for-property object property 'entity-function-x-y)
     (check (valid-value-p object property))))
