@@ -98,8 +98,8 @@
 (defmethod equals ((a entity) (b entity))
   (equals (program a) (program b)))
 
-;; #TODO: REFACTORING
+;; #TODO: REFACTOR
 (defmethod prepare-children-from ((o entity) exp algorithm)
-  "Prepares <o> to behave like <expression>."
+  "Prepares <o> to behave like <exp>."
   (setf (program o) (prepare-children-language (language algorithm) exp)))
 

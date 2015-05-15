@@ -33,9 +33,9 @@
   nil)
 
 (defmethod drawablep ((o base-model))
-  "Answer whether o can be displayed on the GUI."
+  "Answer whether <o> can be displayed on GUI."
   nil)
 
-(defmethod drawablep ((object t))
-  "Answer whether o can be displayed on the GUI."
+(defmethod drawablep ((o t))
+  "Answer whether <o> can be displayed on GUI."
   nil)

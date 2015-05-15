@@ -15,6 +15,14 @@
     (veccolormap :3-ary-operator)
     (createvector :create-vector)))
 
+;; #NOTE: Extension for supporting three textures and three sub images. 
+;;        Only for client evaluation, #'vecimg? is not implemented in the Lisp image yet.
+(defparameter *lisp-rgb-vector-tokens-extended*
+  (append *lisp-rgb-vector-tokens*
+          '((vecfa :2-ary-operator) (vecfb :2-ary-operator) (vecfc :2-ary-operator)
+            (vectexa :2-ary-operator) (vectexb :2-ary-operator) (vectexc :2-ary-operator))))
+
+
 (defun rgb-vector-expression-lexer (grammar)
   (let ((symbol (pop *parser-input*)))
     (if symbol (rgb-vector-expression-get-token grammar symbol)
