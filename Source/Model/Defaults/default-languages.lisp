@@ -285,7 +285,7 @@
                   :lexer 'rgb-vector-expression-lexer
                   :parser-initializer 'initialize-rgb-vector-expression-parser
                   :productions (rgb-vector-expression-grammar-productions)
-                  :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :exp :vector)))
+                  :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :exp :vector)))
   (system-add
    (make-instance 'cfg-tree-language 
                   :name 'rgb-color-images-vector
@@ -309,7 +309,8 @@
                   :max-size 40
                   :tokens *lisp-rgb-composite-vector-tokens*
                   :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1)
-                               (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1) (vecfa 2) (vecfb 2) (vecfc 2))
+                               (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1) (vecfa 2) 
+                               (vecfb 2) (vecfc 2))
                   :terminals '(x y :constant)
                   :variables '(x y)
                   :valid-new-expresion-function 'create-new-first-parent-program-copy
@@ -335,8 +336,8 @@
                   :constants-strategy (system-get-copy 'default-ephemeral-0-1d)
                   :max-size 40
                   :tokens *lisp-rgb-vector-tokens*
-                  :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1) (vecsin 1) (veccos 1) (vectan 1) 
-                               (veccolormap 2) (createvector 1))
+                  :functions '((vecadd 2) (vecsubstract 2) (vecmultiply 2) (vecdiv 2) (vecabs 1) (vecsqr 1)
+                               (vecsin 1) (veccos 1) (vectan 1) (veccolormap 2) (createvector 1))
                   :terminals '(x y :constant)
                   :variables '(x y va vb vc vd)
                   :valid-new-expresion-function 'create-new-first-parent-program-copy

@@ -10,7 +10,7 @@
     :initarg :minimum-production-sizes :initform (make-hash-table) :accessor minimum-production-sizes)
    (lexer :initarg :lexer :accessor lexer)
    (parser-initializer :initarg :parser-initializer :accessor parser-initializer)
-   (crossover-tokens :initarg :crossover-tokens :initform nil :accessor crossover-tokens)
+   (crossover-nodes :initarg :crossover-nodes :initform nil :accessor crossover-nodes)
    ;; #TEMP: Just pass a keyword, variable is not needed. Anyways take a look, maybe this is used to make copies faster (?)
    (skip-initialization :initarg :skip-initialization :initform nil :accessor skip-initialization)))
 
@@ -27,7 +27,7 @@
                  :minimum-production-sizes (copy (minimum-production-sizes o))
                  :lexer (lexer o)
                  :parser-initializer (parser-initializer o)
-                 :crossover-tokens (copy (crossover-tokens o))
+                 :crossover-nodes (copy (crossover-nodes o))
                  :skip-initialization t))
 
 (defmethod initialize-instance :after ((g grammar) &rest keys) 
@@ -57,8 +57,7 @@
 
 (defmethod parse ((g grammar) expression)
   "Answer parsing expression for <expression> parsed with <g>."
-  (let* ((*current-grammar* g)
-         (linear-expression (flatten-parenthesis expression))
+  (let* ((linear-expression (flatten-parenthesis expression))
          (*parser-input* (if (consp linear-expression) linear-expression (list linear-expression))))
     (funcall (name g) (lambda () (funcall (lexer g) g)))))
 

@@ -1,7 +1,7 @@
 
 ;;; Web interface
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-languages)) message administrator stream)
-  (format stream "lisp-math-function-x lisp-math-function-xy rgb-color-images-vector rgb-color-images-vector-time")
+  (format stream "lisp-math-function-x lisp-math-function-xy lisp-math-function-xyz rgb-color-images-vector rgb-color-images-vector-time")
   (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-default)) message administrator stream)
@@ -307,7 +307,7 @@
                                  :lexer 'lisp-math-expression-lexer
                                  :parser-initializer 'initialize-lisp-math-expression-parser
                                  :productions (lisp-math-grammar-productions)
-                                 :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :expresion))))
+                                 :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :expresion))))
     (make-instance 'cfg-tree-language 
                    :name 'generic-tree-cfg-language
                    :description "Generic tree CFG"

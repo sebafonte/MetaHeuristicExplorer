@@ -192,7 +192,7 @@
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-mux-expression-parser
                 :productions (mux-grammar-productions)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :expresion)))
+                :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :expresion)))
 
 (system-add
  ;; languages for mux problems

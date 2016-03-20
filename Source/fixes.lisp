@@ -17,19 +17,13 @@
 ;; Patch to avoid #'load-on-demand runtime call for PARSERGEN
 (eval
  `(defparser test
-             ((bs expresion) $1)
-             ((expresion :1-ary-operator expresion)
-              `(,$1 ,$2))
-             ((expresion :2-ary-operator expresion expresion)
-              `(,$1 ,$2 ,$3))
-             ((expresion :3-ary-operator expresion expresion expresion)
-              `(,$1 ,$2 ,$3 ,$4))
-             ((expresion :constant)
+             ((start expresion) $1)
+             ((expresion :open expresion :2-ary-operator expresion :close)
+              `(,$2 ,$1 ,$3))
+             ((expresion factor)
               $1)
-             ((expresion :var)
-              $1)
-             ((expresion :list) 
-              (parse *current-grammar* $1))))
+             ((factor :var) $1)
+             ((factor :constant) $1)))
 
 ;; Patch to avoid #'load-on-demand runtime call for COMM
 (require "comm")

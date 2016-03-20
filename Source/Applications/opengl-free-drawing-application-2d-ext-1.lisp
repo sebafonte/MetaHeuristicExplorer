@@ -310,7 +310,7 @@
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-opengl-free-drawing-expression-parser-2d-ext-1
                 :productions (opengl-free-drawing-grammar-productions-ext-1)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator 
+                :crossover-nodes '(:1-ary-operator :2-ary-operator 
                                     :draw-operation :draw-expression-list :expression :start-draw)))
 
 (system-add
@@ -474,7 +474,7 @@
                        :lexer 'lisp-math-expression-lexer
                        :parser-initializer 'initialize-opengl-free-drawing-expression-parser-2d-ext-1
                        :productions (opengl-free-drawing-grammar-productions-ext-1)
-                       :crossover-tokens '(:1-ary-operator :2-ary-operator 
+                       :crossover-nodes '(:1-ary-operator :2-ary-operator 
                                            :vertex-expression :expression)))
   (setf ll
         (make-instance 'cfg-tree-language 

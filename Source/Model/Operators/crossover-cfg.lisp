@@ -208,6 +208,6 @@
 
 (defun compatible-production (language a b)
   "Answer whether production <a> and <b> are compatible for tree exchanges."
-  (and (eq a b) (find a (crossover-tokens (grammar language)))))
+  (and (eq a b) (find a (crossover-nodes (grammar language)))))
 
 

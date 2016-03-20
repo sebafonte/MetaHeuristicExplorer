@@ -88,14 +88,14 @@
                (check 
                  (= (tree-size a) (tree-size b))
                  (equal (set-difference a b) nil))))
-      ;; #NOTE: '(:var) is not a result because it doesnt belong to #'crossover-tokens
+      ;; #NOTE: '(:var) is not a result because it doesnt belong to #'crossover-nodes
       (test (common-tokens algorithm '(:var) '(:var))           
             nil)
       (test (common-tokens algorithm '(:constant) '(:var))      
             nil)
       (test (common-tokens algorithm '(:var) '(:constant)) 
             nil)
-      ;; #NOTE: '(:var) is not a result because it doesnt belong to #'crossover-tokens
+      ;; #NOTE: '(:var) is not a result because it doesnt belong to #'crossover-nodes
       (test (common-tokens algorithm '(:constant) '(:constant)) 
             nil)
       (test (common-tokens algorithm '(:1-ary-operator) '(:var))

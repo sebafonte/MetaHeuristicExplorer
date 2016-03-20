@@ -1,6 +1,5 @@
 
 (defvar *parser-input*)
-(defvar *current-grammar*)
 
 
 (defun search-on-symbol-table (table word)
