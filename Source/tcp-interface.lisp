@@ -1,10 +1,22 @@
 
 ;;; Web interface
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-languages)) message administrator stream)
-  (format stream "lisp-math-function-x lisp-math-function-xy lisp-math-function-xyz rgb-color-images-vector rgb-color-images-vector-time")
+  "Answer a string with all the system languages."
+  (format stream "lisp-math-function-x lisp-math-function-xy lisp-math-function-xyz lisp-math-function-xyzt rgb-color-images-vector rgb-color-images-vector-time")
+  (force-output stream))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-infix-converted)) message administrator stream)
+  "Answer infix converted translation for object in <message>."
+  (format stream "~A" (infix-coverted-string (first (content message))))
+  (force-output stream))
+
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-glsl-converted)) message administrator stream)
+  "Answer infix converted translation for object in <message>."
+  (format stream "~A" (glsl-coverted-string (first (content message))))
   (force-output stream))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-get-default)) message administrator stream)
+  "Answer default properties types and values for object in <message>."
   (let* ((name (first (content message)))
          (properties-description (second (content message)))
          (object (task-get name)))
@@ -14,6 +26,7 @@
     (force-output stream)))
 
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-create-default)) message administrator stream)
+  "Answer a new expression for default object for language in <message>."
   (let* ((language-name (first (content message)))
          (result (program (subject (default-object-for language-name)))))
     (format stream "~A | ~A" result (infix-coverted-string result))
@@ -82,6 +95,17 @@
     ;; Constant or name
     (format buffer "~4$" (replace-converter o))))
 
+;;  glsl-converter (#TEMP)
+(defun glsl-converter (o buffer)
+  (let ((exp (parse-glsl)))
+    (format buffer exp)))
+
+(defun glsl-shader-functions-float-part-info ()
+  '((+ 2) (- 2) (* 2) (/- 2) (sin 1) (cos 1) (sqrt 1) (sqr 1) (abs 1) (sqrt 1)))
+
+(defun glsl-shader-functions-vec3-part-info ()
+  '((+ 2) (- 2) (* 2) (/- 2) (sin 1) (cos 1) (sqrt 1) (abs 1) (sqrt 1)))
+
 (defmethod replace-converter ((o (eql '/-)))
   'divideprotected)
 
@@ -91,6 +115,10 @@
 (defun infix-coverted-string (o)
   (with-output-to-string (stream)
     (infix-converter o stream)))
+
+(defun glsl-coverted-string (o) 
+  (with-output-to-string (stream)
+    (glsl-converter o stream)))
 
 ;; Default objects for testing
 (defmethod default-object-for ((o (eql 'lisp-math-function-xy)))
