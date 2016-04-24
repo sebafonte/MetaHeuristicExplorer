@@ -10,8 +10,8 @@ Requeriments
 
 QuickStart
 ----------
-1. For the code, copy sources to a directory, load system.lisp.
-2. Execute the runtime versión found in /Runtime, there are two version of runtimes:
+1. To start coding, copy sources to a directory and load system.lisp.
+2. Execute the runtime version found in /Runtime, depending on your needs:
      GUI: Can run experiments passing them as parameter
      Console: Graphical user interface for creating / editing experiments and objects.
 3. Reference:
