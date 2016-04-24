@@ -1,39 +1,83 @@
 
-(defun create-glsl-grammar (functions)
+(defun glsl-grammar-productions (definition)
   (let ((productions))
-  (dolist (i list)
-    (let ((spec (car i))
-          (possible (cdr i)))
-      (dolist (j possible)
-        (add-productions-from-line productions i j))))))
+    (dolist (i definition)
+      (let ((spec (car i))
+            (possible (cdr i)))
+        (dolist (j possible)
+          (appendf productions (productions-from-line i j)))))
+    productions))
 				
-(defmacro add-productions-from-line (productions i j)
+(defun productions-from-line (i j)
   "Add expanded productions for <i>, <j> into <productions>."
-  (let* ((arguments (expand-arguments i))
-         (generated (expand-generated i arguments))
-         (argument-indexes (loop for i from 0 to (length generated) collect (argument-index-symbol i))))
-    (appendf productions 
-             (replace 
-              (replace 
-               '((EXP :OPEN placeholder-function-name placeholder-arguments :CLOSE) 
-                 (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST placeholder-argument-indexes)))
-               'placeholder-function-name
-               generated)
-              'placeholder-argument-indexes
-              argument-indexes))))
-		
-(defun expand-arguments (spec)
-  "Answer a list with production description values for <spec>."
-  (let ((splitted (string-split spec))
-        (return-type (car splitted))
-        (arguments (cdr splitted)))
-    nil))
+  (let* ((splitted (split-sequence "-" (symbol-name (car i))))
+         (return-type (car splitted))
+         (arguments (mapcar (lambda (o) (get-var-type-from-argument-string o)) (cdr splitted)))
+         (production (expand-production i splitted))
+         (generated (expand-generated i arguments splitted)))
+    (append (list production)
+            (list generated))))
 
-(defun expand-generated (i arguments)
-	"Answer expression to build parse tree when parsing for production <i>."
-	(list 'backquote (list i (arguments-placeholder arguments))))
-	
-	
+;;
+;; ((EXP4 :OPEN f4-f4-f4 EXP4 EXP4 :CLOSE) 
+;;  (SYSTEM::BQ-LIST :EXP4 (SYSTEM::BQ-LIST $2 $3)))
+;;
+
+(defun expand-production (i splitted)
+  "Answer a list with production description values for <spec>."
+  (let ((return-type (car splitted))
+        (arguments (mapcar (lambda (o) (get-var-type-from-argument-string o)) (cdr splitted))))
+    (append (list (get-exp-type-from-argument-string return-type)
+                  :open 
+                  (intern (car i) :keyword))
+            arguments 
+            (list :close))))
+
+(defun expand-generated (i arguments splitted)
+  "Answer expression to build parse tree when parsing for production <i>."
+  (list 'SYSTEM::BQ-LIST 
+        (intern (get-exp-type-from-argument-string (car splitted)) :keyword)
+        (append (list 'SYSTEM::BQ-LIST)
+                (loop for i from 1 to (1+ (length arguments)) collect 
+                      (argument-index-symbol i)))))
+  
+(defun argument-index-symbol (index)
+  (ecase index
+    ((1) '$1)
+    ((2) '$2)
+    ((3) '$3)
+    ((4) '$4)
+    ((5) '$5)
+    ((6) '$6)
+    ;; #ERROR:
+    ('otherwise nil)))
+
+(defun get-exp-type-from-argument-string (o)
+  (let ((value (string-downcase o)))
+    (if (equals value "f1")
+        'exp1
+      (if (equals value "f2")
+          'exp2
+        (if (equals value "f3")
+            'exp3
+          (if (equals value "f4")
+              'exp4
+            ;; #TODO: Throw error
+            nil))))))
+
+(defun get-var-type-from-argument-string (o)
+  (let ((value (string-downcase o)))
+    (if (equals value "f1")
+        :exp1
+      (if (equals value "f2")
+          :exp2
+        (if (equals value "f3")
+            :exp3
+          (if (equals value "f4")
+              :exp4
+            ;; #TODO: Throw error
+            nil))))))
+
 (defvar *glsl-exp-structure-data*
   '(;; float functions
     (f1-f1 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX GENTYPE FWIDTH)
@@ -76,49 +120,38 @@
 
 (defun test-language-glsl (vars)
   (let ((language (create-language-from (gensym) vars (entity-function-default-functions-info))))
-    (parse )))
+    (parse (grammar language) "nil")))
 
 
 (defun create-language-from (name vars functions)
-  (make-instance 'cfg-tree-language 
-                 :name name
-                 :description (format nil "F(n) CFG ~a" name)
-                 :grammar (system-get-copy 'lisp-math-function-grammar)
-                 :simplification-patterns nil
-                 :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
-                 :functions (entity-function-default-functions-info)
-                 ;; #TODO: Feed with vars
-                 :variables vars
-                 ;; #TODO: Feed with vars too 
-                 :terminals (append vars '(:constant))
-                 ;; #TODO: Feed with functions
-                 :tokens (create-tokens-for-language *glsl-expressions-subset-tokens-base*)
-                 :valid-new-expresion-function 'create-new-random-valid
-                 :simplification-function nil
-                 :operators (default-genetic-operators-probability-lisp-expression)))
+  (let ((grammar (make-instance 'context-free-grammar
+                                :name 'glsl-exp-subset-grammar
+                                :lexer 'glsl-expressions-subset-lexer
+                                :parser-initializer 'initialize-glsl-expressions-subset-parser-vec3
+                                :productions (glsl-grammar-productions *glsl-exp-structure-data*)
+                                :crossover-nodes '(:exp1 :exp2 :exp3 :exp4))))
+    (system-add grammar)
+    (make-instance 'cfg-tree-language 
+                   :name name
+                   :description (format nil "F(n) CFG ~a" name)
+                   :grammar (system-get-copy 'glsl-exp-subset-grammar)
+                   :simplification-patterns nil
+                   :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
+                   :functions *glsl-exp-structure-data*
+                   ;; #TODO: Feed with vars
+                   :variables vars
+                   ;; #TODO: Feed with vars too 
+                   :terminals (append vars '(:constant))
+                   ;; #TODO: Feed with functions
+                   :tokens (create-tokens-for-language *glsl-expressions-subset-tokens-base*)
+                   :valid-new-expresion-function 'create-new-random-valid
+                   :simplification-function nil
+                   :operators (default-genetic-operators-probability-lisp-expression))))
 
+;; #TODO:
 (defun create-tokens-for-language ()
   (let ((result
-         (append 
-          
-          vars)))))
-
-(defparameter *glsl-expressions-subset-tokens-base*
-  '(;; 1 argument operators
-    (abs :1-ary-operator)
-    (sqrt :1-ary-operator)
-    (sin :1-ary-operator)
-    (cos :1-ary-operator)
-    (tan :1-ary-operator)
-    ;; 2 argument operators
-    (+ :2-ary-operator)
-    (- :2-ary-operator)
-    (* :2-ary-operator)
-    (/ :2-ary-operator)
-    ;; 3 argument operators
-    (mix :3-ary-operator)
-    (smoothstep :3-ary-operator)))
-
+         (append vars)))))
 
 (defun glsl-expressions-subset-lexer (grammar)
   (let ((symbol (pop *parser-input*)))
@@ -136,35 +169,56 @@
     (values token-type (list token-type word))))
 
 
-
-(defun initialize-glsl-expressions-subset-parser (name)
+(defun initialize-glsl-expressions-subset-parser-vec3 (name)
   (eval
    (let ((name 'sample-grammar))
-     (replace 
-     '(DEFPARSER (QUOTE GLSL-GRAMMAR RATA)
-                 ((START EXP) $1)
-                 
+     (append 
+      (list 'DEFPARSER 
+            '(QUOTE GLSL-GRAMMAR)
+            '((START EXP3) $1)
+            ;; Hook with return type
+            '((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1)))
+      ;; Function expansions
+      (glsl-grammar-productions *glsl-exp-structure-data*)
+      ;; Operator expansions
+      ;; #TODO:
+      (list '((EXP1 VAR1) (SYSTEM::BQ-LIST :EXP $1))
+            '((EXP2 VAR2) (SYSTEM::BQ-LIST :EXP $1))
+            '((EXP3 VAR3) (SYSTEM::BQ-LIST :EXP $1))
+            '((EXP4 VAR4) (SYSTEM::BQ-LIST :EXP $1))   
+            '((VAR1 :F1) (SYSTEM::BQ-LIST :VAR $1))
+            '((VAR2 :F2) (SYSTEM::BQ-LIST :VAR $1))
+            '((VAR3 :F3) (SYSTEM::BQ-LIST :VAR $1))
+            '((VAR4 :F4) (SYSTEM::BQ-LIST :VAR $1)))))))
+
+#|
+     '(DEFPARSER (QUOTE GLSL-GRAMMAR)
+                 ((START EXP3) $1)
+                 ;; Hook with return type
+                 ((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1))
+                 ;; Function expansions
                  placeholder-functions
-                 placeholder-opereators
-                 
-                 ;;((EXP :OPEN :1-ARY-OPERATOR EXP :CLOSE) 
-                 ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3)))
-                 ;;((EXP :OPEN :2-ARY-OPERATOR EXP EXP :CLOSE)
-                 ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3 $4))) 
-                 ;;((EXP :OPEN :3-ARY-OPERATOR EXP EXP EXP :CLOSE)
-                 ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3 $4 $5))) 
-                
-                 ((EXP VECTOR) (SYSTEM::BQ-LIST :EXP $1))  
-                 ((SCALAR CONSTANT) (SYSTEM::BQ-LIST :SCALAR $1))
-                 ((SCALAR VAR1) (SYSTEM::BQ-LIST :SCALAR $1)) 
-                 ((CONSTANT :CONSTANT) (SYSTEM::BQ-LIST :CONSTANT $1))
+                 placeholder-operators
+                 ((EXP1 VAR1) (SYSTEM::BQ-LIST :EXP $1))
+                 ((EXP2 VAR2) (SYSTEM::BQ-LIST :EXP $1))
+                 ((EXP3 VAR3) (SYSTEM::BQ-LIST :EXP $1))
+                 ((EXP4 VAR4) (SYSTEM::BQ-LIST :EXP $1))   
                  ((VAR1 :F1) (SYSTEM::BQ-LIST :VAR $1))
                  ((VAR2 :F2) (SYSTEM::BQ-LIST :VAR $1))
                  ((VAR3 :F3) (SYSTEM::BQ-LIST :VAR $1))
-                 ((VAR4 :F4) (SYSTEM::BQ-LIST :VAR $1))))))
+                 ((VAR4 :F4) (SYSTEM::BQ-LIST :VAR $1)))))))
+|#
+
+              ;;((EXP :OPEN :1-ARY-OPERATOR EXP :CLOSE) 
+              ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3)))
+              ;;((EXP :OPEN :2-ARY-OPERATOR EXP EXP :CLOSE)
+              ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3 $4))) 
+              ;;((EXP :OPEN :3-ARY-OPERATOR EXP EXP EXP :CLOSE) 
+              ;; (SYSTEM::BQ-LIST :EXP (SYSTEM::BQ-LIST $2 $3 $4 $5))) 
 
 
 #|
+
 (defun entity-function-default-functions-info ()
   '((+ 2) (- 2) (* 2) (/ 2)
     (sin 1) (cos 1) (sqr 1) (tan) (abs 1) (atan) (acos) (asin) 
@@ -220,6 +274,6 @@
     (var3 :F3)
     (var4 :F4)))
 
-(test-language-glsl ("x.rgb" "x.xy" "g.r" "x"))
+(test-language-glsl '("x.rgb" "x.xy" "g.r" "x"))
 
 |#
