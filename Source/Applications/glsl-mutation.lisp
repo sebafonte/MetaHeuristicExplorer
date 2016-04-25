@@ -1,3 +1,21 @@
+(defun get-productions ()
+  (mapcar (lambda (o) (car list))
+          (append 
+           (list '((START EXP3) $1)
+                 ;; Hook with return type
+                 '((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1)))
+           ;; Function expansions
+           (glsl-grammar-productions *glsl-exp-structure-data*)
+           ;; Operator expansions
+           ;; #TODO:
+           (list '((EXPONE VAR1) (SYSTEM::BQ-LIST :EXPONE $1))
+                 '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
+                 '((EXPTHREE VAR3) (SYSTEM::BQ-LIST :EXPTHREE $1))
+                 '((EXPFOUR VAR4) (SYSTEM::BQ-LIST :EXPFOUR $1))   
+                 '((VAR1 :F1) (SYSTEM::BQ-LIST :VAR1 $1))
+                 '((VAR2 :F2) (SYSTEM::BQ-LIST :VAR2 $1))
+                 '((VAR3 :F3) (SYSTEM::BQ-LIST :VAR3 $1))
+                 '((VAR4 :F4) (SYSTEM::BQ-LIST :VAR4 $1))))))
 
 (defun glsl-grammar-productions (definition)
   (let ((productions))
@@ -20,10 +38,10 @@
 (defun expand-production (return-type function-name arguments)
   "Answer a list with production description values for <spec>."
   (append (list (get-exp-type-from-argument-string return-type)
-                'open
+                :open
                 (intern function-name :keyword))
           arguments 
-          (list 'close)))
+          (list :close)))
 
 (defun expand-generated (return-type arguments)
   "Answer expression to build parse tree when parsing for production <i>."
@@ -97,39 +115,40 @@
     (f4-f1-f4 STEP)))
 
 (defun test-language-glsl (vars)
-  (let ((language (create-language-from (gensym) vars (entity-function-default-functions-info))))
-    (parse (grammar language) "nil")))
+  (let ((language (create-language-from (gensym) vars)))
+    (parse (grammar language) "(SIN (VEC3 (SIN 0.0) 0.0 1.0))")))
 
 
 (defun create-language-from (name vars)
   (let ((grammar (make-instance 'context-free-grammar
-                                :name name
+                                :name (intern (format nil "grammar-~a" name))
                                 :lexer 'glsl-expressions-subset-lexer
                                 :parser-initializer 'initialize-glsl-expressions-subset-parser-vec3
-                                :productions (glsl-grammar-productions *glsl-exp-structure-data*)
+                                :productions (get-productions)
                                 :crossover-nodes '(:expone :exptwo :expthree :expfour))))
     (system-add grammar)
     (make-instance 'cfg-tree-language 
-                   :name name
-                   :description (format nil "F(n) CFG ~a" name)
-                   :grammar (system-get-copy 'glsl-exp-subset-grammar)
+                   :name (format nil "language-~a" name)
+                   :description (format nil "language-~a" name)
+                   :grammar (system-get (intern (format nil "grammar-~a" name)))
                    :simplification-patterns nil
                    :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
                    :functions *glsl-exp-structure-data*
-                   ;; #TODO: Feed with vars
                    :variables vars
-                   ;; #TODO: Feed with vars too 
                    :terminals (append vars '(:constant))
-                   ;; #TODO: Feed with functions
-                   :tokens (create-tokens-for-language *glsl-expressions-subset-tokens-base*)
+                   :tokens (create-tokens-for-language *glsl-exp-structure-data*)
                    :valid-new-expresion-function 'create-new-random-valid
                    :simplification-function nil
-                   :operators (default-genetic-operators-probability-lisp-expression))))
+                   :operators (default-genetic-operators-probability-polynomial-expression))))
 
-;; #TODO:
-(defun create-tokens-for-language ()
-  (let ((result
-         (append vars)))))
+(defun create-tokens-for-language (spec)
+  (let ((result (make-hash-table)))
+    (dolist (i spec)
+      (dolist (j (cdr i))
+        (setf (gethash j result) t)))
+    (list (mapcar (lambda (o) (list o (intern o :keyword)))
+                  (keys result)))))
+    
 
 (defun glsl-expressions-subset-lexer (grammar)
   (let ((symbol (pop *parser-input*)))
@@ -170,7 +189,7 @@
 
 #|
 ;;
-;; ((EXP4 :OPENP f4-f4-f4 EXP4 EXP4 :CLOSEP) 
+;; ((EXP4 :OPEN f4-f4-f4 EXP4 EXP4 :CLOSE) 
 ;;  (SYSTEM::BQ-LIST :EXP4 (SYSTEM::BQ-LIST $2 $3)))
 ;;
 
