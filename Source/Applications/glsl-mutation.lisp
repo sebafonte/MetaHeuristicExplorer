@@ -1,5 +1,5 @@
 (defun get-productions ()
-  (mapcar (lambda (o) (car list))
+  (mapcar (lambda (o) (car o))
           (append 
            (list '((START EXP3) $1)
                  ;; Hook with return type
@@ -146,8 +146,8 @@
     (dolist (i spec)
       (dolist (j (cdr i))
         (setf (gethash j result) t)))
-    (list (mapcar (lambda (o) (list o (intern o :keyword)))
-                  (keys result)))))
+    (mapcar (lambda (o) (list o (intern o :keyword)))
+            (keys result))))
     
 
 (defun glsl-expressions-subset-lexer (grammar)
