@@ -1,9 +1,9 @@
 (defun get-productions ()
   (mapcar (lambda (o) (car o))
           (append 
-           (list '((START EXP3) $1)
+           (list '((START EXPTHREE) $1)
                  ;; Hook with return type
-                 '((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1)))
+                 '((EXP EXPTHREE) (SYSTEM::BQ-LIST :EXP $1)))
            ;; Function expansions
            (glsl-grammar-productions *glsl-exp-structure-data*)
            ;; Operator expansions
@@ -12,10 +12,10 @@
                  '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
                  '((EXPTHREE VAR3) (SYSTEM::BQ-LIST :EXPTHREE $1))
                  '((EXPFOUR VAR4) (SYSTEM::BQ-LIST :EXPFOUR $1))   
-                 '((VAR1 :F1) (SYSTEM::BQ-LIST :VAR1 $1))
-                 '((VAR2 :F2) (SYSTEM::BQ-LIST :VAR2 $1))
-                 '((VAR3 :F3) (SYSTEM::BQ-LIST :VAR3 $1))
-                 '((VAR4 :F4) (SYSTEM::BQ-LIST :VAR4 $1))))))
+                 '((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1))
+                 '((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1))
+                 '((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1))
+                 '((VAR4 :VAR4) (SYSTEM::BQ-LIST :VAR4 $1))))))
 
 (defun glsl-grammar-productions (definition)
   (let ((productions))
@@ -182,10 +182,10 @@
           '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
           '((EXPTHREE VAR3) (SYSTEM::BQ-LIST :EXPTHREE $1))
           '((EXPFOUR VAR4) (SYSTEM::BQ-LIST :EXPFOUR $1))   
-          '((VAR1 :F1) (SYSTEM::BQ-LIST :VAR1 $1))
-          '((VAR2 :F2) (SYSTEM::BQ-LIST :VAR2 $1))
-          '((VAR3 :F3) (SYSTEM::BQ-LIST :VAR3 $1))
-          '((VAR4 :F4) (SYSTEM::BQ-LIST :VAR4 $1))))))
+          '((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1))
+          '((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1))
+          '((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1))
+          '((VAR4 :VAR4) (SYSTEM::BQ-LIST :VAR4 $1))))))
 
 #|
 ;;
@@ -226,3 +226,22 @@
 (glsl-grammar-productions *glsl-exp-structure-data*)
 
 |#
+
+
+(defun minimum-production-size (grammar all-productions production &optional passed)
+  (if (and (symbolp production) (keywordp production))
+      (if (structural-symbol production) 0 1)  
+    (let (;(p (mapcar 
+          ;    (lambda (value) (car value))
+          ;    (non-recursive-productions-for all-productions production)))
+          (q (non-recursive-right-productions-for all-productions (append (list production) passed)))
+          (minimum-size *infinite-productions-size-value*))
+      (dolist (i q)
+        (let ((local-size 0))
+          (dolist (j (cdr i))
+            (incf local-size (minimum-production-size grammar all-productions j (append (list j) passed))))
+          (if (or (null minimum-size)
+                  (< local-size minimum-size))
+              (setf minimum-size local-size))))
+      minimum-size)))
+
