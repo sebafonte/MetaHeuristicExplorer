@@ -7,7 +7,7 @@
   (let* ((algorithm (default-algorithm o))
          (method (system-get 'optimization-method-steepest-descent))
          (object (make-instance 'object-in-search
-                                :object (make-instance 'entity-function-x-y)
+                                :object (make-instance 'entity-function-x)
                                 :context (context algorithm)))
          (evaluator (fitness-evaluator algorithm)))
     (labels ((test (original found)

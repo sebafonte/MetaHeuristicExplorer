@@ -19,7 +19,7 @@
 (defmethod test-crossover-cfg-execution ((o test-genetic-operators-cfg))
   "Verifies some basic examples for crossover-cfg operations work properly.
    #NOTE: By the moment, the only thing we verify is to dont get a runtime error."
-  (let ((algorithm (default-algorithm o))
+  (let ((algorithm (default-algorithm-1 o))
         (operator (system-get 'crossover-cfg)))
     (labels ((test (a b)
                (dotimes (i 100)
@@ -48,7 +48,7 @@
   "Verifies crossover-cfg genetic operation dont exceed defined max-size. 
    #NOTE: It should not be neccesary to have two expression satisfing this constraint to produce
           children that satisfy it for this kind of language (simple-lisp-math-expresion)."
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (operator (system-get 'crossover-cfg))
          (language (language algorithm)))
     (labels ((test (a b)
@@ -79,7 +79,7 @@
               (max-size (language (context algorithm))) (+ 14 max-size))
         (test '1 '5)
         (test '1 '(+ 1 (+ 3 (* y y))))
-        (test '(+ (+ 3 (* 5 x) (* 7 x)) (+ (* 2.5 x) 2)) '(+ 3 (* 4 y) (* 2 x)))))))
+        (test '(+ 3 (* 5 x) (* 7 x)) '(+ 3 (* 4 y) (* 2 x)))))))
 
 (defmethod test-common-tokens-simple-lisp-math-expresion ((o test-genetic-operators-cfg))
   "Verifies whether #'common-tokens return correct values for some specific examples."
@@ -115,7 +115,7 @@
 
 (defmethod test-select-indexes-execution-lisp-math-expresion ((o test-genetic-operators-cfg))
   "Verifies whether #'select-indexes-function return correct values for some specific examples."
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (grammar (grammar algorithm))
          (operator (system-get 'crossover-cfg)))
     (labels ((test (a b)
@@ -132,7 +132,7 @@
       (test '(abs x) '(* x y)))))
 
 (defmethod test-select-indexes-lisp-math-expresion ((o test-genetic-operators-cfg))
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (exp (parse (grammar algorithm) '(+ 1 2))))
     (labels ((test (a index b)
                (check (equal (select-subtree-cfg a index) b))))
@@ -144,7 +144,7 @@
       (test exp 5 '(:EXPRESION (:CONSTANT 2)))
       (test exp 6 '(:CONSTANT 2))
       (test exp 7 nil))))
- 
+
 (defmethod test-directed-crossover-cfg-size ((o test-genetic-operators-cfg))
   "Verify a special case in 'directed-crossover-cfg."
   (let ((algorithm (default-algorithm-2 o)))
@@ -157,7 +157,7 @@
 
 (defmethod test-branch-delete-cfg-lisp-math ((o test-genetic-operators-cfg))
   "Verify a special case in 'branch-delete-cfg."
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (operator (system-get 'branch-delete-cfg))
          (language (language algorithm)))
     (prepare-size-in-algorithm algorithm 10)
@@ -175,7 +175,7 @@
 
 (defmethod test-mutate-production-cfg-lisp-math ((o test-genetic-operators-cfg))
   "Verify a special case in 'mutate-production-cfg."
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (operator (system-get 'mutate-production-cfg))
          (language (language algorithm)))
     (prepare-size-in-algorithm algorithm 10)
@@ -193,7 +193,7 @@
 
 (defmethod test-branch-delete-cfg-lisp-math-forced-delete ((o test-genetic-operators-cfg))
   "Test 'branch-delete operator with examples."
-  (let* ((algorithm (default-algorithm o))
+  (let* ((algorithm (default-algorithm-1 o))
          (operator (system-get 'branch-delete-cfg))
          (language (language algorithm)))
     (prepare-size-in-algorithm algorithm 10)
