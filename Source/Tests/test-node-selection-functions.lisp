@@ -22,7 +22,7 @@
 
 (defmethod test-node-selection-function-terminals ((o test-node-selection-functions-cfg))
   "Verify selection on terminal nodes performing selections of <o> default expression."
-  (test-node 
+  (local-test-node 
    o 
    (default-expression o)
    (lambda (parse-tree index)
@@ -34,7 +34,7 @@
 
 (defmethod test-constant-subtree-selection-function ((o test-node-selection-functions-cfg))
   "Verify selection on constant nodes performing selections of <o> default expression."
-  (test-node 
+  (local-test-node 
    o
    (default-expression o)
    (lambda (parse-tree index)
