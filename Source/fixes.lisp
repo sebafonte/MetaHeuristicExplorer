@@ -129,3 +129,36 @@
 (defmethod (setf functions) (value (o cfg-tree-language))
   (setf 
    (slot-value o 'functions) value))
+
+;; GLSL corrections found
+(defun minimum-production-size (all-productions production &optional passed)
+  (if (and (symbolp production) (keywordp production))
+      (if (structural-symbol production) 0 1)  
+    (let ((q (non-recursive-right-productions-for all-productions (append (list production) passed)))
+          (minimum-size *infinite-productions-size-value*))
+      (dolist (i q)
+        (let ((local-size 0))
+          (dolist (j (cdr i))
+            (incf local-size (minimum-production-size all-productions j (append (list production) passed))))
+          (if (or (null minimum-size)
+                  (< local-size minimum-size))
+              (setf minimum-size local-size))))
+      minimum-size)))
+
+(defun calculate-minimum-production-size (grammar)
+  (setf (minimum-production-sizes grammar) (make-hash-table))
+  (let ((productions (updated-productions grammar)))
+    (dolist (p productions)
+      (setf (gethash (car p) (minimum-production-sizes grammar))
+            (minimum-production-size productions (car p))))))
+
+(defun non-recursive-right-productions-for (productions passed)
+  (select
+   ;; productions-for result
+   productions 
+   ;; non-recursive production condition
+   (lambda (o)
+     (and 
+      (eql (first passed) (car o))
+      (null (intersection passed (cdr o)))))))
+

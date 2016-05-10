@@ -1,6 +1,13 @@
 (defclass test-genetic-operators (test-base-model) ())
 
 
+(defmethod default-algorithm ((o test-genetic-operators) &optional &key (class 'generational-algorithm))
+  "Answer default algorithm for <o>."
+  (let* ((algorithm (make-instance class))
+         (task (make-instance 'search-task :algorithm algorithm)))
+    (setf (language task) (system-get 'lisp-math-function-xy))
+    algorithm))
+
 (defun prepare-size-in-algorithm (algorithm max-size)
   (declare (ignore max-size))
   (setf (max-size (language algorithm)) 10

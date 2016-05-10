@@ -1,4 +1,4 @@
-(defun get-productions ()
+(defun glsl-productions ()
   (mapcar (lambda (o) (car o))
           (append 
            (list '((START EXPTHREE) $1)
@@ -25,6 +25,15 @@
         (dolist (j possible)
           (appendf productions (list (productions-from-line i j))))))
     productions))
+
+(defun glsl-grammar-functions (definition)
+  (let ((functions))
+    (dolist (i definition)
+      (let ((spec (car i))
+            (possible (cdr i)))
+        (dolist (j possible)
+          (appendf functions (list j)))))
+    (mapcar (lambda (o) (list o o)) (unique-eql functions))))
 				
 (defun productions-from-line (i j)
   "Add expanded productions for <i>, <j> into <productions>."
@@ -39,7 +48,12 @@
   "Answer a list with production description values for <spec>."
   (append (list (get-exp-type-from-argument-string return-type)
                 :open
-                (intern function-name :keyword))
+                ;; #TODO: Check if remove as a keyword and add intermediate productions, causing:
+                ;;   - Refine crossover options 
+                ;;   - 
+                ;(intern function-name :keyword)
+                (intern function-name)
+                )
           arguments 
           (list :close)))
 
@@ -75,7 +89,7 @@
             ;; #TODO: Throw error
             nil))))))
 
-(defvar *glsl-exp-structure-data*
+(setf *glsl-exp-structure-data*
   '(;; float functions
     (f1-f1 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX FWIDTH)
     (f1-f1-f1 ATAN POW MIN MAX MOD STEP DISTANCE DOT REFLECT)
@@ -114,26 +128,21 @@
     (f4-f1-f1-f4 SMOOTHSTEP)
     (f4-f1-f4 STEP)))
 
-(defun test-language-glsl (vars)
-  (let ((language (create-language-from (gensym) vars)))
-    (parse (grammar language) "(SIN (VEC3 (SIN 0.0) 0.0 1.0))")))
-
-
 (defun create-language-from (name vars)
   (let ((grammar (make-instance 'context-free-grammar
-                                :name (intern (format nil "grammar-~a" name))
+                                :name 'glsl-grammar-test ;(intern (format nil "grammar-~a" name))
                                 :lexer 'glsl-expressions-subset-lexer
                                 :parser-initializer 'initialize-glsl-expressions-subset-parser-vec3
-                                :productions (get-productions)
+                                :productions (glsl-productions)
                                 :crossover-nodes '(:expone :exptwo :expthree :expfour))))
     (system-add grammar)
     (make-instance 'cfg-tree-language 
                    :name (format nil "language-~a" name)
                    :description (format nil "language-~a" name)
-                   :grammar (system-get (intern (format nil "grammar-~a" name)))
+                   :grammar grammar
                    :simplification-patterns nil
                    :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
-                   :functions *glsl-exp-structure-data*
+                   :functions (glsl-grammar-functions *glsl-exp-structure-data*)
                    :variables vars
                    :terminals (append vars '(:constant))
                    :tokens (create-tokens-for-language *glsl-exp-structure-data*)
@@ -146,13 +155,15 @@
     (dolist (i spec)
       (dolist (j (cdr i))
         (setf (gethash j result) t)))
-    (mapcar (lambda (o) (list o (intern o :keyword)))
+    (mapcar (lambda (o) (list o (intern o :keyword)
+                              ;o
+                              ))
             (keys result))))
-    
 
 (defun glsl-expressions-subset-lexer (grammar)
   (let ((symbol (pop *parser-input*)))
-    (if symbol (glsl-expressions-subset-get-token grammar symbol)
+    (if symbol 
+        (glsl-expressions-subset-get-token grammar symbol)
       nil)))
 
 (defun glsl-expressions-subset-get-token (grammar word)
@@ -165,15 +176,14 @@
     (when (null token-type) (error (format nil "Unknown token for <~A>" word)))
     (values token-type (list token-type word))))
 
-
 (defun initialize-glsl-expressions-subset-parser-vec3 (name)
   (eval
    (append 
     (list 'DEFPARSER 
           (QUOTE GLSL-GRAMMAR)
-          '((START EXP3) $1)
+          '((START EXP) $1)
           ;; Hook with return type
-          '((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1)))
+          '((EXP EXPTHREE) (SYSTEM::BQ-LIST :EXP $1)))
     ;; Function expansions
     (glsl-grammar-productions *glsl-exp-structure-data*)
     ;; Operator expansions
@@ -193,21 +203,24 @@
 ;;  (SYSTEM::BQ-LIST :EXP4 (SYSTEM::BQ-LIST $2 $3)))
 ;;
 
-'(DEFPARSER (QUOTE GLSL-GRAMMAR)
-            ((START EXP3) $1)
-            ;; Hook with return type
-            ((EXP VAR3) (SYSTEM::BQ-LIST :EXP $1))
-            ;; Function expansions
-            placeholder-functions
-            placeholder-operators
-            ((EXP1 VAR1) (SYSTEM::BQ-LIST :EXP $1))
-            ((EXP2 VAR2) (SYSTEM::BQ-LIST :EXP $1))
-            ((EXP3 VAR3) (SYSTEM::BQ-LIST :EXP $1))
-            ((EXP4 VAR4) (SYSTEM::BQ-LIST :EXP $1))   
-            ((VAR1 :F1) (SYSTEM::BQ-LIST :VAR $1))
-            ((VAR2 :F2) (SYSTEM::BQ-LIST :VAR $1))
-            ((VAR3 :F3) (SYSTEM::BQ-LIST :VAR $1))
-            ((VAR4 :F4) (SYSTEM::BQ-LIST :VAR $1)))))))
+
+(append 
+           (list '((START EXPTHREE) $1)
+                 ;; Hook with return type
+                 '((EXP EXPTHREE) (SYSTEM::BQ-LIST :EXP $1)))
+           ;; Function expansions
+           (glsl-grammar-productions *glsl-exp-structure-data*)
+           ;; Operator expansions
+           ;; #TODO:
+           (list '((EXPONE VAR1) (SYSTEM::BQ-LIST :EXPONE $1))
+                 '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
+                 '((EXPTHREE VAR3) (SYSTEM::BQ-LIST :EXPTHREE $1))
+                 '((EXPFOUR VAR4) (SYSTEM::BQ-LIST :EXPFOUR $1))   
+                 '((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1))
+                 '((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1))
+                 '((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1))
+                 '((VAR4 :VAR4) (SYSTEM::BQ-LIST :VAR4 $1))))
+
 	 
 (defun glsl-expressions-subset-grammar-productions ()
   '((start exp)
@@ -221,11 +234,9 @@
     (var3 :F3)
     (var4 :F4)))
 
-(test-language-glsl '("x.rgb" "x.xy" "g.r" "x"))
+(test-language-glsl '(("x.rgb" :var3) ("x.xy" :var2) ("g.r" :var1) ("x" :var3)))
 (create-language-from 'glsl-example-language '(x))
 (glsl-grammar-productions *glsl-exp-structure-data*)
-
-|#
 
 
 (defun minimum-production-size (grammar all-productions production &optional passed)
@@ -244,4 +255,9 @@
                   (< local-size minimum-size))
               (setf minimum-size local-size))))
       minimum-size)))
+|#
 
+
+(defun test-language-glsl (vars)
+  (let ((language (create-language-from (gensym) vars)))
+    (parse (grammar language) '(SIN (VEC3 (SIN 0.0) 0.0 1.0)))))

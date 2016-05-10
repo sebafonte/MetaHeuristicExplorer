@@ -12,7 +12,7 @@
 (defmethod set-object ((o object-pool) key value)
   (setf (get-hash (registry o) key) value))
 
-(defmacro check-object ((o object-pool) key &rest body)
+(defmacro check-object (o key &rest body)
   `(let ((value (get-object key)))
      (unless value
        (setf value (progn ,@body))
