@@ -51,7 +51,7 @@
   "Use <evaluator> to calculate and answer <object> fitness."
   (let* ((grammar (system-get 'search-algorithm-grammar))
          (expression (parse grammar (program object)))
-         (expression-fixed (compress-flatten-parenthesis-token-value expression))
+         (expression-fixed (deparse expression))
          (algorithm (eval (replace-label-cadr :list-auxiliar expression-fixed)))
          (best-individual)
          (task (default-search-task-for-algorithm evaluator algorithm)))

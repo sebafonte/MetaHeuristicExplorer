@@ -35,9 +35,9 @@
       (declare (ignore result))
       (check error))))
 
-(defmethod test-compress-flatten-parenthesis-token-value ((o test-polynomials-language))
+(defmethod test-deparse ((o test-polynomials-language))
   (check (equal 
-          (compress-flatten-parenthesis-token-value 
+          (deparse 
            '(:POLYNOMIAL 
              ((:ADD +) 
               (:CONSTANT 1) 

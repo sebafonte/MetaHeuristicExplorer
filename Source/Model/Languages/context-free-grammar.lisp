@@ -9,11 +9,11 @@
     (declare (ignore result))
     (not error)))
 
-(defun compress-flatten-parenthesis-token-value (expression)
-  (car (compress-flatten-parenthesis-token-value-recursive expression)))
+(defun deparse (expression)
+  (car (deparse-recursive expression)))
 
 #|
-(defun compress-flatten-parenthesis-token-value-recursive (expression)
+(defun deparse-recursive (expression)
   "Answer final tree without intermediate productions with values."
   (if (atom (cadr expression))
       (list (cadr expression))
@@ -21,15 +21,15 @@
       (if (atom (car expression))
           (progn
             (dolist (i (cdr expression))
-              (appendf new-list (compress-flatten-parenthesis-token-value-recursive i)))
+              (appendf new-list (deparse-recursive i)))
              new-list)
         (progn 
           (dolist (i expression)
-            (appendf new-list (compress-flatten-parenthesis-token-value-recursive i)))
+            (appendf new-list (deparse-recursive i)))
           (list new-list))))))
 |#
 
-(defun compress-flatten-parenthesis-token-value-recursive (expression)
+(defun deparse-recursive (expression)
   "Answer final tree without intermediate productions with values."
   (if (and (cadr expression) 
            (atom (cadr expression)))
@@ -38,11 +38,11 @@
       (if (atom (car expression))
           (progn
             (dolist (i (cdr expression))
-              (appendf new-list (compress-flatten-parenthesis-token-value-recursive i)))
+              (appendf new-list (deparse-recursive i)))
              new-list)
         (progn 
           (dolist (i expression)
-            (appendf new-list (compress-flatten-parenthesis-token-value-recursive i)))
+            (appendf new-list (deparse-recursive i)))
           (list new-list))))))
 
 (defun compress-flatten-parenthesis-token-type (expression)

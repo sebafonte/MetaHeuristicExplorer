@@ -16,7 +16,7 @@
     (dotimes (i 50)
         (let* ((index (1+ (select-random-index-cfg parse-tree function algorithm)))
                (selection (select-subtree-cfg parse-tree index))
-               (value (compress-flatten-parenthesis-token-value selection)))
+               (value (deparse selection)))
           (check 
             (includes results value))))))
 
@@ -95,7 +95,7 @@
    (lambda (parse-tree index)
      (declare (ignore index))
      (if (and (eql (car parse-tree) :expresion)
-              (> (tree-size (compress-flatten-parenthesis-token-value parse-tree)) 1))
+              (> (tree-size (deparse parse-tree)) 1))
          1 0))
    '((+ (* 1 y) (- (* 9 x) 3))
      (- (* 9 x) 3)
@@ -109,7 +109,7 @@
    '(* (* 1 y) (- (* 9 x) (* 3 y)))
    (lambda (parse-tree index)
      (declare (ignore index))
-     (let ((subexp (compress-flatten-parenthesis-token-value parse-tree)))
+     (let ((subexp (deparse parse-tree)))
        (if (and (eql (car parse-tree) :expresion)
                 (> (tree-size subexp) 1)
                 (equal '* (car subexp)))

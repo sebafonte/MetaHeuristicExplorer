@@ -37,7 +37,7 @@
 (defun intro-from-description (object description)
   "Answer description tree for <description>."
   (setf (intro-state object)
-        (eval (compress-flatten-parenthesis-token-value 
+        (eval (deparse 
          (parse (grammar (language object)) description)))))
 
 (defmethod language ((a intro-sequencer))

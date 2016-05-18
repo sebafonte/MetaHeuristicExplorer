@@ -13,7 +13,7 @@
         (select-indexes-cfg parse-tree-a parse-tree-b language operator)
       (if (and index-a index-b)
           (let ((subtree (copy-tree (select-subtree-cfg parse-tree-a (1+ index-a)))))
-            (compress-flatten-parenthesis-token-value
+            (deparse
              (replace-subtree-cfg parse-tree-b subtree (1+ index-b))))
         (error "Crossover miss")))))
 

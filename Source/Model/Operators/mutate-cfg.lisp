@@ -51,15 +51,14 @@
     (if index 
         (let* ((tree-source (select-subtree-cfg parse-tree (1+ index)))
                (tree-source-type (car tree-source))
-               (tree-source-value (compress-flatten-parenthesis-token-value tree-source))
+               (tree-source-value (deparse tree-source))
                (marker '(:mutate-production-cfg-auxiliary-marker :mutate-production-cfg-auxiliary-marker))
                (new-tree (create-random-from-production 
                           language
                           (list (intern tree-source-type))
                           (tree-size tree-source-value)
                           'lambda-weight-equal-random-selection-list))
-               (cutten-tree (compress-flatten-parenthesis-token-value
-                             (replace-subtree-cfg parse-tree marker (1+ index)))))
+               (cutten-tree (deparse (replace-subtree-cfg parse-tree marker (1+ index)))))
           (replace-marker cutten-tree :mutate-production-cfg-auxiliary-marker new-tree))
       program)))
 

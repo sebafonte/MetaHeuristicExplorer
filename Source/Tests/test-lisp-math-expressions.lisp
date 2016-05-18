@@ -29,7 +29,7 @@
     (multiple-value-bind (result error)
         (parse (grammar o) expression)
       (check (null error))
-      (check (equal (compress-flatten-parenthesis-token-value result) expression)))))
+      (check (equal (deparse result) expression)))))
         
 (defmethod test-parse-lisp-math-functions-errors ((o test-lisp-math-expressions-language))
   (dolist (expression (badly-formed-lisp-math-functions-cases o))

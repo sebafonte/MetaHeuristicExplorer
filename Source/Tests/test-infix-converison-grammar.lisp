@@ -8,7 +8,7 @@
   "Verifies whether arithmetic infix grammar parsing is working properly with some examples."
   (let ((grammar (default-infix-arithmetic-grammar o)))
     (labels ((test (a b)
-               (check (equals (compress-flatten-parenthesis-token-value 
+               (check (equals (deparse 
                                (parse grammar a)) b))))
       (test '(1 + 2)             '(+ 1 2))
       (test '(X - 2)             '(- X 2))

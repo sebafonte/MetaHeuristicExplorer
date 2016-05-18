@@ -43,7 +43,7 @@
 (defun make-sample-composite-algorithm (code)
   (let* ((language (system-get 'evolutive-algorithm-language-x-y))
          (grammar (grammar language))
-         (reduced-code (compress-flatten-parenthesis-token-value (parse grammar code)))
+         (reduced-code (deparse (parse grammar code)))
          (object (eval (replace-label-cadr :list-auxiliar reduced-code))))
     (setf (program object) code)
     object))

@@ -254,11 +254,10 @@
     (system-get 'compression-lisp-math-function-xy)
     (system-get 'compress-1))))
 
-
-(compress-flatten-parenthesis-token-value
+(deparse
  '(:EXPRESION ((:0-ARY-OPERATOR GP-SUBROUTINE::G37161))))
 
-(compress-flatten-parenthesis-token-value
+(deparse
  '(:EXPRESION ((:2-ARY-OPERATOR *) (:EXPRESION (:CONSTANT 1)) (:EXPRESION (:CONSTANT 2)))))
 
 |#

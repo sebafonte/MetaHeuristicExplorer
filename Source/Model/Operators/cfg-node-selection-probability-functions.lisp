@@ -5,7 +5,7 @@
          ;; Constraint to satisfy grammar
          (find subtree-type common-elements :test (lambda (a b) (compatible-production algorithm a b)))
          ;; Gen depth and size constraint
-         (let ((subtree (compress-flatten-parenthesis-token-value parse-tree)))
+         (let ((subtree (deparse parse-tree)))
            (and (<= (tree-size subtree) (max-size algorithm))
                 (<= (tree-depth subtree) (max-depth algorithm)))))
     1 0)))
@@ -14,11 +14,11 @@
 (defun crossover-cfg-target-selection
        (parse-subtree-target parse-tree-source parse-tree-target index common-elements algorithm source-index)
   (let* ((subtree-target-type (car parse-subtree-target))
-         (subtree-target-value (compress-flatten-parenthesis-token-value parse-subtree-target))
-         (tree-target-value (compress-flatten-parenthesis-token-value parse-tree-target))
+         (subtree-target-value (deparse parse-subtree-target))
+         (tree-target-value (deparse parse-tree-target))
          (subtree-source (select-subtree-cfg parse-tree-source (1+ source-index)))
          (subtree-source-type (car subtree-source))
-         (subtree-source-value (compress-flatten-parenthesis-token-value subtree-source)))
+         (subtree-source-value (deparse subtree-source)))
     (if (and 
          ;; Gen size constraint
          (<= (- (+ (tree-size subtree-source-value) (tree-size tree-target-value))
@@ -32,11 +32,11 @@
 (defun crossover-cfg-target-selection-weight-depth
        (parse-subtree-target parse-tree-source parse-tree-target index common-elements algorithm source-index)
   (let* ((subtree-target-type (car parse-subtree-target))
-         (subtree-target-value (compress-flatten-parenthesis-token-value parse-subtree-target))
-         (tree-target-value (compress-flatten-parenthesis-token-value parse-tree-target))
+         (subtree-target-value (deparse parse-subtree-target))
+         (tree-target-value (deparse parse-tree-target))
          (subtree-source (select-subtree-cfg parse-tree-source (1+ source-index)))
          (subtree-source-type (car subtree-source))
-         (subtree-source-value (compress-flatten-parenthesis-token-value subtree-source)))
+         (subtree-source-value (deparse subtree-source)))
     (if (and 
          ;; Gen depth and size constraint
          (<= (- (+ (tree-size subtree-source-value) (tree-size tree-target-value)) 
@@ -52,11 +52,11 @@
 (defun crossover-cfg-target-selection-depth
        (parse-subtree-target parse-tree-source parse-tree-target index common-elements algorithm source-index)
   (let* ((subtree-target-type (car parse-subtree-target))
-         (subtree-target-value (compress-flatten-parenthesis-token-value parse-subtree-target))
-         (tree-target-value (compress-flatten-parenthesis-token-value parse-tree-target))
+         (subtree-target-value (deparse parse-subtree-target))
+         (tree-target-value (deparse parse-tree-target))
          (subtree-source (select-subtree-cfg parse-tree-source (1+ source-index)))
          (subtree-source-type (car subtree-source))
-         (subtree-source-value (compress-flatten-parenthesis-token-value subtree-source)))
+         (subtree-source-value (deparse subtree-source)))
     (if (and 
          ;; Gen depth and size constraint
          (<= (- (+ (tree-size subtree-source-value) (tree-size tree-target-value))
@@ -70,14 +70,14 @@
 ;;; SIN LIMITACION DE MAX-DEPTH (solo en source)
 (defun branch-delete-cfg-source-selection (parse-tree index algorithm)
   (let* ((subtree-type (car parse-tree))
-         (subtree-source (compress-flatten-parenthesis-token-value parse-tree))
+         (subtree-source (deparse parse-tree))
          (subtree-size (tree-size subtree-source))
          (minimum-size (gethash (intern subtree-type) (minimum-production-sizes (grammar algorithm)))))
     (if (and minimum-size 
              (< minimum-size subtree-size))
         1 0)))
 
-;;; SELECCION DE CUALQUIER NODO (solo en source)
+;;; GENERAL NODE SELECTION (all nodes)
 (defun mutate-production-cfg-source-selection (parse-tree index algorithm)
   (declare (ignore parse-tree index algorithm))
   1)
