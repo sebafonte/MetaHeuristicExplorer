@@ -42,14 +42,14 @@
              ((:ADD +) 
               (:CONSTANT 1) 
               (:TERM ((:MULTIPLY *) 
-                         (:CONSTANT 2) 
-                         (:PRODUCTORIA-VARIABLES ((:MULTIPLY *) (:VAR X) (:VAR X))))))))
+				 (:CONSTANT 2) 
+				 (:PRODUCTORIA-VARIABLES ((:MULTIPLY *) (:VAR X) (:VAR X))))))))
           '(+ 1 (* 2 (* X X))))))
 
-(defmethod test-compress-flatten-parenthesis-token-type ((o test-polynomials-language))
+(defmethod test-deparse-type ((o test-polynomials-language))
   (check 
    (equal 
-    (compress-flatten-parenthesis-token-type
+    (deparse-type
      '(:POLYNOMIAL 
        ((:ADD +) 
         (:CONSTANT 1) 

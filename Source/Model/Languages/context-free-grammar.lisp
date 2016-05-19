@@ -45,12 +45,12 @@
             (appendf new-list (deparse-recursive i)))
           (list new-list))))))
 
-(defun compress-flatten-parenthesis-token-type (expression)
+(defun deparse-type (expression)
   "Answer final tree without intermediate productions with token types."
   (if (consp (cadr expression))
       (let ((new-list))
         (dolist (i (cadr expression))
-          (appendf new-list (list (compress-flatten-parenthesis-token-type i))))
+          (appendf new-list (list (deparse-type i))))
         new-list)
     (car expression)))
 

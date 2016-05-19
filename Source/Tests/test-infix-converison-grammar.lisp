@@ -25,7 +25,7 @@
   "Verifies whether arithmetic infix grammar for token tree parsing is working properly with some examples."
   (let ((grammar (default-infix-arithmetic-grammar o)))
     (labels ((test (a b)
-               (check (equals (compress-flatten-parenthesis-token-type (parse grammar a)) b))))
+               (check (equals (deparse-type (parse grammar a)) b))))
       (test '(1 + 2)              '(:2-ary-operator :constant :constant))
       (test '(X - 2)              '(:2-ary-operator :var :constant))
       (test '(1 + Y)              '(:2-ary-operator :constant :var))
