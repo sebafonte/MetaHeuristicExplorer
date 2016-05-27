@@ -79,8 +79,9 @@
          (variables (third (content message)))
          (object (car (second (content message))))
          (language (create-language-from language-name variables)))
-    (let ((result (caadr (handler-case (parse (grammar language) object)
-                           (error (function) nil)))))
+    (let ((result (caadr (multiple-value-bind (value error) 
+                                 (parse (grammar language) object)
+                               (if error nil value)))))
       (format stream "~A" result)
       (force-output stream))))
 

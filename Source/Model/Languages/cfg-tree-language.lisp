@@ -17,8 +17,13 @@
   (when (and (slot-boundp o 'grammar) (grammar o))
     (set-grammar-tokens o)
     (set-grammar-productions o)
+    (update-generic-grammar o)
     (calculate-minimum-production-size (grammar o))))
 
+(defmethod update-generic-grammar ((o cfg-tree-language))
+  (unless (parser-initializer (grammar o))
+    (funcall 'initialize-parser-from-definition (name (grammar o)) o)))
+    
 (defmethod set-grammar-tokens ((o cfg-tree-language))
   (setf (tokens (grammar o))
         (append (variable-tokens o)
@@ -38,7 +43,10 @@
     :data-type 'object :editor 'button-editor)))
 
 (defmethod variable-tokens ((o cfg-tree-language))
-  (mapcar (lambda (value) (list value :var))
+  (mapcar (lambda (value) 
+            (if (consp value)
+                value
+              (list value :var)))
           (variables o)))
 
 (defmethod function-tokens ((o cfg-tree-language))

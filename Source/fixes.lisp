@@ -115,6 +115,8 @@
          *interface-editors*
          (lambda (editor) (capi-internals:representation editor)))))
 
+#|
+;; #TODO: delete, not used
 (defmethod min-function-args ((o tree-language))
   (when (or (not (slot-boundp o 'tree-language))
             (null min-function-args))
@@ -125,6 +127,7 @@
   (setf 
    (slot-value o 'functions) value
    (min-function-args o) (min-language-function-with-args (functions o))))
+|#
 
 (defmethod (setf functions) (value (o cfg-tree-language))
   (setf 
@@ -145,11 +148,11 @@
               (setf minimum-size local-size))))
       minimum-size)))
 
-(defun calculate-minimum-production-size (grammar)
-  (setf (minimum-production-sizes grammar) (make-hash-table))
-  (let ((productions (updated-productions grammar)))
+(defmethod calculate-minimum-production-size ((g grammar))
+  (setf (minimum-production-sizes g) (make-hash-table))
+  (let ((productions (updated-productions g)))
     (dolist (p productions)
-      (setf (gethash (car p) (minimum-production-sizes grammar))
+      (setf (gethash (car p) (minimum-production-sizes g))
             (minimum-production-size productions (car p))))))
 
 (defun non-recursive-right-productions-for (productions passed)
@@ -161,4 +164,68 @@
      (and 
       (eql (first passed) (car o))
       (null (intersection passed (cdr o)))))))
+
+(defmethod update-end-productions ((g grammar) tokens functions variables objects)
+  ;; #TODO: Refactor using #'variable-tokens
+  (let ((variable-list (mapcar (lambda (var) 
+                                 (if (listp var)
+                                     (list (first var) (second var))
+                                   (list var :var))) 
+                               variables)))
+    (setf (updated-productions g) 
+          (filter-recursive-end-productions
+           (append (productions g)
+                   (end-productions-for tokens functions)
+                   (end-productions-for tokens variable-list)
+                   (end-productions-for tokens objects))))))
+
+(defmethod updated-definition ((g grammar) tokens functions variables objects)
+  (let ((variable-list (mapcar (lambda (var) 
+                                 (if (listp var)
+                                     (list (first var) (second var))
+                                   (list var :var))) 
+                               variables)))
+    (filter-recursive-end-productions
+     (append (definition g)
+             (end-definition-for tokens functions)
+             (end-definition-for tokens variable-list)
+             (end-definition-for tokens objects)))))
+
+(defun end-definition-for (tokens functions)
+  (let ((not-found-table (make-hash-table))
+        (result))
+    (dolist (i tokens)
+      ;; Mark as used if it wasn't
+      (setf (gethash (second i) not-found-table) (gethash (second i) not-found-table))
+      ;; Add to productions if found, reset
+      (if (find-if (lambda (b) (equal (car b) (car i))) functions)
+          (progn 
+            (appendf result (list (list (name-intern (second i)) (name-intern (first i)))))
+            (appendf result (list (list (name-intern (first i)) (intern (name-intern (second i)) :keyword))))
+            (setf (gethash (second i) not-found-table) t))))
+    ;; Add missing productions
+    ;; #NOTE: it's neccessary to have an intermediate recursive node for productions n
+    (dolist (k (keys not-found-table))
+      (if (not (gethash k not-found-table))
+          (appendf result (list (list (name-intern k) (name-intern k))))))
+    ;(mapcar (lambda (o) (list o (SYSTEM::BQ-LIST :EXP $1))) result)
+    ;(mapcar (lambda (o) (list o (append '(SYSTEM::BQ-LIST)
+    ;                                    (intern (name-intern (first o)) :keyword)
+    ;                                    '($1))))
+            result))
+
+(defun filter-recursive-end-productions (list)
+  (select
+   list
+   (lambda (o)
+     (not (and (eql (first o) (second o))
+               (= 2 (length o)))))))
+
+(defun filter-recursive-end-rules (list)
+  (select
+   list
+   (lambda (o)
+     (let ((o (first o)))
+       (not (and (eql (first o) (second o))
+                 (= 2 (length o))))))))
 

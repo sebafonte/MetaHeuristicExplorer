@@ -3,6 +3,7 @@
 
 (defclass grammar (base-model)
   ((name :initarg :name :initform nil :accessor name)
+   (definition :initarg :definition :initform nil :accessor definition)
    (productions :initarg :productions :initform nil :accessor productions)
    (updated-productions :initarg :updated-productions :initform nil :accessor updated-productions)
    (tokens :initarg :tokens :initform nil :accessor tokens)
@@ -21,6 +22,7 @@
 (defmethod copy ((o grammar))
   (make-instance (class-name (class-of o))
                  :name (name o)
+                 :definition (definition o)
                  :productions (copy (productions o))
                  :updated-productions (copy (updated-productions o))
                  :tokens (tokens o)
@@ -53,12 +55,13 @@
 (defmethod generate-parser ((g grammar))
   "Create parser for <g>"
   (when (slot-boundp g 'parser-initializer)
-    (funcall (parser-initializer g) (name g))))
+    (if (parser-initializer g)
+        (funcall (parser-initializer g) (name g)))))
 
 (defmethod parse ((g grammar) expression)
   "Answer parsing expression for <expression> parsed with <g>."
-  (let* ((linear-expression (flatten-parenthesis expression))
-         (*parser-input* (if (consp linear-expression) linear-expression (list linear-expression))))
+  (let* ((flattened (flatten-parenthesis expression))
+         (*parser-input* (if (consp flattened) flattened (list flattened))))
     (funcall (name g) (lambda () (funcall (lexer g) g)))))
 
 (defun all-keywords-in (list)
@@ -140,23 +143,24 @@
             (setf minimum-size local-size))))
     minimum-size))
 
-(defun calculate-minimum-production-size (grammar)
-  (setf (minimum-production-sizes grammar) (make-hash-table))
-  (let ((productions (updated-productions grammar)))
+(defmethod calculate-minimum-production-size ((g grammar))
+  (setf (minimum-production-sizes g) (make-hash-table))
+  (let ((productions (updated-productions g)))
     (dolist (p productions)
-      (setf (gethash (car p) (minimum-production-sizes grammar))
-            (minimum-non-terminal-size grammar productions (car p))))))
+      (setf (gethash (car p) (minimum-production-sizes g))
+            (minimum-non-terminal-size g productions (car p))))))
 
 (defun calculated-minimum-production-size (grammar production)
   (let ((local-size 0))
     (dolist (i (cdr production))
-      (incf local-size (calculated-minimum-element-size grammar i)))
+      (let ((value (calculated-minimum-element-size grammar i)))
+        (incf local-size (or value *infinite-productions-size-value*))))
     local-size))
 
 (defun calculated-minimum-production-depth (grammar production)
   (let ((local-depth 0))
     (dolist (i (cdr production))
-      (setf local-size (max local-size (calculated-minimum-production-depth grammar i))))
+      (setf local-depth (max local-depth (calculated-minimum-production-depth grammar i))))
     (incf local-depth)))
 
 (defun calculated-minimum-element-size (grammar element)
@@ -165,6 +169,7 @@
     (gethash element (minimum-production-sizes grammar))))
 
 (defmethod update-end-productions ((g grammar) tokens functions variables objects)
+  ;; #TODO: Refactor using #'variable-tokens
   (let ((variable-list (mapcar (lambda (var) (list var :var)) variables)))
     (setf (updated-productions g) 
           (append (productions g)
@@ -193,6 +198,7 @@
             (appendf result (list (list (name-intern (first i)) (intern (name-intern (second i)) :keyword))))
             (setf (gethash (second i) not-found-table) t))))
     ;; Add missing productions
+    ;; #NOTE: it's neccessary to have an intermediate recursive node for productions n
     (dolist (k (keys not-found-table))
       (if (not (gethash k not-found-table))
           (appendf result (list (list (name-intern k) (name-intern k))))))

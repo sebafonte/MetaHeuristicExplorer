@@ -128,10 +128,10 @@
   (make-instance 'cfg-tree-language 
                  :name (format nil "language-~a" name)
                  :description (format nil "language-~a" name)
-                 :grammar (make-instance 'context-free-grammar
+                 :grammar (make-instance 'glsl-grammar
                                          :name 'glsl-grammar-test
                                          :lexer 'glsl-expressions-subset-lexer
-                                         ;; #NOTE: nil is to generate parser description from updated-productions
+                                         ;; #NOTE: nil to generate parser description from updated-productions
                                          :parser-initializer nil
                                          ;; #NOTE: :productions should be deprecated when :definition is provided as argument
                                          :definition (glsl-parser-definition)
@@ -491,3 +491,13 @@
 ;(parse (grammar ll) '(+ (VEC3 (SIN 0.0)) 1.0))
 ;(parse (grammar ll) 'x)
 ;(parse (grammar ll) '(+ x y))
+
+
+;; #HACK: Just hardcoded optimization
+(defclass glsl-grammar (context-free-grammar)
+  ())
+
+(defvar *glsl-minimum-production-sizes* (LET ((G48359 (MAKE-HASH-TABLE))) (SET-HASH G48359 (QUOTE SIGN) 1 (QUOTE VAR1) 1 (QUOTE MAX) 1 (QUOTE DFDX) 1 (QUOTE MIX) 1 (QUOTE DISTANCE) 1 (QUOTE VEC2) 1 (QUOTE MOD) 1 (QUOTE EXP) 1 (QUOTE CLAMP) 1 (QUOTE START) 1 (QUOTE FRACT) 1 (QUOTE /) 1 (QUOTE TAN) 1 (QUOTE ABS) 1 (QUOTE SIN) 1 (QUOTE ASIN) 1 (QUOTE EXPFOUR) 1 (QUOTE SQRT) 1 (QUOTE CEIL) 1 (QUOTE +) 1 (QUOTE LENGTH) 1 (QUOTE ACOS) 1 (QUOTE STEP) 1 (QUOTE EXPTHREE) 1 (QUOTE INVERSESQRT) 1 (QUOTE REFLECT) 1 (QUOTE MIN) 1 (QUOTE FLOOR) 1 (QUOTE -) 1 (QUOTE EXPTWO) 1 (QUOTE NORMALIZE) 1 (QUOTE DOT) 1 (QUOTE EXP2) 1 (QUOTE COS) 1 (QUOTE VEC3) 1 (QUOTE VAR4) 1 (QUOTE EXPONE) 1 (QUOTE POW) 1 (QUOTE VEC4) 1 (QUOTE DEGREES) 1 (QUOTE VAR3) 1 (QUOTE FACEFORWARD) 1 (QUOTE CROSS) 1 (QUOTE RADIANS) 1 (QUOTE *) 1 (QUOTE LOG) 1 (QUOTE ATAN) 1 (QUOTE VAR2) 1 (QUOTE SMOOTHSTEP) 1 (QUOTE FWIDTH) 1) G48359))
+
+(defmethod calculate-minimum-production-size ((g glsl-grammar))
+  (setf (minimum-production-sizes g) *glsl-minimum-production-sizes*))
