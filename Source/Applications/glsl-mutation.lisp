@@ -120,12 +120,12 @@
     (f4-f4-f1-f1 CLAMP)
     (f4-f4-f4-f4 CLAMP MIX SMOOTHSTEP FACEFORWARD)
     (f4-f4-f4-f1 MIX REFLECT)
-    (f4-f1-f1-f4 EXPONE SMOOTHSTEP)
+    (f4-f1-f1-f4 #| EXPONE |# SMOOTHSTEP)
     (f4-f1-f4 STEP + - * /)))
 
 
 (defun create-language-from (name vars)
-  (make-instance 'cfg-tree-language 
+  (make-instance 'glsl-language
                  :name (format nil "language-~a" name)
                  :description (format nil "language-~a" name)
                  :grammar (make-instance 'glsl-grammar
@@ -170,7 +170,7 @@
   (let ((token-type (search-on-symbol-table (tokens grammar) word)))
     (when (equal token-type :unknown)
         (if (numberp word) 
-            (setf token-type :float)))
+            (setf token-type :vec1)))
     (when (null token-type) (error (format nil "Unknown token for <~A>" word)))
     (values token-type (list token-type word))))
 
@@ -188,7 +188,7 @@
          '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
          '((EXPTHREE VAR3) (SYSTEM::BQ-LIST (QUOTE EXPTHREE) $1))
          '((EXPFOUR VAR4) (SYSTEM::BQ-LIST (QUOTE EXPFOUR) $1))   
-         '((EXPONE :FLOAT) (SYSTEM::BQ-LIST (QUOTE EXPONE) $1))
+         ;'((EXPONE :FLOAT) (SYSTEM::BQ-LIST (QUOTE EXPONE) $1))
          '((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1))
          '((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1))
          '((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1))
@@ -476,7 +476,7 @@
  ((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1)) 
  ((EXPTHREE VAR3) (SYSTEM::BQ-LIST (QUOTE EXPTHREE) $1)) 
  ((EXPFOUR VAR4) (SYSTEM::BQ-LIST (QUOTE EXPFOUR) $1)) 
- ((EXPONE :FLOAT) (SYSTEM::BQ-LIST (QUOTE EXPONE) $1)) 
+ ;((EXPONE :FLOAT) (SYSTEM::BQ-LIST (QUOTE EXPONE) $1)) 
  ((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1)) 
  ((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1)) 
  ((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1)) 
@@ -501,3 +501,14 @@
 
 (defmethod calculate-minimum-production-size ((g glsl-grammar))
   (setf (minimum-production-sizes g) *glsl-minimum-production-sizes*))
+
+;; #TODO: Move to context-free-language class
+(defclass glsl-language (cfg-tree-language)
+  ())
+
+(defmethod can-create-token ((language glsl-language) token)
+  "Answer whether <language> can create <token> in a new random expression." 
+  (or (structural-symbol token)
+      (find-if (lambda (value) (equal token (car value)))
+               (tokens (grammar language)))))
+
