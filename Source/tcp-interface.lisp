@@ -77,7 +77,7 @@
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-glsl-parse-result)) message administrator stream)
   (let* ((language-name (first (content message)))
          (variables (third (content message)))
-         (object (car (second (content message))))
+         (object (second (content message)))
          (language (create-language-from language-name variables)))
     (let ((result (caadr (multiple-value-bind (value error) 
                              (parse (grammar language) object)
