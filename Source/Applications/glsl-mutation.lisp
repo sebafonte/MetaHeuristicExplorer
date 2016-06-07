@@ -77,7 +77,7 @@
 
 (setf *glsl-exp-structure-data*
   '(;; float functions
-    (f1-f1 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX FWIDTH)
+    (f1-f1 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX DFDY FWIDTH)
     (f1-f1-f1 ATAN POW MIN MAX MOD STEP DISTANCE DOT REFLECT + - * /)
     (f1-f1-f1-f1 CLAMP MIX SMOOTHSTEP FACEFORWARD)
     (f1-f2-f2 DISTANCE DOT)
@@ -86,7 +86,7 @@
     ;; vec2 functions
     (f2-f1 VEC2)
     (f2-f1-f1 VEC2)
-    (f2-f2 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX FWIDTH)
+    (f2-f2 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX DFDY FWIDTH)
     (f2-f2-f2 ATAN POW MIN MAX MOD STEP REFLECT + - * /)
     (f2-f2-f1 MIN MAX MOD + - * /)
     (f2-f2-f1-f1 CLAMP)
@@ -99,7 +99,7 @@
     (f3-f1-f2 VEC3)
     (f3-f2-f1 VEC3)
     (f3-f1-f1-f1 VEC3)
-    (f3-f3 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX FWIDTH)
+    (f3-f3 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX DFDY FWIDTH)
     (f3-f3-f3 ATAN POW MIN MAX MOD STEP REFLECT CROSS + - * /)
     (f3-f3-f1 MIN MAX MOD + - * /)
     (f3-f3-f1-f1 CLAMP)
@@ -114,7 +114,7 @@
     (f4-f2-f2 VEC4)
     (f4-f1 VEC4)
     (f4-f1-f2-f1 VEC4)
-    (f4-f4 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX FWIDTH)
+    (f4-f4 SIN COS TAN ASIN ACOS ATAN RADIANS DEGREES EXP LOG EXP2 SQRT INVERSESQRT ABS CEIL FLOOR FRACT SIGN LENGTH NORMALIZE DFDX DFDY FWIDTH)
     (f4-f4-f4 ATAN POW MIN MAX MOD STEP REFLECT + - * /)
     (f4-f4-f1 MIN MAX MOD + - * /)
     (f4-f4-f1-f1 CLAMP)
@@ -125,27 +125,31 @@
 
 
 (defun create-language-from (name vars)
-  (make-instance 'glsl-language
-                 :name (format nil "language-~a" name)
-                 :description (format nil "language-~a" name)
-                 :grammar (make-instance 'glsl-grammar
-                                         :name 'glsl-grammar-test
-                                         :lexer 'glsl-expressions-subset-lexer
-                                         ;; #NOTE: nil to generate parser description from updated-productions
-                                         :parser-initializer nil
-                                         ;; #NOTE: :productions should be deprecated when :definition is provided as argument
-                                         :definition (glsl-parser-definition)
-                                         :productions (glsl-productions)
-                                         :crossover-nodes '(:expone :exptwo :expthree :expfour))
-                 :simplification-patterns nil
-                 :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
-                 :functions (glsl-grammar-functions *glsl-exp-structure-data*)
-                 :variables vars
-                 :terminals (append vars '(:constant))
-                 :tokens (create-tokens-for-language *glsl-exp-structure-data*)
-                 :valid-new-expresion-function 'create-new-random-valid
-                 :simplification-function nil
-                 :operators (default-genetic-operators-probability-polynomial-expression)))
+  (let* ((tokens (create-tokens-for-language *glsl-exp-structure-data*))
+         (grammar (make-instance 'glsl-grammar
+                                 :name 'glsl-grammar-test
+                                 :lexer 'glsl-expressions-subset-lexer
+                                 ;; #NOTE: nil to generate parser description from updated-productions
+                                 :parser-initializer nil
+                                 ;; #NOTE: :productions should be deprecated when :definition is provided as argument
+                                 :definition (glsl-parser-definition)
+                                 :productions (glsl-productions)
+                                 :crossover-nodes '(:expone :exptwo :expthree :expfour)))
+         (language (make-instance 'glsl-language
+                                  :name (format nil "language-~a" name)
+                                  :description (format nil "language-~a" name)
+                                  :grammar grammar
+                                  :simplification-patterns nil
+                                  :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
+                                  :functions (glsl-grammar-functions *glsl-exp-structure-data*)
+                                  :variables vars
+                                  :terminals (append (list :float) vars)
+                                  :tokens tokens
+                                  :valid-new-expresion-function 'create-new-random-valid
+                                  :simplification-function nil
+                                  :operators (default-genetic-operators-probability-polynomial-expression))))
+    (setf (minimum-production-sizes (grammar language)) (glsl-minimum-production-sizes vars))
+    language))
 
 
 (defun create-tokens-for-language (spec)
@@ -184,13 +188,12 @@
          '((EXPS EXPONE) (SYSTEM::BQ-LIST :EXPS $1)))
    ;; Function expansions
    (glsl-grammar-productions *glsl-exp-structure-data*)
-   ;; Operator expansions
-   ;; #TODO:
+   ;; Variables
    (list '((EXPONE VAR1) (SYSTEM::BQ-LIST :EXPONE $1))
          '((EXPTWO VAR2) (SYSTEM::BQ-LIST :EXPTWO $1))
          '((EXPTHREE VAR3) (SYSTEM::BQ-LIST :EXPTHREE $1))
          '((EXPFOUR VAR4) (SYSTEM::BQ-LIST :EXPFOUR $1))
-         '((EXPONE :FLOAT) (SYSTEM::BQ-LIST :expone $1))
+         '((EXPONE :FLOAT) (SYSTEM::BQ-LIST :EXPONE $1))
          '((VAR1 :VAR1) (SYSTEM::BQ-LIST :VAR1 $1))
          '((VAR2 :VAR2) (SYSTEM::BQ-LIST :VAR2 $1))
          '((VAR3 :VAR3) (SYSTEM::BQ-LIST :VAR3 $1))
@@ -235,6 +238,7 @@
   ((EXPONE :OPEN LENGTH EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPONE :OPEN NORMALIZE EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPONE :OPEN DFDX EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3))) 
+  ((EXPONE :OPEN DFDY EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPONE :OPEN FWIDTH EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPONE :OPEN ATAN EXPONE EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3 $4))) 
   ((EXPONE :OPEN POW EXPONE EXPONE :CLOSE) (SYSTEM::BQ-LIST :expone (SYSTEM::BQ-LIST $2 $3 $4))) 
@@ -282,6 +286,7 @@
   ((EXPTWO :OPEN LENGTH EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTWO :OPEN NORMALIZE EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTWO :OPEN DFDX EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3))) 
+  ((EXPTWO :OPEN DFDY EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3)))
   ((EXPTWO :OPEN FWIDTH EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTWO :OPEN ATAN EXPTWO EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3 $4))) 
   ((EXPTWO :OPEN POW EXPTWO EXPTWO :CLOSE) (SYSTEM::BQ-LIST :exptwo (SYSTEM::BQ-LIST $2 $3 $4))) 
@@ -339,6 +344,7 @@
   ((EXPTHREE :OPEN LENGTH EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTHREE :OPEN NORMALIZE EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTHREE :OPEN DFDX EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3))) 
+  ((EXPTHREE :OPEN DFDY EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3)))
   ((EXPTHREE :OPEN FWIDTH EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPTHREE :OPEN ATAN EXPTHREE EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3 $4))) 
   ((EXPTHREE :OPEN POW EXPTHREE EXPTHREE :CLOSE) (SYSTEM::BQ-LIST :expthree (SYSTEM::BQ-LIST $2 $3 $4))) 
@@ -399,6 +405,7 @@
   ((EXPFOUR :OPEN LENGTH EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPFOUR :OPEN NORMALIZE EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPFOUR :OPEN DFDX EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3))) 
+  ((EXPFOUR :OPEN DFDY EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPFOUR :OPEN FWIDTH EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3))) 
   ((EXPFOUR :OPEN ATAN EXPFOUR EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3 $4))) 
   ((EXPFOUR :OPEN POW EXPFOUR EXPFOUR :CLOSE) (SYSTEM::BQ-LIST :expfour (SYSTEM::BQ-LIST $2 $3 $4))) 
@@ -455,6 +462,7 @@
   ((POW :POW) (SYSTEM::BQ-LIST :POW $1)) 
   ((FWIDTH :FWIDTH) (SYSTEM::BQ-LIST :FWIDTH $1)) 
   ((DFDX :DFDX) (SYSTEM::BQ-LIST :DFDX $1)) 
+  ((DFDY :DFDY) (SYSTEM::BQ-LIST :DFDY $1))
   ((NORMALIZE :NORMALIZE) (SYSTEM::BQ-LIST :NORMALIZE $1)) 
   ((LENGTH :LENGTH) (SYSTEM::BQ-LIST :LENGTH $1)) 
   ((SIGN :SIGN) (SYSTEM::BQ-LIST :SIGN $1)) 
@@ -496,15 +504,45 @@
 ;(parse (grammar ll) 'x)
 ;(parse (grammar ll) '(+ x y))
 
+;(setf ll (create-language-from 'test '((AUXA :VAR1) (AUXB :VAR2) (AUXC :VAR3) (AUXD :VAR4))))
+;(setf oo (system-get 'mutate-cfg))
+;(dotimes (i 20) (print (mutate-cfg-from 'AUXA ll oo 'expone)))
+;(dotimes (i 20) (print (mutate-cfg-from '(vec2 AUXA) ll oo 'exptwo)))
+;(dotimes (i 20) (print (mutate-cfg-from '(vec3 AUXA) ll oo 'expthree)))
+;(dotimes (i 20) (print (mutate-cfg-from '(vec4 AUXA) ll oo 'expfour)))
+
+;(setf ll (create-language-from 'test '((AUXA :VAR1) (AUXB :VAR2) (AUXC :VAR3))))
+;(setf oo (system-get 'mutate-cfg))
+;(dotimes (i 100) (print (mutate-cfg-from 'AUXA ll oo 'expone)))
+;(dotimes (i 100) (print (mutate-cfg-from '(vec2 AUXA) ll oo 'exptwo)))
+;(dotimes (i 100) (print (mutate-cfg-from '(vec3 AUXA) ll oo 'expthree)))
+;(dotimes (i 100) (print (mutate-cfg-from '(vec4 AUXA) ll oo 'expfour)))
+
+
 
 ;; #HACK: Just hardcoded optimization
 (defclass glsl-grammar (context-free-grammar)
   ())
 
-(defvar *glsl-minimum-production-sizes* (LET ((G48359 (MAKE-HASH-TABLE))) (SET-HASH G48359 (QUOTE SIGN) 1 (QUOTE VAR1) 1 (QUOTE MAX) 1 (QUOTE DFDX) 1 (QUOTE MIX) 1 (QUOTE DISTANCE) 1 (QUOTE VEC2) 1 (QUOTE MOD) 1 (QUOTE EXP) 1 (QUOTE CLAMP) 1 (QUOTE START) 1 (QUOTE FRACT) 1 (QUOTE /) 1 (QUOTE TAN) 1 (QUOTE ABS) 1 (QUOTE SIN) 1 (QUOTE ASIN) 1 (QUOTE EXPFOUR) 1 (QUOTE SQRT) 1 (QUOTE CEIL) 1 (QUOTE +) 1 (QUOTE LENGTH) 1 (QUOTE ACOS) 1 (QUOTE STEP) 1 (QUOTE EXPTHREE) 1 (QUOTE INVERSESQRT) 1 (QUOTE REFLECT) 1 (QUOTE MIN) 1 (QUOTE FLOOR) 1 (QUOTE -) 1 (QUOTE EXPTWO) 1 (QUOTE NORMALIZE) 1 (QUOTE DOT) 1 (QUOTE EXPS) 1 (QUOTE COS) 1 (QUOTE VEC3) 1 (QUOTE VAR4) 1 (QUOTE EXPONE) 1 (QUOTE POW) 1 (QUOTE VEC4) 1 (QUOTE DEGREES) 1 (QUOTE VAR3) 1 (QUOTE FACEFORWARD) 1 (QUOTE CROSS) 1 (QUOTE RADIANS) 1 (QUOTE *) 1 (QUOTE LOG) 1 (QUOTE ATAN) 1 (QUOTE VAR2) 1 (QUOTE SMOOTHSTEP) 1 (QUOTE FWIDTH) 1) G48359))
+(defun glsl-minimum-production-sizes (vars) 
+  (LET ((table (MAKE-HASH-TABLE))) 
+    (SET-HASH table (QUOTE SIGN) 1 (QUOTE MAX) 1 (QUOTE DFDX) 1 (QUOTE DFDY) 1 (QUOTE MIX) 1 (QUOTE DISTANCE) 1 (QUOTE VEC2) 1 (QUOTE MOD) 1 (QUOTE EXP) 1 (QUOTE CLAMP) 1 (QUOTE START) 1 (QUOTE FRACT) 1 (QUOTE /) 1 (QUOTE TAN) 1 (QUOTE ABS) 1 (QUOTE SIN) 1 (QUOTE ASIN) 1 (QUOTE EXPFOUR) 1 (QUOTE SQRT) 1 (QUOTE CEIL) 1 (QUOTE +) 1 (QUOTE LENGTH) 1 (QUOTE ACOS) 1 (QUOTE STEP) 1 (QUOTE EXPTHREE) 1 (QUOTE INVERSESQRT) 1 (QUOTE REFLECT) 1 (QUOTE MIN) 1 (QUOTE FLOOR) 1 (QUOTE -) 1 (QUOTE EXPTWO) 1 (QUOTE NORMALIZE) 1 (QUOTE DOT) 1 (QUOTE EXPS) 1 (QUOTE COS) 1 (QUOTE EXPONE) 1 (QUOTE POW) 1 (QUOTE VEC4) 1 (QUOTE DEGREES) 1 (QUOTE FACEFORWARD) 1 (QUOTE CROSS) 1 (QUOTE RADIANS) 1 (QUOTE *) 1 (QUOTE LOG) 1 (QUOTE ATAN) 1 (QUOTE SMOOTHSTEP) 1 (QUOTE FWIDTH) 1 (QUOTE VEC3) 1 (QUOTE VAR1) *infinite-productions-size-value* (QUOTE VAR2) *infinite-productions-size-value* (QUOTE VAR3) *infinite-productions-size-value* (QUOTE VAR4) *infinite-productions-size-value*)
+    (if (find :var1 vars :test (lambda (o value) (eql (second value) :var1)))
+        (SET-HASH table 'VAR1 1))
+    (if (find :var2 vars :test (lambda (o value) (eql (second value) :var2)))
+        (SET-HASH table 'VAR2 1)
+      (SET-HASH table 'EXPTWO 3))
+    (if (find :var3 vars :test (lambda (o value) (eql (second value) :var3)))
+        (SET-HASH table 'VAR3 1)
+      (SET-HASH table 'EXPTHREE 4))
+    (if (find :var4 vars :test (lambda (o value) (eql (second value) :var4)))
+        (SET-HASH table 'VAR4 1)
+      (SET-HASH table 'EXPFOUR 5))
+    table))
 
+;; #TODO: fix, now we have to set it externally
 (defmethod calculate-minimum-production-size ((g glsl-grammar))
-  (setf (minimum-production-sizes g) *glsl-minimum-production-sizes*))
+  (setf (minimum-production-sizes g) nil))
 
 ;; #TODO: Move to context-free-language class
 (defclass glsl-language (cfg-tree-language)
@@ -519,3 +557,11 @@
 (defmethod create-random-token (language (token (eql :FLOAT)))
   "Answer a random value for <token>."
   (create-constant (constants-strategy language)))
+
+(defun mutate-cfg-from (program language operator from)
+  (let ((weight-function (production-selection-weight-function operator)))
+    (directed-crossover-cfg 
+     (create-random-from-production language (list from) (max-size language) weight-function)
+     program
+     language 
+     operator)))
