@@ -120,7 +120,7 @@
     (f4-f4-f1-f1 CLAMP)
     (f4-f4-f4-f4 CLAMP MIX SMOOTHSTEP FACEFORWARD)
     (f4-f4-f4-f1 MIX REFLECT)
-    (f4-f1-f1-f4 #| EXPONE |# SMOOTHSTEP)
+    (f4-f1-f1-f4 SMOOTHSTEP)
     (f4-f1-f4 STEP + - * /)))
 
 
@@ -140,7 +140,7 @@
                                   :description (format nil "language-~a" name)
                                   :grammar grammar
                                   :simplification-patterns nil
-                                  :constants-strategy (system-get-copy 'default-fixed-set-numerical-1)
+                                  :constants-strategy (system-get-copy 'default-ephemeral-0-10d)
                                   :functions (glsl-grammar-functions *glsl-exp-structure-data*)
                                   :variables vars
                                   :terminals (append (list :float) vars)
@@ -151,16 +151,12 @@
     (setf (minimum-production-sizes (grammar language)) (glsl-minimum-production-sizes vars))
     language))
 
-
 (defun create-tokens-for-language (spec)
   (let ((result (make-hash-table)))
     (dolist (i spec)
       (dolist (j (cdr i))
         (setf (gethash j result) t)))
-    (mapcar (lambda (o) (list o 
-                              (intern o :keyword)
-                              ;o
-                              ))
+    (mapcar (lambda (o) (list o  (intern o :keyword) #| o |#))
             (keys result))))
 
 (defun glsl-expressions-subset-lexer (grammar)
@@ -526,7 +522,7 @@
 
 (defun glsl-minimum-production-sizes (vars) 
   (LET ((table (MAKE-HASH-TABLE))) 
-    (SET-HASH table (QUOTE SIGN) 1 (QUOTE MAX) 1 (QUOTE DFDX) 1 (QUOTE DFDY) 1 (QUOTE MIX) 1 (QUOTE DISTANCE) 1 (QUOTE VEC2) 1 (QUOTE MOD) 1 (QUOTE EXP) 1 (QUOTE CLAMP) 1 (QUOTE START) 1 (QUOTE FRACT) 1 (QUOTE /) 1 (QUOTE TAN) 1 (QUOTE ABS) 1 (QUOTE SIN) 1 (QUOTE ASIN) 1 (QUOTE EXPFOUR) 1 (QUOTE SQRT) 1 (QUOTE CEIL) 1 (QUOTE +) 1 (QUOTE LENGTH) 1 (QUOTE ACOS) 1 (QUOTE STEP) 1 (QUOTE EXPTHREE) 1 (QUOTE INVERSESQRT) 1 (QUOTE REFLECT) 1 (QUOTE MIN) 1 (QUOTE FLOOR) 1 (QUOTE -) 1 (QUOTE EXPTWO) 1 (QUOTE NORMALIZE) 1 (QUOTE DOT) 1 (QUOTE EXPS) 1 (QUOTE COS) 1 (QUOTE EXPONE) 1 (QUOTE POW) 1 (QUOTE VEC4) 1 (QUOTE DEGREES) 1 (QUOTE FACEFORWARD) 1 (QUOTE CROSS) 1 (QUOTE RADIANS) 1 (QUOTE *) 1 (QUOTE LOG) 1 (QUOTE ATAN) 1 (QUOTE SMOOTHSTEP) 1 (QUOTE FWIDTH) 1 (QUOTE VEC3) 1 (QUOTE VAR1) *infinite-productions-size-value* (QUOTE VAR2) *infinite-productions-size-value* (QUOTE VAR3) *infinite-productions-size-value* (QUOTE VAR4) *infinite-productions-size-value*)
+    (SET-HASH table (QUOTE SIGN) 1 (QUOTE MAX) 1 (QUOTE DFDX) *infinite-productions-size-value* (QUOTE DFDY) *infinite-productions-size-value* (QUOTE MIX) 1 (QUOTE DISTANCE) 1 (QUOTE VEC2) 1 (QUOTE MOD) 1 (QUOTE EXP) 1 (QUOTE CLAMP) 1 (QUOTE START) 1 (QUOTE FRACT) 1 (QUOTE /) 1 (QUOTE TAN) 1 (QUOTE ABS) 1 (QUOTE SIN) 1 (QUOTE ASIN) 1 (QUOTE EXPFOUR) 1 (QUOTE SQRT) 1 (QUOTE CEIL) 1 (QUOTE +) 1 (QUOTE LENGTH) 1 (QUOTE ACOS) 1 (QUOTE STEP) 1 (QUOTE EXPTHREE) 1 (QUOTE INVERSESQRT) 1 (QUOTE REFLECT) 1 (QUOTE MIN) 1 (QUOTE FLOOR) 1 (QUOTE -) 1 (QUOTE EXPTWO) 1 (QUOTE NORMALIZE) 1 (QUOTE DOT) 1 (QUOTE EXPS) 1 (QUOTE COS) 1 (QUOTE EXPONE) 1 (QUOTE POW) 1 (QUOTE VEC4) 1 (QUOTE DEGREES) 1 (QUOTE FACEFORWARD) 1 (QUOTE CROSS) 1 (QUOTE RADIANS) 1 (QUOTE *) 1 (QUOTE LOG) 1 (QUOTE ATAN) 1 (QUOTE SMOOTHSTEP) 1 (QUOTE FWIDTH) 1 (QUOTE VEC3) 1 (QUOTE VAR1) *infinite-productions-size-value* (QUOTE VAR2) *infinite-productions-size-value* (QUOTE VAR3) *infinite-productions-size-value* (QUOTE VAR4) *infinite-productions-size-value*)
     (if (find :var1 vars :test (lambda (o value) (eql (second value) :var1)))
         (SET-HASH table 'VAR1 1))
     (if (find :var2 vars :test (lambda (o value) (eql (second value) :var2)))
@@ -538,6 +534,8 @@
     (if (find :var4 vars :test (lambda (o value) (eql (second value) :var4)))
         (SET-HASH table 'VAR4 1)
       (SET-HASH table 'EXPFOUR 5))
+    ;; #FIX: to avoid generation of fwidth, not used for parsing
+    (SET-HASH table 'FWIDTH *infinite-productions-size-value*)
     table))
 
 ;; #TODO: fix, now we have to set it externally
