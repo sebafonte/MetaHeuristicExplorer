@@ -334,6 +334,7 @@
             "Model/Reporting/text-stream-reporting.lisp"
             ;; Applications load
             "Applications/load-file.lisp"
+            "Applications/glsl-mutation.lisp"
             ;; Testing
             "unit-test-framework.lisp"
             "Test unit/test-resource.lisp"
