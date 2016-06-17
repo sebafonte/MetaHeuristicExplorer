@@ -74,6 +74,19 @@
       (format stream "~A | ~A" result (infix-coverted-string result))
       (force-output stream))))
 
+(defmethod dispatch-message-name ((message-name (eql 'message-web-interface-crossover-with-vars)) message administrator stream)
+  (let* ((language-name (first (content message)))
+         (variables (second (content message)))
+         (object-a (third (content message)))
+         (object-b (fourth (content message)))
+         (max-size (fifth (content message)))
+         (operator (system-get 'crossover-cfg))
+         (language (create-language-from language-name variables)))
+    (setf (max-size language) max-size)
+    (let ((result (directed-crossover-cfg object-a object-b language operator)))
+      (format stream "~A | ~A" result (infix-coverted-string result))
+      (force-output stream))))
+
 (defmethod dispatch-message-name ((message-name (eql 'message-web-interface-glsl-parse-result)) message administrator stream)
   (let* ((language-name (first (content message)))
          (variables (third (content message)))
@@ -300,7 +313,9 @@
                                 :name 'message-web-interface-delete-task 
                                 :content (list (name o)))))
     (with-open-stream
-        (stream (comm:open-tcp-stream (ip-address (host o)) (port (host o)) :timeout *tcp-default-timeout* :read-timeout *tcp-default-timeout*))
+        (stream (comm:open-tcp-stream (ip-address (host o)) (port (host o))
+                                      :timeout *tcp-default-timeout* 
+                                      :read-timeout *tcp-default-timeout*))
     (if stream
         (progn
           (write-line (transportable-code-description message) stream)
@@ -362,23 +377,6 @@
                    :valid-new-expresion-function 'create-new-random-valid
                    :simplification-function 'simplify-strategy
                    :operators (default-genetic-operators-probability-lisp-expression))))
-
-#|
-(defmethod dispatch-message-name ((message-name (eql 'message-prepare-lisp-cfg-language)) message administrator stream)
-  (let* ((functions (first (content message)))
-         (variables (second (content message)))
-         (constants (third (content message)))
-         (language (create-lisp-cfg-language functions variables constants)))
-    (setf (name language) (symbol-name (gensym)))
-    (system-add language)
-    (format stream "~A" (name language))
-    (force-output stream))) 
-
-(make-instance 'tcp-message :name (quote message-create-random-lisp-cfg-language
-) :content (list (quote nil) (quote default-fixed-set-numerical-1) (list (quote
-x)  (quote y)  (quote time)) 30))
-|#
-
 
 (defmethod dispatch-message-name ((message-name (eql 'message-create-random-lisp-cfg-language)) message administrator stream)
   (let* ((functions (first (content message)))
