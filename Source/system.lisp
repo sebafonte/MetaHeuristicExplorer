@@ -20,10 +20,7 @@
   (:package "USER"
    :default-pathname *base-pathname*
    :default-type :lisp-file)
-  :members (;; Globals
-            "asdf.lisp"
-            "globals.lisp"
-            ;; Utilities
+  :members (;; Utilities
             "list-utilities.lisp"
             "utilities.lisp"
             "logger.lisp"
@@ -36,6 +33,9 @@
             "node-selection.lisp"
             "pattern-simplification.lisp"
             "copy.lisp"
+            ;; Globals
+            "asdf.lisp"
+            "globals.lisp"
             ;; OpenGL
             "OpenGL/host.lisp"
             "OpenGL/load-opengl.lisp"

@@ -66,10 +66,12 @@
   (let* ((language-name (first (content message)))
          (variables (second (content message)))
          (object (third (content message)))
-         (operator (system-get 'mutate-cfg))
+         (operator (copy (system-get 'mutate-cfg)))
          (max-size (fourth (content message)))
-         (language (create-language-from language-name variables)))
-    (setf (max-size language) max-size)
+         (language (pooled-create-language-from language-name variables max-size)))
+    (setf (production-selection-weight-function operator) #'lambda-glsl-weight-function-1
+          (max-size language) max-size
+          (max-depth language) max-size)
     (let ((result (mutate-cfg object language operator)))
       (format stream "~A | ~A" result (infix-coverted-string result))
       (force-output stream))))
@@ -81,7 +83,7 @@
          (object-b (fourth (content message)))
          (max-size (fifth (content message)))
          (operator (system-get 'crossover-cfg))
-         (language (create-language-from language-name variables)))
+         (language (pooled-create-language-from language-name variables max-size)))
     (setf (max-size language) max-size)
     (let ((result (directed-crossover-cfg object-a object-b language operator)))
       (format stream "~A | ~A" result (infix-coverted-string result))
@@ -91,12 +93,21 @@
   (let* ((language-name (first (content message)))
          (variables (third (content message)))
          (object (second (content message)))
-         (language (create-language-from language-name variables)))
+         (language (pooled-create-language-from language-name variables)))
     (let ((result (caadr (multiple-value-bind (value error) 
                              (parse (grammar language) object)
                            (if error nil value)))))
       (format stream "~A" result)
       (force-output stream))))
+
+(defun pooled-create-language-from (name vars &rest args)
+  (let* ((key (get-key (append (list name vars) args)))
+         (cached (get-pool-object-key *object-pool* key)))
+    (if cached
+        cached
+      (let ((object (create-language-from name vars)))
+        (put-pool-object-key *object-pool* object key)
+        object))))
 
 ;; Infix converter (#TEMP)
 (defun infix-converter (o buffer)

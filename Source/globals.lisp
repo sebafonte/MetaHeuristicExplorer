@@ -18,6 +18,7 @@
 
 ;; Other 
 (defparameter *open-gui-on-startup* t)
+(defvar *object-pool* (make-instance 'object-pool :max-count 100))
 
 
 (defun register-capi-button-icons ()
