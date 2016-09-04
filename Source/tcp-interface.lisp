@@ -109,30 +109,39 @@
         (put-pool-object-key *object-pool* object key)
         object))))
 
-;; Infix converter (#TEMP)
+;; Infix converter
 (defun infix-converter (o buffer)
   (if (consp o)
-      (if (or (eql (first o) '+) (eql (first o) '-) (eql (first o) '*) (eql (first o) '/))
-          (progn 
-            ;; Operator
-            (format buffer "(")
-            (infix-converter (second o) buffer)
-            (infix-converter (first o) buffer)
-            (infix-converter (third o) buffer)
-            (format buffer ")"))
-        ;; Function
-        (progn 
-          (infix-converter (first o) buffer)
-          (format buffer "(")
-          (dotimes (i (length (cdr o)))
-            (infix-converter (nth i (cdr o)) buffer)
-            (when (< i (1- (length (cdr o))))
-              (format buffer ",")))
-          (format buffer ")")))
-    ;; Constant or name
-    (format buffer "~4$" (replace-converter o))))
+      (let ((operator (first o)))
+        (if (or (eql operator '+) (eql operator '-) (eql operator '*) (eql operator '/))
+            (progn 
+              ;; Operator
+              (format buffer "(")
+              (infix-converter (second o) buffer)
+              (infix-converter operator buffer)
+              (infix-converter (third o) buffer)
+              (format buffer ")"))
+          (if (is-field-selector operator)
+              ;; Field selector
+              (progn 
+                (format buffer "(")
+                (infix-converter (second o) buffer)
+                (format buffer ".")
+                (format buffer (convert-field-selector operator))
+                (format buffer ")"))
+            ;; Function
+            (progn 
+              (infix-converter operator buffer)
+              (format buffer "(")
+              (dotimes (i (length (cdr o)))
+                (infix-converter (nth i (cdr o)) buffer)
+                (when (< i (1- (length (cdr o))))
+                  (format buffer ",")))
+              (format buffer ")")))))
+      ;; Constant or name
+      (format buffer "~4$" (replace-converter o))))
 
-;;  glsl-converter (#TEMP)
+;;  glsl-converter
 (defun glsl-converter (o buffer)
   (let ((exp (parse-glsl)))
     (format buffer exp)))

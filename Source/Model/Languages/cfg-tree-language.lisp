@@ -21,9 +21,10 @@
     (calculate-minimum-production-size (grammar o))))
 
 (defmethod update-generic-grammar ((o cfg-tree-language))
-  (unless (parser-initializer (grammar o))
-    (funcall 'initialize-parser-from-definition (name (grammar o)) o)))
-    
+  (mp:with-lock (*parsergen-lock*)
+      (unless (parser-initializer (grammar o))
+        (funcall 'initialize-parser-from-definition (name (grammar o)) o))))
+
 (defmethod set-grammar-tokens ((o cfg-tree-language))
   (setf (tokens (grammar o))
         (append (variable-tokens o)
@@ -82,4 +83,3 @@
 
 (defmethod min-depth ((a cfg-tree-language))
   (calculated-minimum-production-depth (grammar a) '(start)))
-
