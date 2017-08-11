@@ -13,7 +13,7 @@
 (push (merge-pathnames "s-base64/" *base-pathname*) asdf:*central-registry*)
 (asdf:operate 'asdf:load-op :s-base64)
 (load (merge-pathnames "OpenGL/host.lisp" *base-pathname*))
-(load (merge-pathnames "utilities.lisp" *base-pathname*))
+(load (merge-pathnames "Utils/utilities.lisp" *base-pathname*))
 (load (merge-pathnames "OpenGL/load-opengl.lisp" *base-pathname*))
 
 (defsystem gp-tool 
@@ -21,18 +21,18 @@
    :default-pathname *base-pathname*
    :default-type :lisp-file)
   :members (;; Utilities
-            "list-utilities.lisp"
-            "utilities.lisp"
-            "logger.lisp"
-            "object-pool.lisp"
-            "compression-utilities.lisp" 
-            "perlin-noise.lisp"
-            "dft-and-fft.lisp"
-            "matching.lisp"
-            "list-selection.lisp"
-            "node-selection.lisp"
-            "pattern-simplification.lisp"
-            "copy.lisp"
+            "Utils/list-utilities.lisp"
+            "Utils/utilities.lisp"
+            "Utils/logger.lisp"
+            "Utils/object-pool.lisp"
+            "Utils/compression-utilities.lisp" 
+            "Utils/perlin-noise.lisp"
+            "Utils/dft-and-fft.lisp"
+            "Utils/matching.lisp"
+			"Utils/copy.lisp"
+            "Model/list-selection.lisp"
+            "Model/node-selection.lisp"
+            "Model/pattern-simplification.lisp"
             ;; Globals
             "asdf.lisp"
             "globals.lisp"
@@ -183,7 +183,7 @@
             "Model/Tasks and search distribution/task-container.lisp"
             "Model/Tasks and search distribution/search-task.lisp"
             "Model/Tasks and search distribution/print-tasks.lisp"
-            "mp-utilities.lisp"
+            "Utils/mp-utilities.lisp"
             ;; Fitness evaluators
             "Model/Fitness evaluators/entity-evaluator.lisp"
             "Model/Fitness evaluators/entity-function-maximization-evaluator.lisp"
@@ -273,7 +273,7 @@
             ;; Configuration
             "Model/registrable-object-wrapper.lisp"
             "Configuration/default-objects.lisp"
-            "visualization-modes.lisp"
+            "Model/visualization-modes.lisp"
             "system-configuration.lisp"
             ;; Panes
             "Interface/base-pane.lisp"
@@ -323,7 +323,7 @@
             "Model/Local search methods/steepest-descent-1.lisp"
             ;; Other
             "Model/create-child.lisp"
-            "copy-cyclic.lisp"
+            "Utils/copy-cyclic.lisp"
             "command-line-functions.lisp"
             "Model/Reporting/reporting.lisp"
             "Model/Reporting/reporting-tool.lisp"
