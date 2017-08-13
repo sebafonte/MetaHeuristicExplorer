@@ -12,23 +12,6 @@
 (defun deparse (expression)
   (car (deparse-recursive expression)))
 
-#|
-(defun deparse-recursive (expression)
-  "Answer final tree without intermediate productions with values."
-  (if (atom (cadr expression))
-      (list (cadr expression))
-    (let ((new-list))
-      (if (atom (car expression))
-          (progn
-            (dolist (i (cdr expression))
-              (appendf new-list (deparse-recursive i)))
-             new-list)
-        (progn 
-          (dolist (i expression)
-            (appendf new-list (deparse-recursive i)))
-          (list new-list))))))
-|#
-
 (defun deparse-recursive (expression)
   "Answer final tree without intermediate productions with values."
   (if (and (cadr expression) 
