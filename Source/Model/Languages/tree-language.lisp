@@ -180,5 +180,10 @@
 (defun min-language-function-with-args (x)
   (reduce 'min (mapcar 'cadr x)))
 
+(defmethod get-key ((obj tree-language))
+  (format nil "~A-~A" 'tree-language (variables obj)))
+
+#|
 (defmethod (setf functions) (tree (o tree-language))
   (setf (min-function-args o) (min-language-function-with-args (functions o))))
+|#
