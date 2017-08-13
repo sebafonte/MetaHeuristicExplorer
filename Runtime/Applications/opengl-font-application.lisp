@@ -525,7 +525,7 @@
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-opengl-free-drawing-expression-parser-2d
                 :productions (opengl-free-drawing-grammar-productions)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
+                :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
                                     :draw-operation :draw-expression-list :expression :start-draw)))
 
 (system-add

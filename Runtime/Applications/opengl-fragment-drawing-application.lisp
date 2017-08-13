@@ -317,7 +317,6 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
 (defmethod evaluate ((evaluator opengl-fragment-drawing-evaluator) (object entity-opengl-fragment-drawing))
   "Use <evaluator> to calculate and answer <object> fitness."
   (funcall (fitness-function evaluator) evaluator object))
-                          
 
 (defmethod objective-class ((evaluator opengl-fragment-drawing-evaluator))
   'entity-opengl-fragment-drawing)
@@ -344,11 +343,12 @@ void BlendFuncSeparatei(uint buf, enum srcRGB, enum dstRGB, enum srcAlpha, enum 
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-opengl-fragment-drawing-expression-parser
                 :productions (opengl-fragment-drawing-grammar-productions)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator :expresion)))
+                :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator :expresion)))
 
 (system-add
  (make-instance 'cfg-tree-language 
                 :name 'opengl-fragment-drawing-default-language
+                :description "Fragment drawing language"
                 :grammar (system-get-copy 'opengl-fragment-drawing-default-grammar)
                 :simplification-patterns *opengl-fragment-drawing-editing-patterns*
                 :functions (entity-opengl-fragment-drawing-default-functions-info)

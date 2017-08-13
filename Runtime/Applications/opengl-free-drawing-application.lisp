@@ -289,7 +289,7 @@
          (dx (/ width cx))
          (dy (/ height cy)))
     (opengl:rendering-on (canvas)
-      (initialize-ortho-2d 0.d0 width height 0.d0)      
+      (initialize-ortho-2d 0.d0 width height 0.d0)
       (eval (program o)))
   (handler-case (opengl:swap-buffers canvas)
     (error (function) nil))))
@@ -308,10 +308,9 @@
 
 (defun evaluate-opengl-free-drawing (evaluator object)
   "Evaluation method for OpenGL free drawing object."
-  (let ((compiled-program (compiled-program object))                   
+  (let ((compiled-program (compiled-program object))
     (setf (fitness object) 1)
     1))
-
 
 
 ;;; Add system objects
@@ -322,7 +321,7 @@
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-opengl-free-drawing-expression-parser
                 :productions (opengl-free-drawing-grammar-productions)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
+                :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
                                     :vertex-expression :expresion)))
 
 (system-add

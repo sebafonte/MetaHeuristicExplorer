@@ -258,7 +258,7 @@
                 :lexer 'lisp-math-expression-lexer
                 :parser-initializer 'initialize-opengl-free-drawing-expression-parser-3d
                 :productions (opengl-free-drawing-grammar-productions-3d)
-                :crossover-tokens '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
+                :crossover-nodes '(:1-ary-operator :2-ary-operator :3-ary-operator :4-ary-operator 
                                     :vertex-expression :expresion)))
 
 (system-add
@@ -277,7 +277,7 @@
 
 
 #|
-;; Bola con rombo al rededor
+;; Circle sorrounded by a romboid
 (gl-app-draw 
  (gl-app-sphere 1)
  (gl-app-translate 0 2)

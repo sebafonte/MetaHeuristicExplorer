@@ -357,7 +357,7 @@
                  :lexer 'intro-definition-grammar-lexer
                  :parser-initializer 'initialize-intro-definition-grammar-parser
                  :productions (intro-definition-grammar-productions)
-                 :crossover-tokens '(:constant
+                 :crossover-nodes '(:constant
                                      :search-object-description
                                      :task-description-list
                                      :builder-description
