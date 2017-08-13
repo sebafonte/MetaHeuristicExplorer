@@ -39,7 +39,7 @@
 (defmethod initialize-fitness-data ((o entity-image-similarity-rgb-evaluator))
   "Initialize <o> fitness data."
   (when (image-file o)
-    (let ((image (gp:read-external-image (format nil "d:\\temp\\~a" (image-file o))))
+    (let ((image (gp:read-external-image (application-relative-pathname (format nil "Applications\\~a" (image-file o)))))
           (data-length))
       (setf (image-data o) (subseq (slot-value image 'graphics-ports::data) 54)
             data-length (/ (length (image-data o)) 3)
@@ -52,7 +52,7 @@
     (initialize-fitness-data o)))
 
 (defmethod reset-temporary-data ((o entity-image-similarity-rgb-evaluator))
-  "Clear temporary data used on <evaluator>."
+  "Clear temporary data used on <o>."
   (setf (image-file o) nil))
 
 (defmethod possible-fitness-functions ((o entity-image-similarity-rgb-evaluator))
