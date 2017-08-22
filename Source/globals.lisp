@@ -16,6 +16,10 @@
 ;; Logger
 (defvar *logger*)
 
+;; TCP interfaces 
+(defparameter *tcp-default-timeout* 1)
+(defparameter *tcp-long-timeout* 2)
+
 ;; Other 
 (defparameter *open-gui-on-startup* t)
 (defvar *object-pool* (make-instance 'object-pool :max-count 100))

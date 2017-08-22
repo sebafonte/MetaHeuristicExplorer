@@ -3,8 +3,6 @@
 (defparameter *ip-update-timer* nil)
 (defparameter *ip-update-timer-initial-delta* 10000)
 (defparameter *ip-update-timer-delta* 300000)
-(defparameter *tcp-default-timeout* 1)
-(defparameter *tcp-long-timeout* 2)
 (defparameter *main-server-address* "gpexplorer.ddns.net")
 
 

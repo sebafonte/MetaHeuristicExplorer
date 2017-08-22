@@ -142,10 +142,10 @@
   (report-on-file object path options))
 
 ;; Environment
+;; #TODO: 
 (defmethod set-distributed-environment-configuration ((c command-line-interpreter) &key path)
   "Evaluates <expression> loaded from the command line."
-  (let ((task (system-get name)))
-    (execute-task (task-planifier task) task)))
+  nil)
 
 (defmethod load-panes ((c command-line-interpreter) &key path)
   "Load default pane on main interface from <path>."

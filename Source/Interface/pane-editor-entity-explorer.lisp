@@ -57,7 +57,6 @@
          (object (make-instance (class-of model-object)))
          (child (make-instance 'object-in-search :object object :context context))
          (child-object (object child))
-         (items (capi:choice-selected-items (pane-graph (interface p))))
          (selected-node-index (1- (capi:choice-selection (pane-graph (interface p)))))
          (selected-subtree (selected-subtree model selected-node-index)))
     ;; Children creation
@@ -98,6 +97,7 @@
 
 (defun entity-explorer-button-press-callback (output-pane x y)
   "Callback for node press action."
+  (declare (ignore output-pane x y))
   nil)
 
 (defun entity-explorer-button-shift-action-callback (output-pane x y)
