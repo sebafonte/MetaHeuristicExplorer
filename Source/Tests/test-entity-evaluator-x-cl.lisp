@@ -90,25 +90,6 @@
                          (fitness (nth (individuals population-b) i)))) 
                  0.01)))))
 
-;; Random individuals and see diferences between lisp environment and opencl evaluator
-;; #TODO: Add case for individual evaluation
-(defmethod test-evaluate-distance ((o test-entity-evaluator-x-cl))
-  "Test distance evaluation with one individual."
-  (let* ((algorithm (opencl-test-algorithm o))
-         (population-a (generate-population (initialization-method algorithm) algorithm))
-         (population-b (copy population-a))
-         (evaluator-opencl (opencl-test-evaluator o))
-         (evaluator-lisp (lisp-environment-test-evaluator o)))
-    (setf (fitness-function evaluator) 'evaluate-distance)
-    (initialize-fitness-data evaluator-opencl)
-    (initialize-fitness-data evaluator-lisp)
-    (evaluate evaluator-opencl population-a)
-    (evaluate evaluator-lisp population-b)
-    (dotimes (i (size poulation-a))
-      (check (<= (abs (- (fitness (nth (individuals population-a) i))
-                         (fitness (nth (individuals population-b) i)))) 
-                 0.01)))))
-
 ;; Test specific cases
 ;; #TODO: Add case for individual evaluation
 (defmethod test-long-expression ((o test-entity-evaluator-x-cl))
