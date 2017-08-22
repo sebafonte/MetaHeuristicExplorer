@@ -21,8 +21,7 @@
   (make-instance 'entity-function-x-evaluator 
                  :samples 8 
                  :fitness-function 'evaluate-distance 
-                 :target-program '(+ x 1) 
-                 :global-work-size 8))
+                 :target-program '(+ x 1)))
 
 ;; Testing opencl expressions builder mechanism
 (defmethod test-evaluate-population ((o test-entity-evaluator-x-cl))
@@ -52,7 +51,7 @@
     (setf (program-source-part o) (string-from-file (merge-pathnames "OpenCL\\fitness-base-part-x-test.cl" *base-pathname*)))
     (initialize-fitness-data evaluator)
     (evaluate evaluator population)
-    (check (<= (abs (- (fitness (nth (individuals population))) 10)) 0.01))))
+    (check (<= (abs (- (fitness (nth 0 (individuals population))) 10)) 0.01))))
 
 ;; Check both methods working ok
 (defmethod test-evaluate-distance ((o test-entity-evaluator-x-cl))
@@ -62,7 +61,8 @@
          (population-b (create-test-population algorithm '(+ x 1) 10))
          (evaluator-opencl (opencl-test-evaluator o))
          (evaluator-lisp (lisp-environment-test-evaluator o)))
-    (setf (fitness-function evaluator) 'evaluate-distance)
+    (setf (fitness-function evaluator-opencl) 'evaluate-distance
+          (fitness-function evaluator-lisp) 'evaluate-distance)
     (initialize-fitness-data evaluator-opencl)
     (initialize-fitness-data evaluator-lisp)
     (evaluate evaluator-opencl population-a)
@@ -79,7 +79,8 @@
          (population-b (create-test-population algorithm '(+ x 1) 10))
          (evaluator-opencl (opencl-test-evaluator o))
          (evaluator-lisp (lisp-environment-test-evaluator o)))
-    (setf (fitness-function evaluator) 'evaluate-squared-distance)
+    (setf (fitness-function evaluator-opencl) 'evaluate-squared-distance
+          (fitness-function evaluator-lisp) 'evaluate-squared-distance)
     (initialize-fitness-data evaluator-opencl)
     (initialize-fitness-data evaluator-lisp)
     (evaluate evaluator-opencl population-a)
@@ -117,7 +118,7 @@
     (initialize-fitness-data evaluator)
     (evaluate evaluator population)
     (dotimes (i (size population))
-      (check (<= (abs (- (fitness (nth (individuals population-a) i)) 10.0))
+      (check (<= (abs (- (fitness (nth (individuals population) i)) 10.0))
                  0.01)))))
 
 (defmethod default-long-expression ((o test-entity-evaluator-x-cl))
