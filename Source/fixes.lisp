@@ -96,7 +96,10 @@
 
 ;; #NOTE: Null parser. Grammars have to be initialized with a parser initializer.
 (defun initialize-null-parser (name)
-  (lambda (&rest args) (progn nil)))
+  (declare (ignore name))
+  (lambda (&rest args)
+    (declare (ignore args))
+    (progn nil)))
 
 
 ;; #NOTE: Closed editors cleaning? Comes from working-interfaces.lisp, it could be implemented using events

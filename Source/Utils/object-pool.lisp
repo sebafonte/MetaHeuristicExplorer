@@ -36,9 +36,9 @@
     ;(print "clear")
     (clear o)
     (drop-object o key))
-  (setf value object)
-  (set-object o key value)
-  (incf (current-count o)))
+  (let ((value object))
+    (set-object o key value)
+    (incf (current-count o))))
 
 (defmethod drop-object ((o object-pool) key)
   (remhash key (registry o))
