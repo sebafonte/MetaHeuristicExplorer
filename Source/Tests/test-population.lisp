@@ -5,6 +5,7 @@
   "Answer default algorithm for <o>."
   (let* ((algorithm (make-instance class))
          (context (make-instance 'search-task :algorithm algorithm)))
+    (declare (ignore context))
     (setf (initialization-method algorithm) (copy-cyclic (system-get 'random-trees-cfg-initializer)))
     algorithm))
 

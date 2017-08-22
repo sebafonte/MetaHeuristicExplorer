@@ -674,6 +674,7 @@
 
 (defun release-queue (queue)
   ;(ocl::|clReleaseQueue| queue)
+  (declare (ignore queue))
   nil)
 
 (defun release-context (context)

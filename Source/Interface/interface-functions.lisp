@@ -22,6 +22,8 @@
        :ok-check (lambda (pane) (declare (ignore pane)) t))
     (values action (read-from-string result))))
 
+#|
+;; #NOTE: Just defined, not used
 (defun absolute-geometry-values (interface)
   "Answer the values for <interface> with respect to main top level interface."
   (if (capi:top-level-interface-p interface)
@@ -34,3 +36,4 @@
               (+ capi:%y% (cadr top))
               capi:%height% 
               capi:%width%)))))
+|#

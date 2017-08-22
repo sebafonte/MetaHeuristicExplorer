@@ -11,6 +11,11 @@
 ;;;
 
 (defvar *interface-editors* nil)
+(defconstant *title-pane-editor* "Editor")
+(defconstant *title-pane-graph* "Tree")
+(defconstant *title-pane-image* "Graphics")
+(defconstant *title-pane-properties* "Properties")
+(defconstant *title-pane-parameters* "Parameters")
 
 
 (defclass pane-editor-entity (base-pane object-with-properties)

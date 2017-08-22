@@ -1,11 +1,4 @@
 
-(defconstant *title-pane-editor* "Editor")
-(defconstant *title-pane-graph* "Tree")
-(defconstant *title-pane-image* "Graphics")
-(defconstant *title-pane-properties* "Properties")
-(defconstant *title-pane-parameters* "Parameters")
-
-
 (capi::define-interface interface-pane-editor-entity (interface-pane-editor-entity-base)
   ((pixmap :initform nil :accessor pixmap)
    (image-heigth :initform 0 :accessor image-heigth)

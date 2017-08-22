@@ -4,6 +4,7 @@
 
 ;; #TODO & #NOTE: Possible optimization hook
 (defun has-dependency-to-update (p)
+  (declare (ignore p))
   t)
 
 (defmethod valid-dependency-value ((o t) property value)

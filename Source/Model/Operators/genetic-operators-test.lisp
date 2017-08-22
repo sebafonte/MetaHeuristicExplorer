@@ -71,6 +71,7 @@
 
 ;; #TODO: For test purposes only, this should return al possible combinations
 (defun replacement-indexes (tree n)
+  (declare (ignore tree n))
   "Answer a list with possible node indexes for replacement."
   '((1 2) (2 3) (3 4)))
 

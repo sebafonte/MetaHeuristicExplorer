@@ -1,7 +1,6 @@
 
 (defun crossover (a b language operator)
   "Answer two crossovered individuals with parents <a> and <b>."
-  (declare (ignore operator))
   (let ((subtree-a (copy-tree (get-internal-random-subtree a language)))
         (subtree-b (copy-tree (get-internal-random-subtree b language)))
         (insertion-index-a (random (count-internal-subtrees a language)))

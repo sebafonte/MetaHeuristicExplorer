@@ -7,4 +7,5 @@
   "Answer default algorithm for <o>."
   (let* ((algorithm (make-instance class))
          (context (make-instance 'search-task :algorithm algorithm)))
+    (declare (ignore context))
     algorithm))
