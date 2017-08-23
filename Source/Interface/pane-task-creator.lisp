@@ -172,4 +172,5 @@
 
 (defun edit-variation-selection-callback (interface data)
   "Add a new connection configured by the user to the model of <p>."
+  (declare (ignore data))
   (edit-variation-callback (capi:choice-selected-item (variations interface)) interface))
