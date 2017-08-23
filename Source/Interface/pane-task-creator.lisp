@@ -155,6 +155,7 @@
 
 (defun delete-variation-callback (interface data)
   "Add a new connection configured by the user to the model of <p>."
+  (declare (ignore data))
   (let ((p (pane interface))
         (selection (capi:choice-selected-item (variations interface))))
     (when selection

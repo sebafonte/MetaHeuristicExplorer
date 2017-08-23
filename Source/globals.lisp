@@ -23,7 +23,7 @@
 ;; Other 
 (defparameter *open-gui-on-startup* t)
 (defvar *object-pool* (make-instance 'object-pool :max-count 100))
-
+(defvar *interface-editors* nil)
 
 (defun register-capi-button-icons ()
   (gp:register-image-translation

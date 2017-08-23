@@ -63,7 +63,7 @@
       (let ((tournament))
         (dotimes (j (tournament-size o))
           (appendf tournament (aref (individuals-array population) (random-integer 0 size))))
-        (appendf result (list (reduce 'better-than (to-list array))))))
+        (appendf result (list (reduce 'better-than (to-list (individuals-array population)))))))
     result))
 
 ; -----------------------------------------------------------------------------

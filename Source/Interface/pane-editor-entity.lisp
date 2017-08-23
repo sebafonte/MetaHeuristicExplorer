@@ -10,7 +10,6 @@
 ;;; #NOTE: Temporary implementation detail, this var has a reference to all editors shown on screen
 ;;;
 
-(defvar *interface-editors* nil)
 (defconstant *title-pane-editor* "Editor")
 (defconstant *title-pane-graph* "Tree")
 (defconstant *title-pane-image* "Graphics")

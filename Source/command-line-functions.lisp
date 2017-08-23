@@ -1,4 +1,7 @@
 
+(defvar *command-directory* nil)
+
+
 (defclass command-line-interpreter ()
   ((name :initarg :name :accessor name)))
 
@@ -86,11 +89,11 @@
             (appendf tasks (list new-task))))
     (system-add (make-instance 'task-group :name group-name :tasks tasks))))
 
-(defun register-group-of-list (group-name task-name setter list-of-values step)
+(defun register-group-of-list (group-name task-name setter list-of-values)
   (let ((tasks)
         (task (system-get task-name))
         (index 0))
-    (dolist (value list)
+    (dolist (value list-of-values)
       (let ((new-task (copy-cyclic task)))
         (incf index)
         (setf (name new-task) (format nil "~A-~A" (name new-task) index))

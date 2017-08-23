@@ -147,6 +147,7 @@
 (defun initialize-stack ()
   ;; #DEBUG:
   (let ((length (hcl:extend-current-stack 0)))
+    (declare (ignore length))
     (hcl:extend-current-stack 1000)))
 
 (defun initialize-tasks-containers ()
