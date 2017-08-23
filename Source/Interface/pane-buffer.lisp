@@ -86,6 +86,7 @@
                                                    :description (image-editors population)))))
 
 (defun layout-list (population)
+  (declare (ignore population))
   (make-instance 'capi:multi-column-list-panel
                  :items nil
                  :selection-callback 'select-subtask
@@ -340,7 +341,7 @@
 ;; #TODO:
 (defun menu-pane-buffer-delete (interface data)
   (declare (ignore data))
-  (remove-from-buffer (pane interface) object))
+  (remove-from-buffer (pane interface) nil))
 
 (defun menu-pane-buffer-add (interface data)
   (declare (ignore data))
