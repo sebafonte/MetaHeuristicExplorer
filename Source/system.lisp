@@ -20,22 +20,22 @@
   (:package "USER"
    :default-pathname *base-pathname*
    :default-type :lisp-file)
-  :members (;; Utilities
+  :members (;; Globals
+            "asdf.lisp"
+            "Utils/object-pool.lisp"
+            "globals.lisp"
+            ;; Utilities
             "Utils/list-utilities.lisp"
             "Utils/utilities.lisp"
             "Utils/logger.lisp"
-            "Utils/object-pool.lisp"
             "Utils/compression-utilities.lisp" 
             "Utils/perlin-noise.lisp"
             "Utils/dft-and-fft.lisp"
             "Utils/matching.lisp"
-			"Utils/copy.lisp"
+            "Utils/copy.lisp"
             "Model/list-selection.lisp"
             "Model/node-selection.lisp"
             "Model/pattern-simplification.lisp"
-            ;; Globals
-            "asdf.lisp"
-            "globals.lisp"
             ;; OpenGL
             "OpenGL/host.lisp"
             "OpenGL/load-opengl.lisp"
@@ -277,6 +277,7 @@
             "system-configuration.lisp"
             ;; Panes
             "Interface/base-pane.lisp"
+            "Interface/drag-and-drop.lisp"
             "Interface/pane-buffer.lisp"
             "Interface/pane-feedback.lisp"
             "Interface/pane-explorer.lisp"
@@ -289,7 +290,6 @@
             "Interface/pane-subtasks.lisp"
             "Interface/pane-task-creator.lisp"
             "Interface/pane-map.lisp"
-            "Interface/drag-and-drop.lisp"
             "Interface/pane-test-runner.lisp"
             "Interface/pane-performance-test-runner.lisp"
             "Interface/pane-performance-test-runner-comparer.lisp"

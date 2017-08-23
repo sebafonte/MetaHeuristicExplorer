@@ -9,7 +9,7 @@
   (let ((node (node o)))
     (string (format nil (if (keywordp node) ":~A" "~D") node))))
 
-;; #TODO: Make from this two functions one, take take with multiprocessing
+;; #TODO: Make from this two functions one, take care with multiprocessing
 (let ((*index*))
   (defun genotype-nodes-data (object)
     "Answer a node-data list with <object> nodes representation."
