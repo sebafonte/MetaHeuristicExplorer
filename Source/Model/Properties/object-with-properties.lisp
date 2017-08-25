@@ -58,6 +58,7 @@
               (if (and (listp setter)
                        (= (length setter) 2)
                        (equal (first setter) 'setf))
+                  ;; #TODO: At least use a lock here
                   (progn
                     (setf *global-interchange-symbol* value)
                     (eval (list 'setf (list (second setter) o) (quote *global-interchange-symbol*)))
@@ -80,6 +81,7 @@
     (if (and (equal (accessor-type property) 'property-accessor-type)
              (null (multiple-value-bind (a b) 
                        (gethash property-name (properties-values o))
+                     (declare (ignore a))
                      b)))
         (setf (gethash property-name (properties-values o)) value))
     ;; Check for slot accessor-accessor type

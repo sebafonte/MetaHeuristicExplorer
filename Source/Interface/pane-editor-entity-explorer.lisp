@@ -102,4 +102,5 @@
 
 (defun entity-explorer-button-shift-action-callback (output-pane x y)
   "Callback for node shift + second press action."
+  (declare (ignore output-pane x y))
   nil)
