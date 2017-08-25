@@ -12,13 +12,14 @@
 
 (defun crossover-koza (parent-a parent-b language operator)
   "Answer a new program with john koza example crossover operator."
-  (declare (ignore operator) (ignore language))
   (let ((point-a (random-integer 0 (tree-size parent-a)))
         (point-b (random-integer 0 (tree-size parent-b)))
         (child-a (list (copy-tree parent-a))) 
         (child-b (list (copy-tree parent-b))))
-    (multiple-value-bind (a-subtree-pointer a-fragment) (get-subtree-local (first child-a) child-a point-a)
-      (multiple-value-bind (b-subtree-pointer b-fragment) (get-subtree-local (first child-b) child-b point-b)
+    (multiple-value-bind (a-subtree-pointer a-fragment) 
+        (get-subtree-local (first child-a) child-a point-a)
+      (multiple-value-bind (b-subtree-pointer b-fragment) 
+          (get-subtree-local (first child-b) child-b point-b)
         (setf (first a-subtree-pointer) b-fragment)
         (setf (first b-subtree-pointer) a-fragment)))
     (validate-crossover-moves operator parent-a child-a parent-b child-b (max-depth language) (max-size language))))
