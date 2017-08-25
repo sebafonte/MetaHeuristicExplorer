@@ -65,15 +65,11 @@
     (when name (setf (name new-task) name))
     (system-add new-task)))
 
-(defun register-task-group (name &rest group-description)
-  "Register a task group from <group-description with <name>."
-  (let ((new-group))
-    (system-add-with-name new-group name)))
+(defun tasks-from-paths (paths)
+  (list (list (first paths)
+              (second paths))
+        (tasks-from-path (caddr paths))))
 
-(defun register-task-group-path (name &key path)
-  "Register a task group from <group-description with <name>."
-  (let ((new-group (load-object-from path)))
-    (system-add-with-name new-group name)))
 
 ;; #TODO: Complete, debug and leave as an utility more or delete and use experiment creator
 ;; Task set / iterators creation
@@ -144,11 +140,13 @@
   (declare (ignore mode) (ignore format))
   (report-on-file object path options))
 
+#|
 ;; Environment
 ;; #TODO: 
 (defmethod set-distributed-environment-configuration ((c command-line-interpreter) &key path)
   "Evaluates <expression> loaded from the command line."
   nil)
+|#
 
 (defmethod load-panes ((c command-line-interpreter) &key path)
   "Load default pane on main interface from <path>."
