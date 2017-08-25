@@ -282,19 +282,20 @@
 
 ;; DSL Functions
 (defun BEST-OF-TASK (context task)
+  (declare (ignore context))
   (execute-search task) 
   (multiple-value-bind (result subtask) 
       (best-individual task)
     (values result subtask)))
 
 (defun BEST-OF-TASKS (context &rest tasks)
+  (declare (ignore context))
   (execute-search (first tasks))
   (let* ((best-task (first tasks))
          (best (best-individual best-task)))
     (dolist (i (cdr tasks))
       (execute-search i) 
-      (multiple-value-bind (result subtask) 
-          (best-individual i)
+      (let ((result (best-individual i))) 
         (when (better-than result best)
           (setf best-task i
                 best result))))
@@ -337,12 +338,14 @@
                 (lambda (x) (between x min max)))))
 
 (defun MAKE-BUILDER-IT (context iterations)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-iteration-builder*)))
     (setf (runs instance) 
           (crop-for-property instance iterations 'runs *min-builder-iterations* *max-builder-iterations*))
     instance))
 
 (defun MAKE-ALG-GG (context population-size max-generations selection-method elite-manager)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-generational-algorithm*)))
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*) 
           (max-generations instance) (crop-for-property instance max-generations 'max-generations *min-generations* *max-generations*)
@@ -351,6 +354,7 @@
     instance))
 
 (defun MAKE-ALG-SS (context population-size max-iterations selection-method replacement-method)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-steady-state-algorithm*)))
     (setf (population-size instance) (crop-for-property instance population-size 'population-size *min-population-size* *max-population-size*)
           (max-iterations instance) (crop-for-property instance max-iterations 'max-iterations *min-iterations* *max-iterations*)
@@ -359,30 +363,41 @@
     instance))
 
 (defun MAKE-SM-RANDOM (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'random-selection-method)))
 
 (defun MAKE-SM-TOURNAMENT (context tournament-size)
-  (copy-cyclic (system-get 'tournament-selection-method)))
+  (declare (ignore context))
+  (let ((method (copy-cyclic (system-get 'n-tournament-selection-method))))
+    (setf (tournament-size method) tournament-size)
+    method))
 
 (defun MAKE-SM-BEST (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'best-fitness-selection-method)))
 
 (defun MAKE-SM-WORST (context) 
+  (declare (ignore context))
   (copy-cyclic (system-get 'worst-fitness-selection-method)))
 
 (defun MAKE-SM-RANK (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'ranking-selection-method)))
 
 (defun MAKE-SM-IRANKING (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'ranking-inverse-selection-method)))
 
 (defun MAKE-SM-FITNESS (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'fitness-proportionate-selection-method)))
 
 (defun MAKE-SM-IFITNESS (context)
+  (declare (ignore context))
   (copy-cyclic (system-get 'inverse-fitness-selection-method)))
 
 (defun MAKE-EM (context elites-count)
+  (declare (ignore context))
   (let ((instance (copy-cyclic *default-template-elite-manager*)))
     (setf (max-size instance) (crop-for-property instance elites-count 'max-size *min-size-elites* *max-size-elites*))
     instance))
@@ -399,7 +414,6 @@
     value))
 
 (defun MAKE-OBJ (context program)
-  (declare (ignore context))
   (make-objective context program))
 
 (defun MAKE-GN-RND (context aux)
