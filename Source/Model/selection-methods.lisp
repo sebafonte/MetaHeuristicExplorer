@@ -44,18 +44,18 @@
 
 ; -----------------------------------------------------------------------------
 
-(defclass n-tournament-selection (selection-method) 
+(defclass n-tournament-selection-method (selection-method) 
   ((tournament-size :initarg :tournament-size :accessor tournament-size)))
 
 
-(defmethod initialize-properties :after ((object n-tournament-selection))
+(defmethod initialize-properties :after ((object n-tournament-selection-method))
   "Initialize <o> properties."
   (add-properties-from-values
    object 
    (:name 'tournament-size :label "Tournament size" :accessor-type 'property-accessor-type 
     :data-type 'symbol :default-value 2 :editor 'text-editor)))
 
-(defmethod perform-selection ((o n-tournament-selection) population number)
+(defmethod perform-selection ((o n-tournament-selection-method) population number)
   "Answer a list with <number> elements from <population> using <o>."
   (let ((result)
         (size (size population)))
@@ -282,6 +282,10 @@
    (make-instance 'tournament-selection 
                   :name 'tournament-selection-method
                   :description "Tournament")
+   (make-instance 'n-tournament-selection-method 
+                  :name 'n-tournament-selection-method
+                  :description "N-Tournament"
+                  :tournament-size 3)
    (make-instance 'best-fitness-selection
                   :name 'best-fitness-selection-method
                   :description "Best fitness")
