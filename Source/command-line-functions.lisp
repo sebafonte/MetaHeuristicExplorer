@@ -65,12 +65,6 @@
     (when name (setf (name new-task) name))
     (system-add new-task)))
 
-(defun tasks-from-paths (paths)
-  (list (list (first paths)
-              (second paths))
-        (tasks-from-path (caddr paths))))
-
-
 ;; #TODO: Complete, debug and leave as an utility more or delete and use experiment creator
 ;; Task set / iterators creation
 (defun register-group-of-range (group-name task-name setter from-value to-value step)
