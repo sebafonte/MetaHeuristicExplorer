@@ -12,7 +12,8 @@
 (defmethod possible-vrp-crossovers ((object sample-vrp-crossover))
   '(crossover-ox-sample-vrp
     sample-vrp-subtour-crossover
-    sample-vrp-comparation-crossover))
+    ;sample-vrp-comparation-crossover
+    ))
 
 
 (defclass sample-vrp-mutation (mutation)
@@ -29,7 +30,7 @@
 (defmethod possible-vrp-mutations ((object sample-vrp-mutation))
   '(sample-vrp-city-in-tour-mutate
     sample-vrp-city-inter-tour-mutate
-    sample-vrp-tour-mutate
+   ;sample-vrp-tour-mutate
     sample-vrp-split-tour-mutate
     sample-vrp-merge-tour-mutate))
 
@@ -37,19 +38,24 @@
 ;;; CROSSOVERS TEST
 (defun sample-vrp-subtour-crossover (object-a object-b language operator)
   "Answer an individual applying subtour crossover from <program-a> to <program-b>."
+  (declare (ignore language operator))
   (let* ((subtour (select-random-vrp-subtour (program object-a)))
          (new-tour (append (program object-b) (list subtour))))
     (make-instance 'entity-sample-vrp 
                    :expresion (remove-cities-from-last-vrp-subtour new-tour))))
-    
+
+#|
+;; #TODO: 
 (defun sample-vrp-comparation-crossover (program-a program-b language operator)
   "Answer an individual product of a 'differential' crossover, which pretent to explot local
    optimization when doing a crossover."
   nil)
+|#
 
 ;;; MUTATIONS TEST
 (defun sample-vrp-city-in-tour-mutate (object language operator)
   "Answer a mutated individual in one city of the same tour."
+  (declare (ignore language operator))
   (let* ((program (program object))
          (target-tour-index (random-integer 0 (length program)))
          (target-tour (nth target-tour-index program))
@@ -65,6 +71,7 @@
 
 (defun sample-vrp-city-inter-tour-mutate (object language operator)
   "Answer a mutated individual in one city of different tours."
+  (declare (ignore language operator))
   (let* ((program (program object))
          (target-tour-a-index (random-integer 0 (length program)))
          (target-tour-b-index (random-integer 0 (length program))))
@@ -84,6 +91,7 @@
 
 (defun sample-vrp-split-tour-mutate (object language operator)
   "Answer an individual with a tour splitted for a new vehicle."
+  (declare (ignore language operator))
   (let* ((tour (program object))
          (tour-length (length tour))
          (selection-tour-list (selection-tour-list tour))
@@ -120,6 +128,7 @@
 
 (defun sample-vrp-merge-tour-mutate (object language operator)
   "Answer an individual with a merged tour and a vehicle less."
+  (declare (ignore language operator))
   (let* ((tour (program object))
          (tour-length (length tour))
          (index-a (random-integer 0 tour-length))
@@ -134,9 +143,11 @@
         (appendf rest-tour (list (nth i tour)))))
     (make-instance 'entity-sample-vrp :expresion (append (list merged-tour) rest-tour))))
 
+#|
 (defun sample-vrp-tour-mutate (program language operator)
   "Answer some mutated individuals of a tour with necesary corrections."
   nil)
+|#
 
 (defun replace-city-by (object index element)
   (let ((counter 0)
@@ -175,6 +186,7 @@
         (incf counter)))
     counter))
 
+#|
 (defun has-repeated-cities (object)
   (let ((counter 0)
         (table (make-hash-table)))
@@ -183,6 +195,7 @@
         (if (gethash j table)
             (return-from has-repeated-cities t)
           (setf (gethash j table) t))))))
+|#
 
 (defun select-random-vrp-subtour (tour)
   "Answer a random subtour from <tour>."

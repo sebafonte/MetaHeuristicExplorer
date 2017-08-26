@@ -10,14 +10,6 @@
   (declare (ignore mdi-interface) (ignore open))
   (setf (model p) (make-new-default-task p)))
 
-(defmethod initialize-properties :after ((i interface-pane-search-tasks))
-  "Initialize <p> properties."
-  (add-properties-from-values
-   i
-   (:name 'property-column-list :label "Columns" :accessor-type 'accessor-accessor-type :data-type 'list
-    :default-value '(name state best-fitness progress-indicator running-time) :editor 'check-list-editor
-    :possible-values '(name state best-fitness progress-indicator running-time))))
-
 (defmethod initialize-timer ((p pane-search-tasks))
   "Initialize <p> timer."
   (setf (timer p) (mp:make-timer (lambda () (safe-refresh-subtasks p))))
@@ -140,6 +132,13 @@
    :title "Search tasks"
    :destroy-callback 'destroy))
 
+(defmethod initialize-properties :after ((i interface-pane-search-tasks))
+  "Initialize <p> properties."
+  (add-properties-from-values
+   i
+   (:name 'property-column-list :label "Columns" :accessor-type 'accessor-accessor-type :data-type 'list
+    :default-value '(name state best-fitness progress-indicator running-time) :editor 'check-list-editor
+    :possible-values '(name state best-fitness progress-indicator running-time))))
 
 (defmethod set-multi-column-items-tasks ((i interface-pane-search-tasks) list label)
   (set-multi-column-items (interface-model-instance i) list label))

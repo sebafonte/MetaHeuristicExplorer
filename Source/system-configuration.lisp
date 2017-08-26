@@ -139,6 +139,7 @@
 
 ;; #NOTE: must call :update-callback 'save-property-state
 (defun reset-opencl-device-for-platform (o property)
+  (declare (ignore property))
   (setf *default-cl-device* (opencl-device o)))
 
 (defmethod visualization-mode ((o system-configuration))

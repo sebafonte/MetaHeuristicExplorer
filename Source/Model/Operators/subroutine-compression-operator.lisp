@@ -81,6 +81,7 @@
 
 (defun shake-1 (program language operator)
   "Apply shake mutation on <program> using subroutines un <language>."
+  (declare (ignore operator))
   (shake-subroutine-calls language program))
 
 (defun shake-subroutine-calls (language program)

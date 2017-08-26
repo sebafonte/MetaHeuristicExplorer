@@ -119,7 +119,7 @@
             "Model/Operators/tree-utilities.lisp"
             "Model/Operators/genetic-operators.lisp"
             "Model/Operators/genetic-operators-test.lisp"
-            "Model/Operators/genetic-operators-gep.lisp"
+            ;"Model/Operators/genetic-operators-gep.lisp"
             "Model/Operators/genetic-operators-koza.lisp"
             "Model/Operators/crossover-cfg.lisp"
             "Model/Operators/mutate-cfg.lisp"

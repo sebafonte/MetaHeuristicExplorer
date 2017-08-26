@@ -55,7 +55,7 @@
         (cond 
          ;; New and not into registry
          ((not (gethash program (registry a)))
-          (setf (aref population i) (make-objective aprogram))
+          (setf (aref population i) (make-objective program))
           (evaluate a (aref population i))
           (setf (gethash program (registry a)) t
                 attempts 0)

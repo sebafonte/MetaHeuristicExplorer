@@ -4,6 +4,8 @@
    (model :initarg :model :accessor model)
    (timer :initform nil :accessor timer)))
 
+(defparameter *default-pane-subtasks-default-model* nil)
+
 
 (defmethod initialize-interface :after ((p pane-subtasks))
   (initialize-timer p))

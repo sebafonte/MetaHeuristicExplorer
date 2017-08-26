@@ -336,7 +336,7 @@
 (defmethod compute-object-interface-pixmap-step ((o configurable-search-algorithm) subtask pixmap width heigth render-precision)
   "Compute pixmap values into <pixmap> of <o>."
   (let* ((bgra-vector (make-array (* heigth width 4) :element-type '(unsigned-byte 8)))
-         (bgra (make-array (list heigth width 4) :element-type '(unsigned-byte 8) :displaced-to bgra-vector))
+         ;(bgra (make-array (list heigth width 4) :element-type '(unsigned-byte 8) :displaced-to bgra-vector))
          (image  (gp:make-image-from-port pixmap 0 0 width heigth))
          (access (gp:make-image-access pixmap image)))
     (gp:image-access-pixels-from-bgra access bgra-vector)
