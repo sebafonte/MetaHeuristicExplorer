@@ -448,10 +448,11 @@
         (setf (program new-object)
               (replace-internal-subtree (program object) 
                                              (simplify-strategy (operate
-                                                           (system-get 'branch-delete)
-                                                           (language algorithm)
-                                                           (list (selected-subtree search-object index)))
-                                                          algorithm)
+                                                                 (system-get 'branch-delete)
+                                                                 (language algorithm)
+                                                                 (list (selected-subtree search-object index)))
+                                                                algorithm
+                                                                (language algorithm))
                                              index
                                              (language algorithm)))
         (evaluate algorithm new-object)
