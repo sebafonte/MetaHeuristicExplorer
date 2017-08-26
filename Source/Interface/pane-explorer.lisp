@@ -432,6 +432,7 @@
       (dotimes (i (fail-iterations p))
         (let ((exp (multiple-value-bind (child-1 child-2) 
                        (operate operation language (mapcar (lambda (i) (program i)) parents))
+                     (declare (ignore child-2))
                      child-1)))
           (setf (program (object child))
                 (simplify language exp))

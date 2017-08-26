@@ -6,6 +6,7 @@
 
 ;; #CHECK
 (defmethod initialize-instance :after ((p pane-graphic) &optional &key mdi-interface model interface-mode)
+  (declare (ignore mdi-interface interface-mode))
   "Initialize <p>."
   (when (interface p)
     (set-model p model)))
