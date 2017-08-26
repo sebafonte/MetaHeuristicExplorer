@@ -7,7 +7,7 @@
   "Answer <object> source code description from a new registry."
   (setf *source-code-object-registry* (make-hash-table))
   (let ((body (source-description object))
-        (instanciation (instanciation-source-description object)))
+        (instanciation (instanciation-source-description)))
     (append (list 'progn) (append instanciation (list body)))))
 
 (defmethod source-description ((o t))
@@ -60,12 +60,6 @@
          (appendf sublist-source (list (source-description i))))
        (appendf source (list (append (list 'list) sublist-source))))
      source))
-
-(defmethod source-description ((o array))
-  "Answer <o> source code description."
-  (let ((dimensions (array-dimensions o)))
-    (append (list 'make-array-from-data (cons 'list dimensions))
-            (list (cons 'append (get-array-data o))))))
 
 (defun get-array-data (array)
   "Answer a list with <array> data as major row elements."
@@ -172,9 +166,9 @@
         (eql class 'mp:process)
         (eql class 'graphics-ports:image))))
 
-(defun instanciation-source-description (object)
-  "Answer the instanciation code for objects in *source-code-object-registry*.
-   #NOTE: <object> is not used because all information is in *source-code-object-registry*."
+(defun instanciation-source-description ()
+  "Answer the instanciation code for objects in *source-code-object-registry*."
+  (declare (ignore object))
   (let ((code))
     (maphash (lambda (key value)
                (appendf code (list (list 'setf value (valid-instance-descriptor key)))))
@@ -269,6 +263,13 @@
   "Answer <o> slot names which are going to be excluded from source description."
   (discard-type value))
 
+#|
+(defmethod source-description ((o array))
+  "Answer <o> source code description."
+  (let ((dimensions (array-dimensions o)))
+    (append (list 'make-array-from-data (cons 'list dimensions))
+            (list (cons 'append (get-array-data o))))))
+|#
 
 ;; #FIX: Compensate a little the excess in amount of arguments
 (defmethod source-description ((o array))

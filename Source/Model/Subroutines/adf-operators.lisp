@@ -55,10 +55,10 @@
     (operate (basic-operator o) language (list adf))))
 
 (defmethod operate-adf ((o binary-genetic-operator) language expresions)
-  (let ((program-a (program a))
-        (program-b (program b))
-        (adf-a (select-adf program-a))
-        (adf-b (select-adf program-b)))
+  (let* ((program-a (program a))
+         (program-b (program b))
+         (adf-a (select-adf program-a))
+         (adf-b (select-adf program-b)))
     (operate (basic-operator o) language (list adf-a adf-b))))
 
 

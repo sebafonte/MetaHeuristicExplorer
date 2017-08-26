@@ -24,6 +24,11 @@
 (defparameter *open-gui-on-startup* t)
 (defvar *object-pool* (make-instance 'object-pool :max-count 100))
 (defvar *interface-editors* nil)
+(defvar *default-instance-search-task* nil)
+
+;; Lock for fitness evaluations
+(defparameter *auxiliar-lock* nil)
+
 
 (defun register-capi-button-icons ()
   (gp:register-image-translation

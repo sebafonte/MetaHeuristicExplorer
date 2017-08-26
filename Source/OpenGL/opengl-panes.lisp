@@ -134,11 +134,14 @@
    (lambda () 
      (setf (capi:interface-title i) (format nil "~A" (name object))))))
 
-(defun graphic-pane-graphic-class-callback (interface data)
-  nil)
-
 (defun graphic-pane-graphic-properties-callback (interface data)
+  (declare (ignore data))
   (open-editor-with interface (graphic (pane interface))))
 
 (defun graphic-pane-turn-animation-callback (interface data)
+  (declare (ignore interface data))
+  nil)
+
+(defun graphic-pane-graphic-class-callback (interface data)
+  (declare (ignore interface data))
   nil)
