@@ -141,13 +141,16 @@
   (if (selection interface)
       (execute-signal (selection interface))))
 
+;; #TODO: 
 (defun menu-save-template (interface data)
+  (declare (ignore interface data))
   "Save subtask <interface> model."
-  (progn nil))
+  nil)
 
 (defun menu-load-template (interface data)
+  (declare (ignore interface data))
   "Load subtask <interface> model."
-  (progn nil))
+  nil)
 
 (defun menu-delete-selection (interface data)
   "Delete selected subtask on <interface>."
@@ -188,7 +191,6 @@
 
 (defun menu-inspect-best-individual (interface data)
   "Open a new pane-editor-entity with best <interface> individual."
-  (declare (ignore data))
   (check-remote-model-update data)
   (when (selection interface)
     (open-editor-with
@@ -393,7 +395,7 @@
                                     :ymax 10
                                     :valuable-x-list '(lambda (o) (generation o))
                                     :valuable-y-list '(lambda (o) (second o))
-                                    :datasource-list (list 'lambda '(o) (list value o)))
+                                    :datasource-list (list 'lambda '(o) (list value 'o)))
             :mdi-interface interface))))
 
 ;; #TODO: Look out because now when finishes it deletes all processes (?)
@@ -560,6 +562,7 @@
   "Answer a copy of <pane> model."
   (copy (model pane)))
 
+#|
 (defmethod create-default-task ((pane pane-subtasks))
   "Create a new task on <pane>."
    (make-instance 'search-task 
@@ -586,6 +589,7 @@
   (let ((n (prompt-for-plusp-integer "How many?:")))
     (if n (dotimes (i n)
             (menu-create-search-subtask interface data)))))
+|#
 
 (defun delete-subtask (interface data)
   "Delete selected subtask on <interface>."

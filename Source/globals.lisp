@@ -28,6 +28,7 @@
 
 ;; Lock for fitness evaluations
 (defparameter *auxiliar-lock* nil)
+(defparameter *parsergen-lock* (mp:make-lock :name "parsergen-lock"))
 
 
 (defun register-capi-button-icons ()

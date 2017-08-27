@@ -51,6 +51,7 @@
 
 (defun select-random-index-cfg (expresion function language)
   "Anwser a random index of <expression>."
+  (declare (ignore language))
   (block nil
     (let ((value (park-miller-randomizer))
           (values (accumulated-probability-cfg-or-nil expresion function))
@@ -66,6 +67,7 @@
 
 (defun select-random-indexes-cfg (expresion function language)
   "Anwser source possible sources indexes for <parse-tree>."
+  (declare (ignore language))
   (let* ((value (park-miller-randomizer))
          (values (probability-list-cfg-or-nil expresion function))
          (accumulated (accumulated-list values))
@@ -102,7 +104,7 @@
       (incf sum i))
     ;; Normalize
     (if (= sum 0)
-        (mapcar (lambda (i) 0) result)
+        (mapcar (lambda (i) (declare (ignore i)) 0) result)
       (mapcar (lambda (i) (/ i sum)) result))))
 
 (defun accumulated-probability-cfg (expresion function)

@@ -72,6 +72,7 @@
   "Answer whether <program> is correct for <language>."
   (multiple-value-bind (parse-tree result)
       (parse (grammar language) program)
+    (declare (ignore parse-tree))
     (not result)))
 
 (defmethod compatible-language ((a cfg-tree-language) (b cfg-tree-language))

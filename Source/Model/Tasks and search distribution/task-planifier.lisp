@@ -1,6 +1,5 @@
 (defparameter *task-planifier-lock* nil)
 (defparameter *task-planifier-task-lock* (mp:make-lock :name "task-planifier-task-lock"))
-(defparameter *parsergen-lock* (mp:make-lock :name "parsergen-lock"))
 (defparameter *simultaneous-processes* 0)
 
 

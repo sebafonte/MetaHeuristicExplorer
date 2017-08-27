@@ -1,5 +1,5 @@
 (defparameter *visualization-mode* nil)
-(defparameter *possible-visualization-modes nil)
+(defparameter *possible-visualization-modes* nil)
 
 (setf *possible-visualization-modes* (list (make-instance 'native-capi) (make-instance 'opengl-with-capi))
       *visualization-mode* (second *possible-visualization-modes*))
