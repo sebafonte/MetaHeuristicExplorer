@@ -232,20 +232,6 @@
     (destroy-interface-pixmap interface)
     (reset-image-buffer (pane interface))))
 
-;; #TODO: Refactor
-(defmethod options-menu-description ((pane t) object)
-  (options-menu-description-subtasks 
-   "Options" 
-   (if object 
-      (options-menu-description-pane-editor-entity-node pane object)
-    options-menu-description-pane-editor-entity)
-   pane))
-
-(defmethod options-menu-description ((pane capi:pinboard-layout) object)
-  (options-menu-description 
-   (capi:element-interface (capi:element-interface pane))
-   object))
-
 (defparameter options-menu-description-pane-editor-entity
   '(("Edit"
      ("New" pane-entity-editor-new)
@@ -273,6 +259,20 @@
      )
     ("Search"
      ("Search..." :disabled))))
+
+;; #TODO: Refactor
+(defmethod options-menu-description ((pane t) object)
+  (options-menu-description-subtasks 
+   "Options" 
+   (if object 
+      (options-menu-description-pane-editor-entity-node pane object)
+    options-menu-description-pane-editor-entity)
+   pane))
+
+(defmethod options-menu-description ((pane capi:pinboard-layout) object)
+  (options-menu-description 
+   (capi:element-interface (capi:element-interface pane))
+   object))
 
 (defmethod pane-entity-copy ((o t) &optional operation)
   "Add <o> into global *drag-context* selection context."

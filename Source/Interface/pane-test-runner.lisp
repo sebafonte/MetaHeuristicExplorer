@@ -13,21 +13,6 @@
   (let ((selected-suite (capi:choice-selected-item (pane-test-suites (interface p)))))
     (setf (test-containers p) (test-containers selected-suite))))
 
-(defmethod update-test-list ((interface interface-pane-test-runner))
-  "Updates <interface> test list."
-  (initialize-test-containers (pane interface))
-  (update-pane-test-list interface))
-
-(defmethod update-pane-test-list-conserve-selection ((i interface-pane-test-runner))
-  (let ((selection-index (capi:choice-selection (pane-tests i))))
-    (update-pane-test-list i)
-    (capi:apply-in-pane-process
-     (pane-tests i) #'(setf capi:choice-selection) selection-index (pane-tests i))))
-
-(defmethod update-pane-test-list ((i interface-pane-test-runner))
-  (capi:apply-in-pane-process
-   (pane-tests i) #'(setf capi:collection-items) (test-containers (pane i)) (pane-tests i)))
-
 (defmethod interface-class ((p pane-test-runner))
   "Answer <p> interface class."
   'interface-pane-test-runner)
@@ -42,25 +27,6 @@
   "Stop the execution of tests on <p>."
   nil)
 
-(defmethod refresh-tests (interface data)
-  (declare (ignore data))
-  (update-test-list interface))
-
-(defmethod run-all-tests ((object interface-pane-test-runner) &optional (data t))
-  (run-tests (pane object)))
-
-(defmethod run-selected-test ((interface interface-pane-test-runner) &optional (data t))
-  (let ((selection (capi:choice-selected-item (pane-tests interface))))
-    (when selection
-      (run-test selection)
-      (update-pane-test-list-conserve-selection interface))))
-
-;; #TODO: Add some kind of "ensure" method to always keep interface updated
-(defmethod debug-selected-test ((interface interface-pane-test-runner) &optional (data t))
-  (let ((selection (capi:choice-selected-item (pane-tests interface))))
-    (when selection
-      (debug-test selection)
-      (update-pane-test-list-conserve-selection interface))))
 
 (capi:define-interface interface-pane-test-runner (base-interface)
   (base-interface)
@@ -117,6 +83,41 @@
    :visible-min-width 100
    :visible-min-height 100
    :title "Test suite"))
+
+(defmethod update-test-list ((interface interface-pane-test-runner))
+  "Updates <interface> test list."
+  (initialize-test-containers (pane interface))
+  (update-pane-test-list interface))
+
+(defmethod update-pane-test-list-conserve-selection ((i interface-pane-test-runner))
+  (let ((selection-index (capi:choice-selection (pane-tests i))))
+    (update-pane-test-list i)
+    (capi:apply-in-pane-process
+     (pane-tests i) #'(setf capi:choice-selection) selection-index (pane-tests i))))
+
+(defmethod update-pane-test-list ((i interface-pane-test-runner))
+  (capi:apply-in-pane-process
+   (pane-tests i) #'(setf capi:collection-items) (test-containers (pane i)) (pane-tests i)))
+
+(defmethod refresh-tests (interface data)
+  (declare (ignore data))
+  (update-test-list interface))
+
+(defmethod run-all-tests ((object interface-pane-test-runner) &optional (data t))
+  (run-tests (pane object)))
+
+(defmethod run-selected-test ((interface interface-pane-test-runner) &optional (data t))
+  (let ((selection (capi:choice-selected-item (pane-tests interface))))
+    (when selection
+      (run-test selection)
+      (update-pane-test-list-conserve-selection interface))))
+
+;; #TODO: Add some kind of "ensure" method to always keep interface updated
+(defmethod debug-selected-test ((interface interface-pane-test-runner) &optional (data t))
+  (let ((selection (capi:choice-selected-item (pane-tests interface))))
+    (when selection
+      (debug-test selection)
+      (update-pane-test-list-conserve-selection interface))))
 
 (defmethod options-menu-description-test ()
   '(("Run selected" run-selected-test)

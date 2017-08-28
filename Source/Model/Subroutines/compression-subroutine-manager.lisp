@@ -72,7 +72,9 @@
 
 (defmethod unintern-all-subroutines ((manager compression-subroutine-manager))
   (maphash 
-   (lambda (key value) (unintern (first value)))
+   (lambda (key value) 
+     (declare (ignore key))
+     (unintern (first value)))
    (subroutines manager)))
 
 (defmethod subroutines-count ((manager compression-subroutine-manager))
@@ -83,7 +85,9 @@
 (defmethod subroutines-list ((manager compression-subroutine-manager))
   (let ((list))
     (maphash 
-     (lambda (key value) (appendf list (list (first value))))
+     (lambda (key value) 
+       (declare (ignore key))
+       (appendf list (list (first value))))
      (subroutines manager))
     list))
 
@@ -99,6 +103,7 @@
 (defmethod has-subroutine ((manager compression-subroutine-manager) function-id)
   (maphash 
    (lambda (key value) 
+     (declare (ignore key))
      (when (eql function-id (first value))
        (return-from has-subroutine t)))
    (subroutines manager))
@@ -124,7 +129,7 @@
 
 ;; #WORKING
 (defmethod ensure-no-inifinite-recursion ((manager compression-subroutine-manager) tree)
-  (ensure-no-infinite-recursion-using manager object (recursion-strategy object)))
+  (ensure-no-infinite-recursion-using manager tree (recursion-strategy manager)))
 
 ;; #NOTE: Correction introduces biases, when recursion is detected, function is replaced by the next lower 
 ;;        function-id subroutine.
