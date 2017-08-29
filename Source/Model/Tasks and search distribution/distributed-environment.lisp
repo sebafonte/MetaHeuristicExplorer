@@ -18,7 +18,8 @@
    (:name 'connection-administrator :label "Connections administrator" :accessor-type 'accessor-accessor-type
     :data-type 'object :editor 'button-editor :default-value (system-get 'main-connection-administrator))))
 
-(defmethod initialize-instance :after ((e distributed-environment) &key connection-administrator task-planifier-class task-planifier)
+(defmethod initialize-instance :after ((e distributed-environment) &rest args)
+  (declare (ignore args))
   "Initialize <e>."
   (setf (connection-administrator (task-planifier e)) (connection-administrator e)))
 

@@ -25,6 +25,7 @@
 (defvar *object-pool* (make-instance 'object-pool :max-count 100))
 (defvar *interface-editors* nil)
 (defvar *default-instance-search-task* nil)
+(defvar *time-variable* 0)
 
 ;; Lock for fitness evaluations
 (defparameter *auxiliar-lock* nil)

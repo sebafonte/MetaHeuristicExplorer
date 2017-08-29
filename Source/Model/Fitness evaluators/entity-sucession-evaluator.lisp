@@ -19,7 +19,7 @@
          (fitness-vector (fitness-vector evaluator))
          (value) 
          (error 0)
-         (x))
+         (x 0))
     (declare (special x) (integer x) (number error))
     (dolist (i (value-list evaluator))
       (setf value i
@@ -32,7 +32,7 @@
   "Evaluate using squared difference with target values."
   (let* ((function (compiled-program object)) 
          (value) 
-         (x) 
+         (x 0) 
          (error 0))
     (declare (special x) (integer x) (number error))
     (dolist (i (value-list evaluator))

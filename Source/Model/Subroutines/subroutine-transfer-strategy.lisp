@@ -54,6 +54,7 @@
 (defmethod transfered-subroutines ((o task-subroutine-transfer-strategy))
   "Answer a hash-table with transfered subroutines."
   (filter-subroutines
+   o
    (copy (subroutines (language (parent-task o))))))
 
 (defmethod filter-subroutines ((o task-subroutine-transfer-strategy) subroutines)
@@ -62,16 +63,15 @@
    (sort-by-score-ascending o subroutines)))
 
 (defmethod sort-by-score-ascending ((o task-subroutine-transfer-strategy) subroutines)
-  (sort-by-population-score subroutines (population (source o))))
+  (sort-by-population-score (population (source o)) subroutines))
 
 (defun filter-by-percentaje (sorted-subroutines percentaje)
   (let ((cut-point (ceiling (* (/ percentaje 100) (length sorted-subroutines)))))
     (subseq sorted-subroutines cut-point)))
 
 (defun sort-by-population-score (strategy subroutines population)
-  (let* ((individuals (individuals population))
-         (scored-population (score-individuals strategy subroutine o)))
-     (sort scored-population (lambda (a b) (> (cadr a) (cadr b))))))
+  (let ((scored-population (score-individuals strategy subroutine population)))
+    (sort scored-population (lambda (a b) (> (cadr a) (cadr b))))))
      
 
 

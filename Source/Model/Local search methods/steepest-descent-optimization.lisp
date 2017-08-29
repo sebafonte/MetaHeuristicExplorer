@@ -15,7 +15,3 @@
             (program object-object) (program object-copy)
             (fitness object-object) (fitness object-copy))))
   nil)
-
-;; #TODO: 
-(defun optimize-constants-steepest-descent-2 (method object)
-  (error "Not implemented yet."))

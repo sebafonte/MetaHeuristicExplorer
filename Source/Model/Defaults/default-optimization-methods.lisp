@@ -57,12 +57,6 @@
                                                     :delta-gradient 0.01
                                                     :precision 0.00001
                                                     :max-iterations 200)
-                                     (make-instance 'steepest-descent-optimization 
-                                                    :name 'optimization-method-steepest-descent
-                                                    :value-function #'optimize-constants-steepest-descent-2
-                                                    :delta-gradient 0.01
-                                                    :precision 0.00001
-                                                    :max-iterations 200)
                                      (make-instance 'optimization-method 
                                                     :name 'optimization-method-round-constants
                                                     :value-function #'optimize-round-constants)))

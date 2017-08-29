@@ -16,11 +16,9 @@
   "Function which validates a crossover move for two new individuals <child-a> and <child-b>, answer
    these if they satisfy size and depth conditions or the original values in <a> and <b>.
    #NOTE: Something similar used John Koza for it's crossover operation."
-  (let ((ca (car child-a)) 
-        (cb (car child-b)))
-    (values             
-     (validate-crossover-move-subtree max-depth max-size (min-subtree-depth operator) a child-a)
-     (validate-crossover-move-subtree max-depth max-size (min-subtree-depth operator) b child-b))))
+  (values             
+   (validate-crossover-move-subtree max-depth max-size (min-subtree-depth operator) a child-a)
+   (validate-crossover-move-subtree max-depth max-size (min-subtree-depth operator) b child-b)))
 
 (defun validate-crossover-move-subtree (max-depth max-size min-subtree-depth old new)
   "Answer <new> expression if satisfy all conditions, otherwise answer <old> expression."
