@@ -36,7 +36,7 @@
       :possible-values-function (lambda (objective-class) (default-fitness-evaluators (make-instance objective-class)))))))
 
 (defun lambda-update-callback-search-algorithm-objective-fitness-evaluator (object property) 
-  (declare (ignore property)))
+  (declare (ignore object property)))
 
 (defmethod default-search-task-for-algorithm ((e search-algorithm-objective-fitness-evaluator) algorithm)
   (let ((task (make-instance 'search-task)))
@@ -66,7 +66,9 @@
       (mp:process-wait-with-timeout
        "Evaluating task..."
        (timeout evaluator)
-       (lambda (object) (equal (state task) 'finished))
+       (lambda (object) 
+         (declare (ignore object))
+         (equal (state task) 'finished))
        task)
       (setf (population object) (population algorithm))
       (let ((best (best-individual (population algorithm))))

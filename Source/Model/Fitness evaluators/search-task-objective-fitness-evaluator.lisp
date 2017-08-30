@@ -35,6 +35,7 @@
   (let ((task-description (cadr-insert (program object) (context evaluator))))
     (multiple-value-bind (result task)
         (eval task-description)
+      (declare (ignore task))
       (setf (fitness object) (fitness result))
       (fitness result))))
 
