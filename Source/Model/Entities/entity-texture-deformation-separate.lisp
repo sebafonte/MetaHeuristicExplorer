@@ -25,6 +25,7 @@
    (system-get 'rgb-color-images-separate)))
 
 (defun texture-deformation-separate-expression-lexer (grammar)
+  (declare (special *parser-input*))
   (let ((symbol (pop *parser-input*)))
     (if symbol (texture-deformation-separate-expression-get-token grammar symbol)
       nil)))

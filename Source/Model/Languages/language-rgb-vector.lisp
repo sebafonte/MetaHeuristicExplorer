@@ -24,6 +24,7 @@
 
 
 (defun rgb-vector-expression-lexer (grammar)
+  (declare (special *parser-input*))
   (let ((symbol (pop *parser-input*)))
     (if symbol (rgb-vector-expression-get-token grammar symbol)
       nil)))

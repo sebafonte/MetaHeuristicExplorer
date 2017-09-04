@@ -28,6 +28,7 @@
 
 
 (defun texture-deformation-enclosure-expression-lexer (grammar)
+  (declare (special *parser-input*))
   (let ((symbol (pop *parser-input*)))
     (if symbol (texture-deformation-enclosure-expression-get-token grammar symbol)
       nil)))

@@ -329,8 +329,8 @@
 (defun MAKE-HALF-AND-HALF-GENERATOR (&key max-depth weight)
   (make-instance 'unary-operation-description
                  :operation (make-instance 'ramped-half-and-half-generator
-                                           :min-value 1
-                                           :max-value max-depth)
+                                           :max-depth max-depth
+                                           :use-top nil)
                  :weight weight))
 
 (defun MAKE-GROW-INDIVIDUAL-GENERATOR (&key max-depth max-size weight)
