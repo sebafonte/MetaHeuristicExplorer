@@ -8,20 +8,6 @@
 (defvar *default-cl-queue* nil)
 
 
-#|
-;;; #TODO: Move to new class opencl-profile which can be assigned to each fitness evaluator
-
-   (context :initform nil :initarg :context :accessor context)
-   (device :initarg :device :accessor device)
-   (queue :initarg :queue :accessor queue)
-
-   (:name 'platform :label "Platform" :accessor-type 'accessor-accessor-type :data-type 'object 
-    :possible-values platforms :default-value first-platform :editor 'list-editor)
-   (:name 'device :label "Device" :accessor-type 'accessor-accessor-type :data-type 'object 
-    :possible-values devices :default-value first-device :editor 'list-editor)
-|#
-
-
 (defclass opencl-utility ()
   ())
 
@@ -29,13 +15,13 @@
 (defun initialize-opencl ()
   (ocl:initialize-opencl-fli)
   (when (ocl:opencl-available)
-    (initialize-opecl-environment)
+    (initialize-opencl-environment)
     (initialize-default-cl-platform)
     (initialize-default-cl-context)
     (initialize-default-cl-device)
     (initialize-default-cl-queue)))
 
-(defun initialize-opecl-environment ()
+(defun initialize-opencl-environment ()
   (setf *default-cl-platforms* (ocl:platforms)
         *default-cl-devices* (make-hash-table))
   (dolist (platform *default-cl-platforms*)
@@ -54,11 +40,6 @@
 (defun initialize-default-cl-queue ()
   (setf *default-cl-queue* (ocl:create-queue *default-cl-context* *default-cl-device*)))
 
-(defmethod opencl-available-p ()
-  t)
-
-(defmethod device-info-string (device)
-  (format nil "" nil))
 
 ;; clGetDeviceInfo
 (defmethod device-global-memory (device)
@@ -134,23 +115,11 @@
   (ocl:get-param-info 'ocl::DEVICE-VENDOR-ID device))
 
 (defmethod device-address-bits (device)
-  "CL_DEVICE_VENDOR_ID"
-  (ocl:get-param-info 'ocl::address-bits device))
+  "CL_DEVICE_ADDRESS_BITS"
+  (ocl:get-param-info 'ocl::ADDRESS-BITS device))
 
 
-;; clGetKernelWorkGroupInfo
-(defmethod kernel-max-work-items (device kernel)
-  (list 0 0 0))
-
-(defmethod kernel-work-group-size (device kernel)
-  "CL_KERNEL_WORK_GROUP_SIZE"
-  nil)
-
-(defmethod kernel-local-mem-size (device kernel)
-  "CL_KERNEL_LOCAL_MEM_SIZE"
-  nil)
-
-;; print-object's
+;; print-object functions
 (defmethod print-object ((o ocl:platform) seq)
   (format seq "~A" (ocl::name o)))
 
@@ -166,6 +135,35 @@
 
 #|
 ;; #TODO
+(defmethod opencl-available-p ()
+  t)
+
 (defmethod device-available-memory (device)
   0)
+
+;; clGetKernelWorkGroupInfo
+(defmethod kernel-max-work-items (device kernel)
+  (list 0 0 0))
+
+(defmethod kernel-work-group-size (device kernel)
+  "CL_KERNEL_WORK_GROUP_SIZE"
+  nil)
+
+(defmethod kernel-local-mem-size (device kernel)
+  "CL_KERNEL_LOCAL_MEM_SIZE"
+  nil)
+
+(defmethod device-info-string (device)
+  (format nil "" nil))
+
+
+;;; #TODO: Move to new class opencl-profile which can be assigned to each fitness evaluator
+   (context :initform nil :initarg :context :accessor context)
+   (device :initarg :device :accessor device)
+   (queue :initarg :queue :accessor queue)
+
+   (:name 'platform :label "Platform" :accessor-type 'accessor-accessor-type :data-type 'object 
+    :possible-values platforms :default-value first-platform :editor 'list-editor)
+   (:name 'device :label "Device" :accessor-type 'accessor-accessor-type :data-type 'object 
+    :possible-values devices :default-value first-device :editor 'list-editor)
 |#
