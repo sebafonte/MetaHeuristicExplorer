@@ -13,10 +13,10 @@
     :data-type 'object :default-value nil :editor 'list-editor :visible nil)))
 
 (defmethod check-optimization ((o composite-optimization-method))
-  (block 1
+  (block check-optimization-block
     (dolist (method (method-list o))
       (if (check-optimization method)
-          (return-from 1 t)))
+          (return-from check-optimization-block t)))
     nil))
 
 (defmethod execute-optimization-on ((method composite-optimization-method) (o t))

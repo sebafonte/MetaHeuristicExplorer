@@ -53,7 +53,7 @@ REFERENCES:
     (while-do
      ;; Calculate first saving
      (let ((routes-count (length solution)))
-       (block 1
+       (block routes-block
          (dotimes (i routes-count)
            (dotimes (j routes-count)
              (if (not (= i j))
@@ -61,7 +61,7 @@ REFERENCES:
                    (when (and (> saving 0) (is-merge-feasible evaluator solution i j))
                      ;; Add to feasible 
                      (setf solution (merge-routes solution (list i j saving)))
-                     (return-from 1 t)))))))))
+                     (return-from routes-block t)))))))))
     ;; Answer merged solution
     solution))
 
@@ -136,22 +136,22 @@ REFERENCES:
   (let ((index-a)
         (index-b))
     ;; Search for source tour
-    (block 1 
+    (block merge-block-a
       (let ((i (first saving))
             (index 0))
         (dolist (subtour tour)
           (when (equal i (first (last subtour)))
             (setf index-a index)
-            (return-from 1))
+            (return-from merge-block-a))
           (incf index))))
     ;; Search for target tour
-    (block 2
+    (block merge-block-b
       (let ((j (second saving))
             (index 0))
         (dolist (subtour tour)
           (when (equal j (first subtour))
             (setf index-b index)
-            (return-from 2))
+            (return-from merge-block-b))
           (incf index))))
     ;; Merge when possible, otherwilse return original tour
     (if (and index-a index-b (is-merge-feasible evaluator tour index-a index-b))
