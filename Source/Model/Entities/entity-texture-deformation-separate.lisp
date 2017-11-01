@@ -89,10 +89,10 @@
 (defmethod constant-p ((o entity-texture-deformation-separate) 
                        &optional (check-genotype t) (check-phenotype t))
   "Answers whether <o> is constant."
-  (block 1
+  (block constant-p-block
     ;; Check genotype
     (if (and check-genotype (subexp-constant-p (program o) o))
-      (return-from 1 t))
+      (return-from constant-p-block t))
     ;; Check phenotype
     (if check-phenotype
         (let* ((pixels-x (pixels-x o))
@@ -107,7 +107,7 @@
                (x)
                (y))
           (declare (special x) (special y))
-          (block 1
+          (block constant-p-block
             (dotimes (i pixels-x)
               (dotimes (j pixels-y)
                 (setf x (+ start-x (* i delta-x))
@@ -117,7 +117,7 @@
                   (if first-value-a
                       (if (not (or (= value-a first-value-a)
                                    (= value-b first-value-b)))
-                          (return-from 1 nil))
+                          (return-from constant-p-block nil))
                     (setf first-value-a value-a
                           first-value-b value-b)))))
             t))

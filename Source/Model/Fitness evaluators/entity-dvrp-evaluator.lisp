@@ -57,7 +57,7 @@
         (total-cost 0)
         (max-capacity (max-capacity evaluator))
         (max-distance (max-distance evaluator)))
-    (block 1
+    (block block-main
       ;; Execute plan
       (dolist (vehicle-plan (delete-depot-copies tour))
         (let ((actual-city 0)
@@ -73,6 +73,6 @@
               (incf vehicle-distance (aref costs-matrix actual-city 0)))
           ;; Infeasible solution penalty (capacity)
           (if (or (> used-capacity max-capacity) (> vehicle-distance max-distance))
-              (return-from 1 nil)))
+              (return-from block-main nil)))
         ;; No infeasible subtours where found
         t))))

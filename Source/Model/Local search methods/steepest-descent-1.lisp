@@ -17,7 +17,7 @@
     ;; #TODO: Check if it`s necessary to evaluate object here, it should'nt be necessary
     (evaluate algorithm o)
     (let ((result 
-           (block 1
+           (block block-main
              (do ((i 0 (1+ i)))
                  ((> i max-iterations) 
                   nil)
@@ -29,7 +29,7 @@
                (calculate-gradient o1 delta-gradient algorithm values gradient)
                ;; If gradient = 0, stop
                (if (= 0 (reduce '+ (map 'vector (lambda (x) (* x x)) gradient)))
-                   (return-from 1 o1))
+                   (return-from block-main o1))
                ;; Normalize gradient
                (setf gradient (normalize-gradient gradient))
                ;; Initialize alpha
@@ -53,7 +53,7 @@
                    ;; Check for minimum alpha
                    (setf alpha (/ alpha 2))
                    (if (< alpha precision)
-                       (return-from 1 o)))))
+                       (return-from block-main o)))))
              ;; If no improvement has been found, answer initial object
              ;; #TODO - #TEST: Test case passing right here
              o)))

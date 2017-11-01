@@ -140,7 +140,7 @@
   (let ((costs-matrix (costs-matrix evaluator))
         (demand-matrix (demand-matrix evaluator))
         (max-capacity (max-capacity evaluator)))
-    (block 1
+    (block evaluate-feasible-tour-block
       ;; Execute plan
       (dolist (vehicle-plan tour)
         (let ((actual-city 0)
@@ -151,7 +151,7 @@
             (setf actual-city next-city))
           ;; Infeasible solution penalty (capacity)
           (if (> used-capacity max-capacity)
-              (return-from 1 nil))))
+              (return-from evaluate-feasible-tour-block nil))))
       ;; Assign fitness
       t)))
 

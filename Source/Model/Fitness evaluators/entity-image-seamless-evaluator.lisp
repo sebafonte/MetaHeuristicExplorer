@@ -75,7 +75,7 @@
          (start-position-x (start-position-x o))
          (start-position-y (start-position-y o)))
     (declare (special x) (special y))
-    (block 1
+    (block block-main
       (dotimes (i pixels-x)
         (setf x start-position-x
               y start-position-y
@@ -84,6 +84,6 @@
           (setf x (+ start-position-x (* i delta-x))
                 y (+ start-position-y (* j delta-y)))
           (if (not (= (funcall function) first-value))
-              (return-from 1 nil))))
+              (return-from block-main nil))))
       t))) 
 |#

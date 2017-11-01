@@ -25,7 +25,7 @@
     ;; #TODO: Check if it`s necessary to evaluate object here, it should'nt be necessary
     (evaluate algorithm o)
     (setf g (fitness o))
-    (let ((result (block 1
+    (let ((result (block block-main
       ;; STEP 1 y 2: While delta-fitness is'nt very small
       (do ((i 0 (1+ i)))
           ((> i max-iterations) 
@@ -37,7 +37,7 @@
         (calculate-gradient o delta-gradient algorithm values gradient)
         ;; STEP 4: If gradient = 0, stop
         (if (= 0 (reduce '+ (map 'vector (lambda (x) (* x x)) gradient)))
-            (return-from 1 o))
+            (return-from block-main o))
         ;; STEP 5: Normalize gradient
         (setf gradient (normalize-gradient gradient))
         ;; STEP 5: Initialize alpha
@@ -59,7 +59,7 @@
             (setf g3 (fitness o3))
             ;; STEP 8: If alpha-3 > TOL/2
             (if (< alpha-3 (/ precision 2))
-                (return-from 1 o1)))
+                (return-from block-main o1)))
           ;; STEP 9: 
           (let ((alpha-2 (/ alpha-3 2)))
             (evaluate-with-costants o algorithm alpha-2 gradient values)
@@ -67,7 +67,7 @@
             (setf g2 (fitness o2))
             ;; STEP 10: 
             (let* ((h1 (/ (- g2 g1) alpha-2))
-                   (h2 (/ (- g3 g2) (- alpha-3 alpha-2)))                
+                   (h2 (/ (- g3 g2) (- alpha-3 alpha-2)))
                    (h3 (/ (- h2 h1) alpha-3)))
               ;; STEP 11:
               (let ((alpha-0 (* 0.5 (- alpha-2 (/ h1 h3)))))
@@ -88,7 +88,7 @@
                 (setf g (fitness o))
                 ;; STEP 14: 
                 (if (< (abs (- g g1)) precision)
-                    (return-from 1 o))))))))))
+                    (return-from block-main o))))))))))
     (let ((value (copy source)))
       (setf (object value) result)
       value))))

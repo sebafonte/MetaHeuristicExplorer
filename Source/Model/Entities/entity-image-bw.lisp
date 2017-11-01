@@ -23,22 +23,22 @@
          (start-y (start-position-y a)))
     (declare (special x) 
              (special y))
-    (block 1
+    (block compare-image-block
       (dotimes (i pixels-x)
         (dotimes (j pixels-y)
           (setf x (+ start-x (* i delta-x))
                 y (+ start-y (* j delta-y)))
           (if (not (equals (vec-crop 0 1 (funcall function-a))
                            (vec-crop 0 1 (funcall function-b))))
-              (return-from 1 nil))))
+              (return-from compare-image-block nil))))
       t)))
 
 (defmethod constant-p ((o entity-image-bw) &optional (check-genotype t) (check-phenotype t))
   "Answers whether <o> is a 1 colour constant image."
-  (block 1
+  (block constant-p-block
     ;; Check genotype
     (if (and check-genotype (subexp-constant-p (program o) o))
-      (return-from 1 t))
+      (return-from constant-p-block t))
     ;; Check phenotype
     (if check-phenotype
         (let* ((pixels-x (pixels-x o))
@@ -52,14 +52,14 @@
                (start-position-x (start-position-x o))
                (start-position-y (start-position-y o)))
           (declare (special x) (special y))
-          (block 1
+          (block constant-p-block
             (dotimes (i pixels-x)
               (dotimes (j pixels-y)
                 (setf x (+ start-position-x (* i delta-x))
                       y (+ start-position-y (* j delta-y)))
                 (if first-value
                     (if (not (equals (vec-crop 0 1 (funcall function)) first-value))
-                        (return-from 1 nil))
+                        (return-from constant-p-block nil))
                   (setf first-value (vec-crop 0 1 (funcall function))))))
             t))
-      nil)))      
+      nil)))
