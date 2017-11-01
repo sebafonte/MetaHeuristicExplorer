@@ -33,7 +33,6 @@
 
 (defmethod add-object-on ((o object-pool) key object)
   (when (>= (current-count o) (max-count o)) 
-    ;(print "clear")
     (clear o)
     (drop-object o key))
   (let ((value object))
